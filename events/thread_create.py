@@ -31,7 +31,12 @@ class OnThreadCreate(commands.Cog):
                 style=disnake.ButtonStyle.green,
                 emoji="✅",
             )
+            close_button = disnake.ui.Button(
+                label="🛡️",
+                custom_id="close_button",
+                style=disnake.ButtonStyle.red
+            )
 
             await thread.send(
-                embed=embed, components=[summon_helpers_button, resolve_question_button]
+                embed=embed, components=[summon_helpers_button, resolve_question_button, close_button]
             )

@@ -13,7 +13,7 @@ class OnButtonClick(commands.Cog):
         print("asdasd")
         if inter.component.custom_id == "resolve_question_button":
             role = inter.guild.get_role(variables.helper)
-            if (inter.channel.owner_id == inter.user.id) or (role in inter.user.roles):
+            if (f"<@{inter.channel.author_id}>" == inter.user.id) or (role in inter.user.roles):
                 # Add tag
                 resolved_tag = inter.channel.parent.get_tag_by_name("RESOLVED")
                 await inter.channel.add_tags(resolved_tag)
@@ -55,7 +55,7 @@ class OnButtonClick(commands.Cog):
                 variables.helper
             )
             channel = inter.channel.parent.id
-            if (inter.channel.owner_id == inter.author.id) or (
+            if (f"<@{inter.channel.author_id}>" == inter.author.id) or (
                 role in inter.author.roles
             ):
                 if time_difference_minutes >= 30 or role in inter.author.roles:
@@ -138,3 +138,73 @@ class OnButtonClick(commands.Cog):
                 )
                 channel = self.bot.get_channel(variables.logs)
                 await channel.send(embed=embed)
+        if inter.component.custom_id == "close_button":
+            helper = role = inter.guild.get_role(
+                variables.helper
+            )
+            if not helper in inter.author.roles:
+                return await inter.response.send_message("This button is for helpers only!",ephemeral=True)
+            
+            await inter.response.send_message(embed=disnake.Embed(
+                title="Close Post",
+                description="If this post is not appropriate for this channel, use one of the options below to close the post along with a reason to help the user know what they did wrong",
+                colour=disnake.Colour.red()
+            ),view=DropDownView(),ephemeral=True)
+            
+            
+class ChoiceMenu(disnake.ui.StringSelect):
+    def __init__(self):
+        options = [
+            disnake.SelectOption(label="Incorrect Channel",description="This post is in an incorrect help channel."),
+            disnake.SelectOption(label="Not Enough Information",description="This post does not have enough information."),
+            disnake.SelectOption(label="Spam",description="This post is purely spam."),
+            disnake.SelectOption(label="Off-topic",description="This post is not a question relevant to this context.")
+        ]
+
+        super().__init__(
+            placeholder="Select a reason",
+            min_values=1,
+            max_values=1,
+            options=options,
+        )
+
+    # This callback is called each time a user has selected an option
+    async def callback(self, inter: disnake.MessageInteraction):
+        selection = self.values[0]
+        if selection == "Incorrect Channel":
+            await inter.response.send_message(embed=disnake.Embed(
+                title="Incorrect Channel",
+                description="You've posted this question in an incorrect help channel. Please take another look at your question and put it in another help channel. Thanks.",
+                color=disnake.Color.red()
+            ))
+            await inter.channel.edit(archived=True)
+        elif selection == "Not Enough Information":
+            await inter.response.send_message(embed=disnake.Embed(
+                title="Not Enough Information",
+                description="This post does not provide enough information for us to be able to help you. Please take a look in <#935570290317086841> to get some tips on how to write a good question. Thanks! :D",
+                color=disnake.Color.red()
+            ))
+            await inter.channel.edit(archived=True)
+        elif selection == "Spam":
+            await inter.response.send_message(embed=disnake.Embed(
+                title="Spam",
+                description="This post is just spam. Please only post actual relevant questions in the help channels, otherwise you could face a punishment. Thanks!",
+                color=disnake.Color.red()
+            ))
+            await inter.channel.edit(archived=True)
+        elif selection == "Off-topic":
+            await inter.response.send_message(embed=disnake.Embed(
+                title="Off-topic",
+                description="This post is off-topic. The help forums are for asking questions related to creating and using Minecraft datapacks and resource packs. For off-topic discussions, use the general or off topic text channels. Thanks!",
+                color=disnake.Color.red()
+            ))
+            await inter.channel.edit(archived=True)
+        
+class DropDownView(disnake.ui.View):
+    def __init__(self):
+        # You would pass a new `timeout=` if you wish to alter it, but
+        # we will leave it empty for this example so that it uses the default 180s.
+        super().__init__()
+
+        # Now let's add the `StringSelect` object we created above to this view
+        self.add_item(ChoiceMenu())
