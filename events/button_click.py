@@ -173,28 +173,28 @@ class ChoiceMenu(disnake.ui.StringSelect):
         selection = self.values[0]
         if selection == "Incorrect Channel":
             await inter.response.send_message(embed=disnake.Embed(
-                title="Incorrect Channel",
+                title="CHANNEL CLOSED: Incorrect Channel",
                 description="You've posted this question in an incorrect help channel. Please take another look at your question and put it in another help channel. Thanks.",
                 color=disnake.Color.red()
             ))
             await inter.channel.edit(archived=True)
         elif selection == "Not Enough Information":
             await inter.response.send_message(embed=disnake.Embed(
-                title="Not Enough Information",
+                title="CHANNEL CLOSED: Not Enough Information",
                 description="This post does not provide enough information for us to be able to help you. Please take a look in <#935570290317086841> to get some tips on how to write a good question. Thanks! :D",
                 color=disnake.Color.red()
             ))
             await inter.channel.edit(archived=True)
         elif selection == "Spam":
             await inter.response.send_message(embed=disnake.Embed(
-                title="Spam",
+                title="CHANNEL CLOSED: Spam",
                 description="This post is just spam. Please only post actual relevant questions in the help channels, otherwise you could face a punishment. Thanks!",
                 color=disnake.Color.red()
             ))
             await inter.channel.edit(archived=True)
         elif selection == "Off-topic":
             await inter.response.send_message(embed=disnake.Embed(
-                title="Off-topic",
+                title="CHANNEL CLOSED: Off-topic",
                 description="This post is off-topic. The help forums are for asking questions related to creating and using Minecraft datapacks and resource packs. For off-topic discussions, use the general or off topic text channels. Thanks!",
                 color=disnake.Color.red()
             ))
