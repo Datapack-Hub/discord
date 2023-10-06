@@ -13,7 +13,7 @@ class OnButtonClick(commands.Cog):
         print("asdasd")
         if inter.component.custom_id == "resolve_question_button":
             role = inter.guild.get_role(variables.helper)
-            if (f"<@{inter.channel.author_id}>" == inter.user.id) or (role in inter.user.roles):
+            if (inter.channel.owner_id == inter.user.id) or (role in inter.user.roles):
                 # Add tag
                 resolved_tag = inter.channel.parent.get_tag_by_name("RESOLVED")
                 await inter.channel.add_tags(resolved_tag)
@@ -22,7 +22,7 @@ class OnButtonClick(commands.Cog):
                 await inter.response.send_message(embed=disnake.Embed(
                     color=disnake.Color.green(),
                     title=":white_check_mark: Closed Question",
-                    description="Closed the channel and market it as resolved! \nIf you have more questions feel free to ask them in a new channel!",
+                    description="Closed the channel and marled it as resolved! \nIf you have more questions feel free to ask them in a new channel!",
                 ))
                 
                 # Archive channel
@@ -55,7 +55,7 @@ class OnButtonClick(commands.Cog):
                 variables.helper
             )
             channel = inter.channel.parent.id
-            if (f"<@{inter.channel.author_id}>" == inter.author.id) or (
+            if (inter.channel.owner_id == inter.author.id) or (
                 role in inter.author.roles
             ):
                 if time_difference_minutes >= 30 or role in inter.author.roles:
@@ -143,7 +143,7 @@ class OnButtonClick(commands.Cog):
                 variables.helper
             )
             if not helper in inter.author.roles:
-                return await inter.response.send_message("This button is for helpers only!",ephemeral=True)
+                return await inter.response.send_message("Only helpers can use this :)",ephemeral=True)
             
             await inter.response.send_message(embed=disnake.Embed(
                 title="Close Post",

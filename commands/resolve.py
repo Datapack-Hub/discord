@@ -23,7 +23,7 @@ class ResolveCommand(commands.Cog, name="resolve"):
                     embed = disnake.Embed(
                         color=disnake.Color.green(),
                         title=":white_check_mark: Closed Question",
-                        description="Closed the channel and market it as resolved! \nIf you have more questions feel free to ask them in a new channel!",
+                        description="Closed the channel and marked it as resolved! \nIf you have more questions feel free to ask them in a new channel!",
                     )
                     await inter.response.send_message(embed=embed)
                     await inter.channel.edit(archived=True)

@@ -2,7 +2,7 @@ import disnake
 from disnake.ext import commands, tasks
 from bottoken import TOKEN
 
-bot = commands.Bot(command_prefix="nerds", activity=disnake.Activity(name="the game of life",details="The best datapacking server", url="https://datapackhub.net",type=disnake.ActivityType.competing, state="i am death, destroyer of worlds", buttons=["Website"]), test_guilds=[911644509249613864])
+bot = commands.Bot(command_prefix="nerds", activity=disnake.Activity(name="the game of life",details="The best datapacking server", url="https://datapackhub.net",type=disnake.ActivityType.competing, state="i am death, destroyer of worlds", buttons=["Website"]), test_guilds=[911644509249613864,1144269849414074418])
 
 # Events
 from events.thread_create import OnThreadCreate
