@@ -35,7 +35,7 @@ async def ten():
         resolved_threads = 0
         resolved_tag = thread.parent.get_tag_by_name("RESOLVED")
 
-        for thread in await bot.get_channel(i).archived_threads(limit=None).flatten():
+        for thread in await bot.get_channel(i).archived_threads(limit=None):
             if resolved_tag in thread.applied_tags:
                 resolved_threads += 1
                 
