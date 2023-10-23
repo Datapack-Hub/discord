@@ -3,6 +3,7 @@ from disnake.ext import commands
 import variables
 import asyncio
 
+
 class OnThreadCreate(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
