@@ -29,13 +29,15 @@ async def ten():
     print("Starting query")
     channel = bot.get_channel(variables.stats)
     total = 0
-    
+    resolved_threads = 0
     for i in variables.help_channels:
         questions = bot.get_channel(i).threads.__len__()
         archived_qns = await bot.get_channel(i).archived_threads(limit=None).flatten()
+        for thread in bot.get_channel(i).threads:
+            resolved_tag = thread.parent.get_tag_by_name("RESOLVED")
+            if resolved_tag in thread.applied_tags:
+                    resolved_threads += 1
         questions = questions + archived_qns.__len__()
-        resolved_threads = 0
-        resolved_tag = bot.get_channel(i).threads[0].parent.get_tag_by_name("RESOLVED")
 
         for thread in archived_qns:
             parent_channel = thread.parent
@@ -43,12 +45,11 @@ async def ten():
             
             if resolved_tag in thread.applied_tags:
                 resolved_threads += 1
-                print(thread.name)
 
         total = total + questions
 
-    await channel.edit(name=f"Resolved Questions: {resolved_threads}/{total}")
-    print(f"Finshed {resolved_threads}")
+    await channel.edit(name=f"Resolved Questions: {resolved_threads}")
+    print(f"Finshed {resolved_threads}/{total}")
     
 @bot.event
 async def on_ready():
