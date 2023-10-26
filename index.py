@@ -52,8 +52,8 @@ async def ten():
                 if resolved_tag in thread.applied_tags:
                     resolved_threads += 1
 
-    await channel_resolved.edit(name=f"Resolved Questions: {resolved_threads}")
-    await channel_asked.edit(name=f"Asked Questions: {total_threads}")
+    await channel_resolved.edit(name=f"Questions Resolved: {resolved_threads}")
+    await channel_asked.edit(name=f"Questions Asked: {total_threads}")
     print(f"Finshed {resolved_threads}/{total_threads}")
     
 @bot.event
