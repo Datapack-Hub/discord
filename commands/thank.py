@@ -10,7 +10,7 @@ class ThankCommand(commands.Cog):
     @commands.user_command(name="Award Helper Points")
     async def award(self, inter: disnake.MessageCommandInteraction):
         if inter.user.get_role(variables.helper):
-            with open("D:\python\DatapackHub\DPH\points.json", "r+") as fp:
+            with open("/root/dph_bot/discord/points.json", "r+") as fp:
                 fp.seek(0)
                 data = json.loads(fp.read())
                 if str(inter.target.id) in data:

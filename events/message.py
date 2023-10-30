@@ -24,7 +24,7 @@ class OnMessage(commands.Cog):
         if not mention:
             await message.reply("If someone has helped you resolve your question, make sure to thank them by typing `thanks @user` 🤝")
         else:
-            with open("D:\python\DatapackHub\DPH\points.json", "r+") as fp:
+            with open("/root/dph_bot/discord/points.json", "r+") as fp:
                 fp.seek(0)
                 data = json.loads(fp.read())
                 if str(mention[0]) in data:

@@ -13,7 +13,7 @@ class TopCommand(commands.Cog):
 
     @commands.slash_command(name="top",description="View the most helpful members of the server.")
     async def top(self, inter: disnake.MessageCommandInteraction):
-        with open("D:\python\DatapackHub\DPH\points.json", "r") as fp:
+        with open("/root/dph_bot/discord/points.json", "r") as fp:
             fp.seek(0)
             data = json.loads(fp.read())
             fp.close()
