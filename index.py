@@ -6,19 +6,25 @@ import time
 
 intents = disnake.Intents.all()
 
-bot = commands.Bot(activity=disnake.Activity(name="the game of life",details="The best datapacking server", url="https://datapackhub.net",type=disnake.ActivityType.competing, state="i am death, destroyer of worlds", buttons=["Website"]), test_guilds=[911644509249613864,1144269849414074418,1144269849414074418], intents=intents)
+bot = commands.Bot(command_prefix="nerds", activity=disnake.Activity(name="the game of life",details="The best datapacking server", url="https://datapackhub.net",type=disnake.ActivityType.competing, state="i am death, destroyer of worlds", buttons=["Website"]), test_guilds=[variables.guild],intents=disnake.Intents.all())
 
 # Events
 from events.thread_create import OnThreadCreate
 from events.button_click import OnButtonClick
+from events.message import OnMessage
 bot.add_cog(OnThreadCreate(bot))
 bot.add_cog(OnButtonClick(bot))
+bot.add_cog(OnMessage(bot))
 
 # Slash Commands
 from commands.resolve import ResolveCommand
 bot.add_cog(ResolveCommand(bot))
 from commands.stats import StatsCommand
 bot.add_cog(StatsCommand(bot))
+from commands.thank import ThankCommand
+bot.add_cog(ThankCommand(bot))
+from commands.top import TopCommand
+bot.add_cog(TopCommand(bot))
 
 # Message Commands
 from commands.redirect import RedirectCommand

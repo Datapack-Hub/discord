@@ -19,15 +19,18 @@ class OnButtonClick(commands.Cog):
                 await inter.channel.add_tags(resolved_tag)
                 
                 # Send message
-                await inter.response.send_message(embed=disnake.Embed(
+                await inter.channel.send(embed=disnake.Embed(
                     color=disnake.Color.green(),
                     title=":white_check_mark: Closed Question",
                     description="Closed the channel and marled it as resolved! \nIf you have more questions feel free to ask them in a new channel!",
                 ))
                 
+                # Ask for feedback
+                await inter.response.send_message(ephemeral=True,embed=disnake.Embed(title="How was your experience?",description=f"Your question, <#{inter.channel.id}> ({inter.channel.name}), was resolved. Let us know how your experience asking your question in Datapack Hub was! It'll take no more than 3 clicks."),components=[disnake.ui.Button(label="Great",style=disnake.ButtonStyle.success),disnake.ui.Button(label="Good"),disnake.ui.Button(label="Okay"),disnake.ui.Button(label="Bad",style=disnake.ButtonStyle.red)])
+                
                 # Archive channel
                 await inter.channel.edit(archived=True)
-                
+                                
                 # Logging
                 channel = self.bot.get_channel(variables.logs)
                 await channel.send(embed=disnake.Embed(
@@ -150,6 +153,8 @@ class OnButtonClick(commands.Cog):
                 description="If this post is not appropriate for this channel, use one of the options below to close the post along with a reason to help the user know what they did wrong",
                 colour=disnake.Colour.red()
             ),view=DropDownView(),ephemeral=True)
+        if inter.component.custom_id == "del_this_button":
+            await inter.message.delete()
             
             
 class ChoiceMenu(disnake.ui.StringSelect):
