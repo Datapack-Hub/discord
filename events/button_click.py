@@ -26,7 +26,7 @@ class OnButtonClick(commands.Cog):
                 ))
                 
                 # Ask for feedback
-                await inter.response.send_message(ephemeral=True,embed=disnake.Embed(title="How was your experience?",description=f"Your question, <#{inter.channel.id}> ({inter.channel.name}), was resolved. Let us know how your experience asking your question in Datapack Hub was! It'll take no more than 3 clicks."),components=[disnake.ui.Button(label="Great",style=disnake.ButtonStyle.success),disnake.ui.Button(label="Good"),disnake.ui.Button(label="Okay"),disnake.ui.Button(label="Bad",style=disnake.ButtonStyle.red)])
+                # await inter.response.send_message(ephemeral=True,embed=disnake.Embed(title="How was your experience?",description=f"Your question, <#{inter.channel.id}> ({inter.channel.name}), was resolved. Let us know how your experience asking your question in Datapack Hub was! It'll take no more than 3 clicks."),components=[disnake.ui.Button(label="Great",style=disnake.ButtonStyle.success),disnake.ui.Button(label="Good"),disnake.ui.Button(label="Okay"),disnake.ui.Button(label="Bad",style=disnake.ButtonStyle.red)])
                 
                 # Archive channel
                 await inter.channel.edit(archived=True)
