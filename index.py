@@ -11,8 +11,11 @@ bot = commands.Bot(activity=disnake.Activity(name="the game of life",details="Th
 # Events
 from events.thread_create import OnThreadCreate
 from events.button_click import OnButtonClick
+from events.on_member_join import OnMemberJoin
 bot.add_cog(OnThreadCreate(bot))
 bot.add_cog(OnButtonClick(bot))
+bot.add_cog(OnMemberJoin(bot))
+
 
 # Slash Commands
 from commands.resolve import ResolveCommand
@@ -59,7 +62,7 @@ async def ten():
 @bot.event
 async def on_ready():
     await ten.start()
-
+    
 bot.run(TOKEN)
 
 # oldest resolved thread timestamp 1674615000
