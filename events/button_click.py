@@ -156,19 +156,19 @@ class OnButtonClick(commands.Cog):
         if inter.component.custom_id == "del_this_button":
             await inter.message.delete()
         if inter.component.custom_id == "feedback_great":
-            chan = await inter.guild.get_channel(variables.feedback)
+            chan = inter.guild.get_channel(variables.feedback)
             await chan.send(f"**Great** feedback on thread <#{str(inter.channel_id)}>")
             await inter.response.send_message("Thanks for your feedback!",ephemeral=True)
         if inter.component.custom_id == "feedback_good":
-            chan = await inter.guild.get_channel(variables.feedback)
+            chan = inter.guild.get_channel(variables.feedback)
             await chan.send(f"**Good** feedback on thread <#{str(inter.channel_id)}>")
             await inter.response.send_message("Thanks for your feedback!",ephemeral=True)
         if inter.component.custom_id == "feedback_okay":
-            chan = await inter.guild.get_channel(variables.feedback)
+            chan = inter.guild.get_channel(variables.feedback)
             await chan.send(f"**Okay** feedback on thread <#{str(inter.channel_id)}>")
             await inter.response.send_message("Thanks for your feedback!",ephemeral=True)
         if inter.component.custom_id == "feedback_bad":
-            chan = await inter.guild.get_channel(variables.feedback)
+            chan = inter.guild.get_channel(variables.feedback)
             await chan.send(f"**Bad** feedback on thread <#{str(inter.channel_id)}>")
             await inter.response.send_message("Thanks for your feedback!",ephemeral=True)
             
