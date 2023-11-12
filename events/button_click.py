@@ -26,7 +26,7 @@ class OnButtonClick(commands.Cog):
                 ))
                 
                 # Ask for feedback
-                # await inter.response.send_message(ephemeral=True,embed=disnake.Embed(title="How was your experience?",description=f"Your question, <#{inter.channel.id}> ({inter.channel.name}), was resolved. Let us know how your experience asking your question in Datapack Hub was! It'll take no more than 3 clicks."),components=[disnake.ui.Button(label="Great",style=disnake.ButtonStyle.success),disnake.ui.Button(label="Good"),disnake.ui.Button(label="Okay"),disnake.ui.Button(label="Bad",style=disnake.ButtonStyle.red)])
+                await inter.response.send_message(ephemeral=True,embed=disnake.Embed(title="How was your experience?",description=f"Your question, <#{inter.channel.id}> ({inter.channel.name}), was resolved. Let us know how your experience asking your question in Datapack Hub was! It'll take no more than 3 clicks."),components=[disnake.ui.Button(custom_id="feedback_great",label="Great",style=disnake.ButtonStyle.success),disnake.ui.Button(custom_id="feedback_good",label="Good"),disnake.ui.Button(custom_id="feedback_okay",label="Okay"),disnake.ui.Button(custom_id="feedback_bad",label="Bad",style=disnake.ButtonStyle.red)])
                 
                 # Archive channel
                 await inter.channel.edit(archived=True)
@@ -155,6 +155,22 @@ class OnButtonClick(commands.Cog):
             ),view=DropDownView(),ephemeral=True)
         if inter.component.custom_id == "del_this_button":
             await inter.message.delete()
+        if inter.component.custom_id == "feedback_great":
+            chan = await inter.guild.get_channel(variables.feedback)
+            await chan.send(f"**Great** feedback on thread <#{str(inter.channel_id)}>")
+            await inter.response.send_message("Thanks for your feedback!",ephemeral=True)
+        if inter.component.custom_id == "feedback_good":
+            chan = await inter.guild.get_channel(variables.feedback)
+            await chan.send(f"**Good** feedback on thread <#{str(inter.channel_id)}>")
+            await inter.response.send_message("Thanks for your feedback!",ephemeral=True)
+        if inter.component.custom_id == "feedback_okay":
+            chan = await inter.guild.get_channel(variables.feedback)
+            await chan.send(f"**Okay** feedback on thread <#{str(inter.channel_id)}>")
+            await inter.response.send_message("Thanks for your feedback!",ephemeral=True)
+        if inter.component.custom_id == "feedback_bad":
+            chan = await inter.guild.get_channel(variables.feedback)
+            await chan.send(f"**Bad** feedback on thread <#{str(inter.channel_id)}>")
+            await inter.response.send_message("Thanks for your feedback!",ephemeral=True)
             
             
 class ChoiceMenu(disnake.ui.StringSelect):

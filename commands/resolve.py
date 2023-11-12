@@ -25,8 +25,11 @@ class ResolveCommand(commands.Cog, name="resolve"):
                         title=":white_check_mark: Closed Question",
                         description="Closed the channel and marked it as resolved! \nIf you have more questions feel free to ask them in a new channel!",
                     )
-                    await inter.response.send_message(embed=embed)
+                    await inter.channel.send(embed=embed)
                     await inter.channel.edit(archived=True)
+                    # Ask for feedback
+                    await inter.response.send_message(ephemeral=True,embed=disnake.Embed(title="How was your experience?",description=f"Your question, <#{inter.channel.id}> ({inter.channel.name}), was resolved. Let us know how your experience asking your question in Datapack Hub was! It'll take no more than 3 clicks."),components=[disnake.ui.Button(custom_id="feedback_great",label="Great",style=disnake.ButtonStyle.success),disnake.ui.Button(custom_id="feedback_good",label="Good"),disnake.ui.Button(custom_id="feedback_okay",label="Okay"),disnake.ui.Button(custom_id="feedback_bad",label="Bad",style=disnake.ButtonStyle.red)])
+                    
                     # Logging
                     embed = disnake.Embed(
                         color=disnake.Colour.orange(),
