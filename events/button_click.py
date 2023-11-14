@@ -188,21 +188,24 @@ class OnButtonClick(commands.Cog):
             ),view=DropDownView(),ephemeral=True)
         if inter.component.custom_id == "del_this_button":
             await inter.message.delete()
+            
         if inter.component.custom_id == "feedback_great":
             chan = self.bot.get_channel(variables.feedback)
-            link = inter.message.embeds[0].fields[1].value
+            link = inter.message.components[1].children[0].url
             await inter.message.edit(components=disnake.ui.ActionRow().add_button(label="Jump to thread",url=inter.message.components[1].children[0].url,style=disnake.ButtonStyle.blurple).add_button(label="Review Datapack Hub",url="https://disboard.org/review/create/935560260725379143",style=disnake.ButtonStyle.gray))
             await chan.send(f"**Great** feedback on [this thread]({link})")
             await inter.response.send_message("Thanks for your feedback!",ephemeral=True)
+            
         if inter.component.custom_id == "feedback_okay":
             chan = self.bot.get_channel(variables.feedback)
-            link = inter.message.embeds[0].fields[1].value
+            link = inter.message.components[1].children[0].url
             await inter.message.edit(components=disnake.ui.ActionRow().add_button(label="Jump to thread",url=inter.message.components[1].children[0].url,style=disnake.ButtonStyle.blurple).add_button(label="Review Datapack Hub",url="https://disboard.org/review/create/935560260725379143",style=disnake.ButtonStyle.gray))
             await chan.send(f"**Meh** feedback on [this thread]({link})")
             await inter.response.send_message("Thanks for your feedback!",ephemeral=True)
+            
         if inter.component.custom_id == "feedback_bad":
             chan = self.bot.get_channel(variables.feedback)
-            link = inter.message.embeds[0].fields[1].value
+            link = inter.message.components[1].children[0].url
             await inter.message.edit(components=disnake.ui.ActionRow().add_button(label="Jump to thread",url=inter.message.components[1].children[0].url,style=disnake.ButtonStyle.blurple).add_button(label="Review Datapack Hub",url="https://disboard.org/review/create/935560260725379143",style=disnake.ButtonStyle.gray))
             await chan.send(f"**Bad** feedback on [this thread]({link})")
             await inter.response.send_message("Thanks for your feedback!",ephemeral=True)
