@@ -3,6 +3,24 @@ from disnake.ext import commands
 import variables
 import datetime
 
+def format_duration_between(datetimestart, datetimeend):
+    time_difference = datetimeend - datetimestart
+
+    # Calculate days, hours, and minutes
+    days = time_difference.days
+    hours, remainder = divmod(time_difference.seconds, 3600)
+    minutes, _ = divmod(remainder, 60)
+
+    # Build the human-readable string
+    formatted_duration = ""
+    if days > 0:
+        formatted_duration += f"{days}d"
+    if hours > 0:
+        formatted_duration += f"{hours}h"
+    if minutes > 0:
+        formatted_duration += f"{minutes}m"
+
+    return formatted_duration if formatted_duration else "0m"
 
 class OnButtonClick(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -25,15 +43,14 @@ class OnButtonClick(commands.Cog):
                     description="Closed the channel and marled it as resolved! \nIf you have more questions feel free to ask them in a new channel!",
                 ))
                 
-                # Ask for feedback
-                
+                # Feedback
                 messages = await inter.channel.history(oldest_first=True,limit=1).flatten()
                 
                 emb = disnake.Embed(
                     title="Question Closed",
                     description=f"Your question, <#{inter.channel.id}> ({inter.channel.name}), was resolved.",
                     color=disnake.Colour.green()
-                ).add_field("Original Message",messages[0].content,inline=False).add_field("Post",f"[Jump to thread]({inter.channel.jump_url})",inline=False)
+                ).add_field("Original Message",messages[0].content,inline=False).add_field("Duration open",format_duration_between(messages[0].created_at, datetime.datetime.now(messages[0].created_at.tzinfo)))
                 
                 await inter.guild.get_member(inter.channel.owner_id).send(embed=emb,components=[
                     disnake.ui.ActionRow().add_button(label="Leave a rating:",disabled=True).add_button(custom_id="feedback_great",label="Great",style=disnake.ButtonStyle.success).add_button(custom_id="feedback_okay",label="Meh",style=disnake.ButtonStyle.blurple).add_button(custom_id="feedback_bad",label="Bad",style=disnake.ButtonStyle.red),
@@ -175,19 +192,19 @@ class OnButtonClick(commands.Cog):
             chan = self.bot.get_channel(variables.feedback)
             link = inter.message.embeds[0].fields[1].value
             await inter.message.edit(components=disnake.ui.ActionRow().add_button(label="Jump to thread",url=inter.message.components[1].children[0].url,style=disnake.ButtonStyle.blurple).add_button(label="Review Datapack Hub",url="https://disboard.org/review/create/935560260725379143",style=disnake.ButtonStyle.gray))
-            await chan.send(f"**Great** feedback on thread {link}")
+            await chan.send(f"**Great** feedback on [this thread]({link})")
             await inter.response.send_message("Thanks for your feedback!",ephemeral=True)
         if inter.component.custom_id == "feedback_okay":
             chan = self.bot.get_channel(variables.feedback)
             link = inter.message.embeds[0].fields[1].value
             await inter.message.edit(components=disnake.ui.ActionRow().add_button(label="Jump to thread",url=inter.message.components[1].children[0].url,style=disnake.ButtonStyle.blurple).add_button(label="Review Datapack Hub",url="https://disboard.org/review/create/935560260725379143",style=disnake.ButtonStyle.gray))
-            await chan.send(f"**Meh** feedback on thread {link}")
+            await chan.send(f"**Meh** feedback on [this thread]({link})")
             await inter.response.send_message("Thanks for your feedback!",ephemeral=True)
         if inter.component.custom_id == "feedback_bad":
             chan = self.bot.get_channel(variables.feedback)
             link = inter.message.embeds[0].fields[1].value
             await inter.message.edit(components=disnake.ui.ActionRow().add_button(label="Jump to thread",url=inter.message.components[1].children[0].url,style=disnake.ButtonStyle.blurple).add_button(label="Review Datapack Hub",url="https://disboard.org/review/create/935560260725379143",style=disnake.ButtonStyle.gray))
-            await chan.send(f"**Bad** feedback on thread {link}")
+            await chan.send(f"**Bad** feedback on [this thread]({link})")
             await inter.response.send_message("Thanks for your feedback!",ephemeral=True)
             
             
