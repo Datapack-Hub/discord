@@ -26,7 +26,23 @@ class OnButtonClick(commands.Cog):
                 ))
                 
                 # Ask for feedback
-                await inter.response.send_message(ephemeral=True,embed=disnake.Embed(title="How was your experience?",description=f"Your question, <#{inter.channel.id}> ({inter.channel.name}), was resolved. Let us know how your experience asking your question in Datapack Hub was! It'll take no more than 3 clicks."),components=[disnake.ui.Button(custom_id="feedback_great",label="Great",style=disnake.ButtonStyle.success),disnake.ui.Button(custom_id="feedback_good",label="Good"),disnake.ui.Button(custom_id="feedback_okay",label="Okay"),disnake.ui.Button(custom_id="feedback_bad",label="Bad",style=disnake.ButtonStyle.red)])
+                
+                messages = await inter.channel.history(oldest_first=True,limit=1).flatten()
+                
+                emb = disnake.Embed(
+                    title="Question Closed",
+                    description=f"Your question, <#{inter.channel.id}> ({inter.channel.name}), was resolved.",
+                    color=disnake.Colour.green()
+                ).add_field("Original Message",messages[0].content,inline=False).add_field("Post",f"[Jump to thread]({inter.channel.jump_url})",inline=False)
+                
+                await inter.guild.get_member(inter.channel.owner_id).send(embed=emb,components=[
+                    disnake.ui.ActionRow().add_button(label="Leave a rating:",disabled=True).add_button(custom_id="feedback_great",label="Great",style=disnake.ButtonStyle.success).add_button(custom_id="feedback_okay",label="Meh",style=disnake.ButtonStyle.blurple).add_button(custom_id="feedback_bad",label="Bad",style=disnake.ButtonStyle.red),
+                    disnake.ui.ActionRow().add_button(label="Jump to thread",url=inter.channel.jump_url,style=disnake.ButtonStyle.blurple).add_button(label="Review Datapack Hub",url="https://disboard.org/review/create/935560260725379143",style=disnake.ButtonStyle.gray)])
+                
+                # await inter.guild.get_member(inter.channel.owner_id).send(embed=emb,components=[
+                #     disnake.ui.ActionRow().add_select(placeholder="Leave a rating:",options=[disnake.SelectOption(label="Great :D"),disnake.SelectOption(label="Good :)"),disnake.SelectOption(label="Meh :/"),disnake.SelectOption(label="Bad :("),disnake.SelectOption(label="Terrible >:(")]),
+                #     disnake.ui.ActionRow().add_button(label="Jump to thread",url=inter.channel.jump_url).add_button(label="Review Datapack Hub",url="https://disboard.org/review/create/935560260725379143",style=disnake.ButtonStyle.gray)
+                # ])
                 
                 # Archive channel
                 await inter.channel.edit(archived=True)
@@ -156,20 +172,22 @@ class OnButtonClick(commands.Cog):
         if inter.component.custom_id == "del_this_button":
             await inter.message.delete()
         if inter.component.custom_id == "feedback_great":
-            chan = inter.guild.get_channel(variables.feedback)
-            await chan.send(f"**Great** feedback on thread <#{str(inter.channel_id)}>")
-            await inter.response.send_message("Thanks for your feedback!",ephemeral=True)
-        if inter.component.custom_id == "feedback_good":
-            chan = inter.guild.get_channel(variables.feedback)
-            await chan.send(f"**Good** feedback on thread <#{str(inter.channel_id)}>")
+            chan = self.bot.get_channel(variables.feedback)
+            link = inter.message.embeds[0].fields[1].value
+            await inter.message.edit(components=disnake.ui.ActionRow().add_button(label="Jump to thread",url=inter.message.components[1].children[0].url,style=disnake.ButtonStyle.blurple).add_button(label="Review Datapack Hub",url="https://disboard.org/review/create/935560260725379143",style=disnake.ButtonStyle.gray))
+            await chan.send(f"**Great** feedback on thread {link}")
             await inter.response.send_message("Thanks for your feedback!",ephemeral=True)
         if inter.component.custom_id == "feedback_okay":
-            chan = inter.guild.get_channel(variables.feedback)
-            await chan.send(f"**Okay** feedback on thread <#{str(inter.channel_id)}>")
+            chan = self.bot.get_channel(variables.feedback)
+            link = inter.message.embeds[0].fields[1].value
+            await inter.message.edit(components=disnake.ui.ActionRow().add_button(label="Jump to thread",url=inter.message.components[1].children[0].url,style=disnake.ButtonStyle.blurple).add_button(label="Review Datapack Hub",url="https://disboard.org/review/create/935560260725379143",style=disnake.ButtonStyle.gray))
+            await chan.send(f"**Meh** feedback on thread {link}")
             await inter.response.send_message("Thanks for your feedback!",ephemeral=True)
         if inter.component.custom_id == "feedback_bad":
-            chan = inter.guild.get_channel(variables.feedback)
-            await chan.send(f"**Bad** feedback on thread <#{str(inter.channel_id)}>")
+            chan = self.bot.get_channel(variables.feedback)
+            link = inter.message.embeds[0].fields[1].value
+            await inter.message.edit(components=disnake.ui.ActionRow().add_button(label="Jump to thread",url=inter.message.components[1].children[0].url,style=disnake.ButtonStyle.blurple).add_button(label="Review Datapack Hub",url="https://disboard.org/review/create/935560260725379143",style=disnake.ButtonStyle.gray))
+            await chan.send(f"**Bad** feedback on thread {link}")
             await inter.response.send_message("Thanks for your feedback!",ephemeral=True)
             
             
