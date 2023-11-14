@@ -1,6 +1,27 @@
 import disnake
 from disnake.ext import commands
 import variables
+import datetime
+
+
+def format_duration_between(datetimestart, datetimeend):
+    time_difference = datetimeend - datetimestart
+
+    # Calculate days, hours, and minutes
+    days = time_difference.days
+    hours, remainder = divmod(time_difference.seconds, 3600)
+    minutes, _ = divmod(remainder, 60)
+
+    # Build the human-readable string
+    formatted_duration = ""
+    if days > 0:
+        formatted_duration += f"{days}d"
+    if hours > 0:
+        formatted_duration += f"{hours}h"
+    if minutes > 0:
+        formatted_duration += f"{minutes}m"
+
+    return formatted_duration if formatted_duration else "0m"
 
 
 class ResolveCommand(commands.Cog, name="resolve"):
@@ -27,8 +48,19 @@ class ResolveCommand(commands.Cog, name="resolve"):
                     )
                     await inter.channel.send(embed=embed)
                     await inter.channel.edit(archived=True)
-                    # Ask for feedback
-                    await inter.response.send_message(ephemeral=True,embed=disnake.Embed(title="How was your experience?",description=f"Your question, <#{inter.channel.id}> ({inter.channel.name}), was resolved. Let us know how your experience asking your question in Datapack Hub was! It'll take no more than 3 clicks."),components=[disnake.ui.Button(custom_id="feedback_great",label="Great",style=disnake.ButtonStyle.success),disnake.ui.Button(custom_id="feedback_good",label="Good"),disnake.ui.Button(custom_id="feedback_okay",label="Okay"),disnake.ui.Button(custom_id="feedback_bad",label="Bad",style=disnake.ButtonStyle.red)])
+                    
+                    # Feedback
+                    messages = await inter.channel.history(oldest_first=True,limit=1).flatten()
+                    
+                    emb = disnake.Embed(
+                        title="Question Closed",
+                        description=f"Your question, <#{inter.channel.id}> ({inter.channel.name}), was resolved.",
+                        color=disnake.Colour.green()
+                    ).add_field("Original Message",messages[0].content,inline=False).add_field("Duration open",format_duration_between(messages[0].created_at, datetime.datetime.now(messages[0].created_at.tzinfo)))
+                    
+                    await inter.guild.get_member(inter.channel.owner_id).send(embed=emb,components=[
+                        disnake.ui.ActionRow().add_button(label="Leave a rating:",disabled=True).add_button(custom_id="feedback_great",label="Great",style=disnake.ButtonStyle.success).add_button(custom_id="feedback_okay",label="Meh",style=disnake.ButtonStyle.blurple).add_button(custom_id="feedback_bad",label="Bad",style=disnake.ButtonStyle.red),
+                        disnake.ui.ActionRow().add_button(label="Jump to thread",url=inter.channel.jump_url,style=disnake.ButtonStyle.blurple).add_button(label="Review Datapack Hub",url="https://disboard.org/review/create/935560260725379143",style=disnake.ButtonStyle.gray)])
                     
                     # Logging
                     embed = disnake.Embed(
