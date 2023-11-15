@@ -10,7 +10,6 @@ class OnThreadCreate(commands.Cog):
 
     @commands.Cog.listener()
     async def on_thread_create(self, thread: disnake.Thread):
-        print("yo")
         await asyncio.sleep(1)
         if thread.parent_id in variables.help_channels:
             embed = disnake.Embed(
@@ -37,6 +36,9 @@ class OnThreadCreate(commands.Cog):
                 custom_id="close_button",
                 style=disnake.ButtonStyle.red
             )
+            
+            messages = await thread.history(oldest_first=True,limit=1).flatten()
+            await messages[0].pin()
 
             await thread.send(
                 embed=embed, components=[summon_helpers_button, resolve_question_button, close_button]

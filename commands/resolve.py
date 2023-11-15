@@ -41,26 +41,22 @@ class ResolveCommand(commands.Cog, name="resolve"):
                 if channel in variables.help_channels:
                     resolved_tag = inter.channel.parent.get_tag_by_name("RESOLVED")
                     await inter.channel.add_tags(resolved_tag)
-                    embed = disnake.Embed(
-                        color=disnake.Color.green(),
-                        title=":white_check_mark: Closed Question",
-                        description="Closed the channel and marked it as resolved! \nIf you have more questions feel free to ask them in a new channel!",
-                    )
-                    await inter.channel.send(embed=embed)
-                    await inter.channel.edit(archived=True)
                     
                     # Feedback
                     messages = await inter.channel.history(oldest_first=True,limit=1).flatten()
                     
                     emb = disnake.Embed(
                         title="Question Closed",
-                        description=f"Your question, <#{inter.channel.id}> ({inter.channel.name}), was resolved.",
+                        description=f"Your question, <#{inter.channel.id}> ({inter.channel.name}), was resolved!",
                         color=disnake.Colour.green()
                     ).add_field("Original Message",messages[0].content,inline=False).add_field("Duration open",format_duration_between(messages[0].created_at, datetime.datetime.now(messages[0].created_at.tzinfo)))
+                
+                    await inter.response.send_message(embed=emb,components=[
+                        disnake.ui.ActionRow().add_button(label="Leave a rating:",disabled=True).add_button(custom_id="feedback_great:"+str(inter.channel.owner_id),label="Great",style=disnake.ButtonStyle.success).add_button(custom_id="feedback_okay:"+str(inter.channel.owner_id),label="Meh",style=disnake.ButtonStyle.blurple).add_button(custom_id="feedback_bad:"+str(inter.channel.owner_id),label="Bad",style=disnake.ButtonStyle.red),
+                        disnake.ui.ActionRow().add_button(label="Jump to top",url=messages[0].jump_url).add_button(label="Review Datapack Hub",url="https://disboard.org/review/create/935560260725379143",style=disnake.ButtonStyle.gray)])
                     
-                    await inter.guild.get_member(inter.channel.owner_id).send(embed=emb,components=[
-                        disnake.ui.ActionRow().add_button(label="Leave a rating:",disabled=True).add_button(custom_id="feedback_great",label="Great",style=disnake.ButtonStyle.success).add_button(custom_id="feedback_okay",label="Meh",style=disnake.ButtonStyle.blurple).add_button(custom_id="feedback_bad",label="Bad",style=disnake.ButtonStyle.red),
-                        disnake.ui.ActionRow().add_button(label="Jump to thread",url=inter.channel.jump_url,style=disnake.ButtonStyle.blurple).add_button(label="Review Datapack Hub",url="https://disboard.org/review/create/935560260725379143",style=disnake.ButtonStyle.gray)])
+                    # Mark as closed
+                    await inter.channel.edit(archived=True)
                     
                     # Logging
                     embed = disnake.Embed(
@@ -70,7 +66,6 @@ class ResolveCommand(commands.Cog, name="resolve"):
                     )
                     channel = await inter.guild.get_channel(variables.logs)
                     await channel.send(embed=embed)
-                    await inter.response.send_message(embed=embed)
                 elif role not in inter.author.roles:
                     embed = disnake.Embed(
                         color=disnake.Color.red(),
