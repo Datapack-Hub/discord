@@ -185,6 +185,7 @@ class OnButtonClick(commands.Cog):
             user = int(inter.component.custom_id.split(":")[1])
             if inter.author.id != user:
                 await inter.response.send_message("Only the question asker can respond!",ephemeral=True)
+                return 
                 
             chan = self.bot.get_channel(variables.feedback)
             link = inter.message.components[1].children[0].url
@@ -198,6 +199,7 @@ class OnButtonClick(commands.Cog):
             user = int(inter.component.custom_id.split(":")[1])
             if inter.author.id != user:
                 await inter.response.send_message("Only the question asker can respond!",ephemeral=True)
+                return 
                 
             chan = self.bot.get_channel(variables.feedback)
             link = inter.message.components[1].children[0].url
@@ -211,6 +213,7 @@ class OnButtonClick(commands.Cog):
             user = int(inter.component.custom_id.split(":")[1])
             if inter.author.id != user:
                 await inter.response.send_message("Only the question asker can respond!",ephemeral=True)
+                return 
             
             chan = self.bot.get_channel(variables.feedback)
             link = inter.message.components[1].children[0].url

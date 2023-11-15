@@ -16,7 +16,7 @@ class OnMessage(commands.Cog):
             await message.reply("**Re-opened the channel.** Make sure to close it again once you're done.",components=[disnake.ui.Button(label="Close Question",custom_id="resolve_question_button")])
         if type(message.channel) is disnake.Thread and message.channel.parent.id in variables.help_channels and message.author.id == message.channel.owner_id:
             c = message.content.lower()
-            if not (c.startswith("thanks") or c.startswith("thank you") or c.startswith("thx") or c.startswith("ty") or c.startswith("tysm")):
+            if not ("thanks" in c or "thank you" in c or "thx" in c or "ty" in c or "tysm" in c):
                 return
             
             mention = re.findall("<@([0-9]*)>",c)
