@@ -1,6 +1,6 @@
 import disnake
 from disnake.ext import commands
-import variables
+
 
 class RedirectCommand(commands.Cog):
     def __init__(self, bot):
@@ -19,7 +19,10 @@ class RedirectCommand(commands.Cog):
             
             Check out <#935570290317086841> for more information about our help channels.
             """,
-            color=disnake.Colour.orange()
-        ).set_footer(text="Requested by " + inter.author.display_name,icon_url=inter.author.display_avatar.url)
+            color=disnake.Colour.orange(),
+        ).set_footer(
+            text="Requested by " + inter.author.display_name,
+            icon_url=inter.author.display_avatar.url,
+        )
         await inter.target.reply(embed=embed)
-        await inter.response.send_message("Done! \:D", ephemeral=True)
+        await inter.response.send_message("Done! :D", ephemeral=True)

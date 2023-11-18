@@ -1,7 +1,7 @@
 import disnake
 from disnake.ext import commands
-import variables
 import json
+
 
 def value_getter(item):
     return item[1]
@@ -11,7 +11,9 @@ class TopCommand(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.slash_command(name="top",description="View the most helpful members of the server.")
+    @commands.slash_command(
+        name="top", description="View the most helpful members of the server."
+    )
     async def top(self, inter: disnake.MessageCommandInteraction):
         with open("/root/dph_bot/discord/points.json", "r") as fp:
             fp.seek(0)
@@ -23,9 +25,10 @@ class TopCommand(commands.Cog):
         text = ""
         for i in asc:
             text += f"**<@{i[0]}>**: {i[1]}\n"
-        await inter.response.send_message(embed=disnake.Embed(
-            title="Most Thanked Members",
-            description=text,
-            color=disnake.Color.orange()
-        ))
-       
+        await inter.response.send_message(
+            embed=disnake.Embed(
+                title="Most Thanked Members",
+                description=text,
+                color=disnake.Color.orange(),
+            )
+        )

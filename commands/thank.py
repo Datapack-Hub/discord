@@ -3,6 +3,7 @@ from disnake.ext import commands
 import variables
 import json
 
+
 class ThankCommand(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -20,6 +21,10 @@ class ThankCommand(commands.Cog):
                 fp.seek(0)
                 fp.write(json.dumps(data))
                 fp.close()
-            await inter.response.send_message(f"Awarded one help point to {inter.target.mention}!",ephemeral=True)
+            await inter.response.send_message(
+                f"Awarded one help point to {inter.target.mention}!", ephemeral=True
+            )
         else:
-            await inter.response.send_message("Only Official Helpers and Staff can run this comamnd!",ephemeral=True)
+            await inter.response.send_message(
+                "Only Official Helpers and Staff can run this command!", ephemeral=True
+            )
