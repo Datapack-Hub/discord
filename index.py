@@ -47,6 +47,8 @@ bot.add_cog(StatsCommand(bot))
 bot.add_cog(ThankCommand(bot))
 bot.add_cog(TopCommand(bot))
 bot.add_cog(RedirectCommand(bot))
+from commands.view import ViewFileCommand
+bot.add_cog(ViewFileCommand(bot))
 
 
 # Loops
