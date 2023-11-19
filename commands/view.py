@@ -13,36 +13,47 @@ class ViewFileCommand(commands.Cog):
         if inter.target.attachments.__len__() == 0:
             return await inter.response.send_message("There is no file attached to this message!",ephemeral=True)
         file = inter.target.attachments[0]
-        if not file.content_type == "application/zip":
-            return await inter.response.send_message("The first attachment is not a zip.",ephemeral=True)
-        
-        read_file = await file.read()
-        
-        files_out = []
-        paths_out = ""
-        amount = 0
-        current = 0
-        
-        with zipfile.ZipFile(BytesIO(read_file), 'r') as zip_file:
-            for file_info in zip_file.infolist():
-                zip_file.filelist
-                if not file_info.is_dir():
-                    amount += 1
-                    with zip_file.open(file_info.filename) as file:
-                        current += 1
-                        files_out.append({
-                            "path":file_info.filename,
-                            "content":file.read().decode('utf-8'),
-                            "index":current
-                        })
-                        paths_out += f"{str(current)}: " + file_info.filename.replace("/"," / ") + "\n"
-                
-        emb = disnake.Embed(
-            title="Quick Look",
-            description=f"All Files:\n```\n{paths_out}```",
-            color=disnake.Color.orange()
-        ).add_field("Total Files",str(amount))
-        await inter.response.send_message(embed=emb,view=DropdownView(files_out))
+        if file.content_type == "application/zip":
+            read_file = await file.read()
+            
+            files_out = []
+            paths_out = ""
+            amount = 0
+            current = 0
+            
+            with zipfile.ZipFile(BytesIO(read_file), 'r') as zip_file:
+                for file_info in zip_file.infolist():
+                    zip_file.filelist
+                    if not file_info.is_dir():
+                        amount += 1
+                        with zip_file.open(file_info.filename) as file:
+                            current += 1
+                            files_out.append({
+                                "path":file_info.filename,
+                                "content":file.read().decode('utf-8', errors='ignore'),
+                                "index":current
+                            })
+                            paths_out += f"{str(current)}: " + file_info.filename.replace("/"," / ") + "\n"
+                    
+            emb = disnake.Embed(
+                title="Quick Look",
+                description=f"All Files:\n```\n{paths_out}```",
+                color=disnake.Color.orange()
+            ).add_field("Total Files",str(amount))
+            await inter.response.send_message(embed=emb,view=DropdownView(files_out))
+        elif file.content_type == "text/plain" or file.content_type == None:
+            formatting = "json"
+            if file.filename.endswith("mcfunction"):
+                formatting = "hs"
+            file = await file.read()
+            emb = disnake.Embed(
+                title="Quick Look",
+                description=f"```{formatting}\n{file.decode()}```",
+                color=disnake.Color.orange()
+            )
+            await inter.response.send_message(embed=emb)
+        else:
+            await inter.response.send_message(f"Mimetype {file.content_type} is not supported!")
         
 class Dropdown(disnake.ui.StringSelect):
     def __init__(self, files):
