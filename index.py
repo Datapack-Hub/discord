@@ -17,8 +17,7 @@ from commands.redirect import RedirectCommand
 # Slash Commands
 from commands.resolve import ResolveCommand
 from commands.stats import StatsCommand
-from commands.thank import ThankCommand
-from commands.top import TopCommand
+from commands.view import ViewFileCommand
 
 intents = disnake.Intents.all()
 
@@ -44,10 +43,7 @@ bot.add_cog(OnMessage(bot))
 
 bot.add_cog(ResolveCommand(bot))
 bot.add_cog(StatsCommand(bot))
-bot.add_cog(ThankCommand(bot))
-bot.add_cog(TopCommand(bot))
 bot.add_cog(RedirectCommand(bot))
-from commands.view import ViewFileCommand
 bot.add_cog(ViewFileCommand(bot))
 
 
@@ -55,32 +51,21 @@ bot.add_cog(ViewFileCommand(bot))
 @tasks.loop(minutes=10)
 async def ten():
     print("Starting query")
-    channel_resolved = bot.get_channel(variables.stats)
     channel_asked = bot.get_channel(variables.stats_asked)
     total_threads = 0
-    resolved_threads = 0
     for i in variables.help_channels:
         questions = bot.get_channel(i).threads.__len__()
         archived_qns = await bot.get_channel(i).archived_threads(limit=None).flatten()
         for thread in bot.get_channel(i).threads:
             total_threads += 1
-            resolved_tag = thread.parent.get_tag_by_name("RESOLVED")
-            if resolved_tag in thread.applied_tags:
-                resolved_threads += 1
         questions = questions + archived_qns.__len__()
 
         for thread in archived_qns:
             creation_unix = time.mktime(thread.create_timestamp.timetuple())
-            parent_channel = thread.parent
-            resolved_tag = parent_channel.get_tag_by_name("RESOLVED")
             if creation_unix >= 1674615000:
                 total_threads += 1
-                if resolved_tag in thread.applied_tags:
-                    resolved_threads += 1
 
-    await channel_resolved.edit(name=f"Questions Resolved: {resolved_threads}")
     await channel_asked.edit(name=f"Questions Asked: {total_threads}")
-    print(f"Finished {resolved_threads}/{total_threads}")
 
 
 @bot.event
