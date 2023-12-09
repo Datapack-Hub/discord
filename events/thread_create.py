@@ -14,9 +14,13 @@ class OnThreadCreate(commands.Cog):
         if thread.parent_id in variables.help_channels:
             embed = disnake.Embed(
                 color=disnake.Colour.orange(),
-                title=("**Someone will come and help soon!**"),
+                title=("Someone will come and help soon!"),
                 description=(
-                    "💬 While you wait, take this time to provide more context and details. What are you trying to achieve overall - maybe there's an easier way to solve this problem\n\n🙇 If it's been 30 minutes and you're still waiting for someone to help, hit the __Summon Helpers__ button to call the official helpers here\n\n✅ Once your question has been resolved (or you no longer need it), hit the __Resolve Question__ button or run /resolve"
+                    """💬 While you wait, take this time to provide more context and details.\n\n
+                    
+                    🙇 After a while, hit the Summon Helpers button to ping the helper team. They'll be happy to help you\n\n
+                    
+                    ✅ Once your question has been resolved (or you no longer need it), please click Resolve Question or run /resolve"""
                 ),
             )
             summon_helpers_button = disnake.ui.Button(
@@ -30,9 +34,6 @@ class OnThreadCreate(commands.Cog):
                 custom_id="resolve_question_button",
                 style=disnake.ButtonStyle.green,
                 emoji="✅",
-            )
-            close_button = disnake.ui.Button(
-                label="🛡️", custom_id="close_button", style=disnake.ButtonStyle.red
             )
 
             messages = await thread.history(oldest_first=True, limit=1).flatten()
