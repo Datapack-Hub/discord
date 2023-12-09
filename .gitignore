@@ -2,6 +2,7 @@ bottoken.py
 variables.py
 *.pyc
 points.json
+events/files/output.png
 
 # Byte-compiled / optimized / DLL files 
 *__pycache__/*
