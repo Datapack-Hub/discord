@@ -15,12 +15,7 @@ class OnThreadCreate(commands.Cog):
             embed = disnake.Embed(
                 color=disnake.Colour.orange(),
                 title=("Someone will come and help soon!"),
-                description=(
-                    """💬 While you wait, take this time to provide more context and details.\n\n
-                    
-                    🙇 After a while, hit the Summon Helpers button to ping the helper team. They'll be happy to help you\n\n
-                    
-                    ✅ Once your question has been resolved (or you no longer need it), please click Resolve Question or run /resolve"""
+                description=("💬 While you wait, take this time to provide more context and details.\n\n🙇 After a while, hit the Summon Helpers button to ping the helper team. They'll be happy to help you\n\n✅ Once your question has been resolved (or you no longer need it), please click Resolve Question or run /resolve"
                 ),
             )
             summon_helpers_button = disnake.ui.Button(
