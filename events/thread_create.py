@@ -39,7 +39,6 @@ class OnThreadCreate(commands.Cog):
                 components=[
                     summon_helpers_button,
                     resolve_question_button,
-                    close_button,
                 ],
             )
 
