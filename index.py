@@ -19,6 +19,7 @@ from commands.redirect import RedirectCommand
 from commands.resolve import ResolveCommand
 from commands.stats import StatsCommand
 from commands.view import ViewFileCommand
+from commands.mod import ModCommand
 
 intents = disnake.Intents.all()
 
@@ -46,6 +47,7 @@ bot.add_cog(ResolveCommand(bot))
 bot.add_cog(StatsCommand(bot))
 bot.add_cog(RedirectCommand(bot))
 bot.add_cog(ViewFileCommand(bot))
+bot.add_cog(ModCommand(bot))
 
 
 # Loops
