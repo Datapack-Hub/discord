@@ -1,8 +1,5 @@
 import disnake
 from disnake.ext import commands
-import variables
-import regex as re
-import json
 
 
 class OnMessage(commands.Cog):

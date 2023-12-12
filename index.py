@@ -3,7 +3,7 @@ from disnake.ext import commands, tasks
 from bottoken import TOKEN
 import variables
 import time
-from datetime import datetime,timedelta,timezone
+from datetime import datetime, timedelta, timezone
 
 # Events
 from events.thread_create import OnThreadCreate
@@ -63,7 +63,7 @@ async def ten():
     for i in variables.help_channels:
         questions = bot.get_channel(i).threads.__len__()
         archived_qns = await bot.get_channel(i).archived_threads(limit=None).flatten()
-        for thread in bot.get_channel(i).threads:
+        for _ in bot.get_channel(i).threads:
             total_threads += 1
         questions = questions + archived_qns.__len__()
 
@@ -73,7 +73,8 @@ async def ten():
                 total_threads += 1
 
     await channel_asked.edit(name=f"Questions Asked: {total_threads}")
-    
+
+
 @tasks.loop(hours=12)
 async def day():
     for i in variables.help_channels:
@@ -81,13 +82,15 @@ async def day():
             last = await thread.fetch_message(thread.last_message_id)
             diff = datetime.now(timezone.utc) - last.created_at
             if diff > timedelta(days=2):
-                await thread.send(embed=disnake.Embed(
-                    title="🗑️ Recycling Thread",
-                    description="This thread has been inactive for some time, so I'm going to archive it.\n\nIf you're still using the thread, just send a message and it'll pop back on the thread list.",
-                    color=disnake.Color.dark_gray()
-                ))
+                await thread.send(
+                    embed=disnake.Embed(
+                        title="🗑️ Recycling Thread",
+                        description="This thread has been inactive for some time, so I'm going to archive it.\n\nIf you're still using the thread, just send a message and it'll pop back on the thread list.",
+                        color=disnake.Color.dark_gray(),
+                    )
+                )
                 await thread.edit(archived=True)
-                
+
                 # Logging
                 embed = disnake.Embed(
                     color=disnake.Colour.orange(),

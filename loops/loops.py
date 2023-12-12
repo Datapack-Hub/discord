@@ -2,7 +2,7 @@ from disnake.ext import commands, tasks
 import variables
 
 
-class loops(commands.Cog):
+class Loops(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
