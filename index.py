@@ -20,6 +20,8 @@ from commands.resolve import ResolveCommand
 from commands.stats import StatsCommand
 from commands.view import ViewFileCommand
 from commands.mod import ModCommand
+from commands.site import SiteCommand
+from commands.top import TopCommand
 
 intents = disnake.Intents.all()
 
@@ -48,6 +50,8 @@ bot.add_cog(StatsCommand(bot))
 bot.add_cog(RedirectCommand(bot))
 bot.add_cog(ViewFileCommand(bot))
 bot.add_cog(ModCommand(bot))
+bot.add_cog(SiteCommand(bot))
+bot.add_cog(TopCommand(bot))
 
 
 # Loops
