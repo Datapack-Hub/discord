@@ -17,11 +17,13 @@ from commands.redirect import RedirectCommand
 
 # Slash Commands
 from commands.resolve import ResolveCommand
+from commands.summon import SummonCommand
 from commands.stats import StatsCommand
 from commands.view import ViewFileCommand
-from commands.mod import ModCommand
 from commands.site import SiteCommand
+from commands.mod import ModCommand
 from commands.top import TopCommand
+
 
 intents = disnake.Intents.all()
 
@@ -52,6 +54,7 @@ bot.add_cog(ViewFileCommand(bot))
 bot.add_cog(ModCommand(bot))
 bot.add_cog(SiteCommand(bot))
 bot.add_cog(TopCommand(bot))
+bot.add_cog(SummonCommand(bot))
 
 
 # Loops
@@ -95,7 +98,7 @@ async def day():
                 embed = disnake.Embed(
                     color=disnake.Colour.orange(),
                     title=("Recycled Thread"),
-                    description=(thread.name + " was archived for 2+ day inactivity"),
+                    description=(f"[{thread.name}]({thread.jump_url}) was archived for 2+ day inactivity."),
                 )
                 channel = bot.get_channel(variables.logs)
                 await channel.send(embed=embed)
