@@ -6,9 +6,9 @@ class StatsCommand(commands.Cog, name="stats"):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.slash_command(title="stats", description="Marks question as resolved")
+    @commands.slash_command(name="stats", description="View some server stats")
     async def stats(self, inter: disnake.ApplicationCommandInteraction):
-        await inter.response.send_message("Querying...")
+        await inter.response.defer()
 
         dp_questions = inter.guild.get_channel(1051225367807000706).threads.__len__()
         archived_dps = (
@@ -29,6 +29,7 @@ class StatsCommand(commands.Cog, name="stats"):
             disnake.Embed(
                 color=disnake.Color.orange(),
                 title="Datapack Hub Stats",
+                description="These stats are the up-to-date question counts as of right now. There may be a minor inaccuracy due to discord API limitations."
             )
             .add_field("Datapack Questions", dp_questions, inline=True)
             .add_field("Resourcepack Questions", rp_questions, inline=True)
