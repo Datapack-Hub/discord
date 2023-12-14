@@ -30,7 +30,7 @@ REASONS = [
 
 def generate_discord_relative_timestamp(seconds):
     # Calculate the future Unix timestamp
-    future_timestamp = int((datetime.utcnow() + timedelta(seconds=seconds)).timestamp())
+    future_timestamp = int((datetime.now() + timedelta(seconds=seconds)).timestamp())
 
     # Format the relative timestamp in the Discord style
     formatted_timestamp = f"<t:{future_timestamp}:R>"
