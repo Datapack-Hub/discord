@@ -170,7 +170,7 @@ class MuteDropdown(disnake.ui.StringSelect):
                     embed=disnake.Embed(
                         title="You were muted",
                         color=disnake.Color.red(),
-                        description=f"You were muted in Datapack Hub until {generate_discord_relative_timestamp(self.length)}.\n\nReason:```\n{reason['description']}```",
+                        description=f"You were muted in Datapack Hub. You'll be unmuted {generate_discord_relative_timestamp(self.length)}.\n\nReason:```\n{reason['description']}```",
                         timestamp=datetime.utcnow(),
                     )
                 )
