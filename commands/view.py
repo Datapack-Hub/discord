@@ -26,7 +26,7 @@ class ViewFileCommand(commands.Cog):
             with zipfile.ZipFile(BytesIO(read_file), "r") as zip_file:
                 for file_info in zip_file.infolist():
                     zip_file.filelist
-                    if not file_info.is_dir():
+                    if not file_info.is_dir() and not "__MACOSX" in file_info.filename:
                         amount += 1
                         with zip_file.open(file_info.filename) as file:
                             current += 1
