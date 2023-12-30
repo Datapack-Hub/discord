@@ -1,5 +1,6 @@
 import disnake
 from disnake.ext import commands
+import variables
 
 
 class OnMessage(commands.Cog):
@@ -10,6 +11,7 @@ class OnMessage(commands.Cog):
     async def on_message(self, message: disnake.Message):
         if (
             type(message.channel) is disnake.Thread
+            and message.channel.parent.id in variables.help_channels
             and message.channel.parent.get_tag_by_name("RESOLVED")
             in message.channel.applied_tags
             and not (message.author.id == self.bot.user.id)
