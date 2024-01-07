@@ -24,6 +24,8 @@ class ViewFileCommand(commands.Cog):
             current = 0
 
             with zipfile.ZipFile(BytesIO(read_file), "r") as zip_file:
+                if len(zip_file.infolist()) > 25:
+                    return inter.response.send_message("**Error**: The zip contains more than 25 files. I can't open it.",ephemeral=True)
                 for file_info in zip_file.infolist():
                     zip_file.filelist
                     if not file_info.is_dir() and not "__MACOSX" in file_info.filename:
