@@ -24,10 +24,7 @@ class ViewFileCommand(commands.Cog):
             current = 0
 
             with zipfile.ZipFile(BytesIO(read_file), "r") as zip_file:
-                if len(zip_file.infolist()) > 25:
-                    return inter.response.send_message("**Error**: The zip contains more than 25 files. I can't open it.",ephemeral=True)
                 for file_info in zip_file.infolist():
-                    zip_file.filelist
                     if not file_info.is_dir() and not "__MACOSX" in file_info.filename:
                         amount += 1
                         with zip_file.open(file_info.filename) as file:
@@ -52,7 +49,10 @@ class ViewFileCommand(commands.Cog):
                 description=f"All Files:\n```\n{paths_out}```",
                 color=disnake.Color.orange(),
             ).add_field("Total Files", str(amount))
-            await inter.response.send_message(embed=emb, view=DropdownView(files_out))
+            if len(files_out) > 25:
+                await inter.response.send_message(embed=emb, view=SelectView(files_out),ephemeral=True)
+            else:
+                await inter.response.send_message(embed=emb, view=DropdownView(files_out),ephemeral=True)
         elif file.content_type == "text/plain" or file.content_type is None:
             formatting = "json"
             if file.filename.endswith("mcfunction"):
@@ -70,6 +70,49 @@ class ViewFileCommand(commands.Cog):
             )
 
 
+class SelectView(disnake.ui.View):
+    def __init__(self, files):
+        self.files = files
+        super().__init__()
+        
+    @disnake.ui.button(label="Open File", style=disnake.ButtonStyle.blurple)
+    async def confirm(self, button: disnake.ui.Button, inter: disnake.MessageInteraction):
+        await inter.response.send_modal(SelectModal(self.files))
+
+class SelectModal(disnake.ui.Modal):
+    def __init__(self, files) -> None:
+        self.files = files
+        components = [
+            disnake.ui.TextInput(
+                label="ID",
+                placeholder="28",
+                custom_id="id",
+                style=disnake.TextInputStyle.short
+            ),
+        ]
+        super().__init__(
+            title=f"Open File",
+            custom_id="mod_reason",
+            components=components
+        )
+
+    async def callback(self, inter: disnake.ModalInteraction) -> None:
+        await inter.response.defer(ephemeral=True)
+        for i in self.files:
+            if i["index"] == int(inter.text_values["id"].strip()):
+                formatting = "json"
+                if i["path"].endswith("mcfunction"):
+                    formatting = "hs"
+                emb = disnake.Embed(
+                    title="Quick Look",
+                    description=f"`{i['path']}`:\n```{formatting}\n{i['content']}```",
+                    color=disnake.Color.orange(),
+                )
+                await inter.edit_original_message(embed=emb)
+
+    async def on_error(self, error: Exception, inter: disnake.ModalInteraction) -> None:
+        await inter.channel.send(f"Oops, something went wrong. `{' '.join(error.args)}`")
+
 class Dropdown(disnake.ui.StringSelect):
     def __init__(self, files):
         self.files = files
@@ -84,7 +127,7 @@ class Dropdown(disnake.ui.StringSelect):
         )
 
     async def callback(self, inter: disnake.MessageInteraction):
-        await inter.response.send_message("Loading...", ephemeral=True)
+        await inter.response.defer(ephemeral=True)
         for i in self.files:
             if i["path"] == " ".join(self.values[0].split()[1:10000000]):
                 formatting = "json"
@@ -95,8 +138,7 @@ class Dropdown(disnake.ui.StringSelect):
                     description=f"`{i['path']}`:\n```{formatting}\n{i['content']}```",
                     color=disnake.Color.orange(),
                 )
-                await inter.message.edit(embed=emb)
-                await inter.delete_original_response()
+                await inter.edit_original_message(embed=emb)
 
 
 class DropdownView(disnake.ui.View):
