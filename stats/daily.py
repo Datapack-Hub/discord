@@ -59,7 +59,7 @@ class DailyStats(commands.Cog):
         # json.dump(past_data,open("member_data.json","w"))
         
     @tasks.loop(hours=24)
-    async def each_day(self, inter: disnake.ApplicationCommandInteraction):
+    async def each_day(self):
         members = self.bot.get_guild(v.guild).members
         past_data = json.loads(open("member_data.json","r").read())
         today = datetime.now().date()
@@ -105,8 +105,8 @@ class DailyStats(commands.Cog):
         await self.bot.get_guild(v.guild).get_channel(1201576651746717696).send(embed=output_embed)
         await self.bot.get_guild(v.guild).get_channel(1201576651746717696).send(file=disnake.File(open("out.png","rb")))
         
-        # json.dump(past_data,open("member_data.json","w"))
+        json.dump(past_data,open("member_data.json","w"))
         
-    @commands.Cog.listener
+    @commands.Cog.listener()
     async def on_ready(self):
         self.each_day.start()
