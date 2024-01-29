@@ -3,6 +3,8 @@ variables.py
 *.pyc
 points.json
 events/files/output.png
+out.png
+member_data.json
 
 # Byte-compiled / optimized / DLL files 
 *__pycache__/*

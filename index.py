@@ -24,6 +24,9 @@ from commands.site import SiteCommand
 from commands.mod import ModCommand
 from commands.top import TopCommand
 
+# Stats
+from stats.daily import DailyStats
+
 
 intents = disnake.Intents.all()
 
@@ -55,6 +58,8 @@ bot.add_cog(ModCommand(bot))
 bot.add_cog(SiteCommand(bot))
 bot.add_cog(TopCommand(bot))
 bot.add_cog(SummonCommand(bot))
+
+bot.add_cog(DailyStats(bot))
 
 
 # Loops
@@ -109,6 +114,7 @@ async def day():
 async def on_ready():
     day.start()
     ten.start()
+    
 
 
 bot.run(TOKEN)
