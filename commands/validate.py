@@ -15,9 +15,9 @@ class ValidateFileCommand(commands.Cog):
             return await inter.response.send_message(
                 "There is no file attached to this message!", ephemeral=True
             )
-        await inter.response.defer()
         file = inter.target.attachments[0]
         if file.content_type == "application/zip":
+            await inter.response.defer()
             read_file = await file.read()
 
             with zipfile.ZipFile(BytesIO(read_file), "r") as zip_file:
@@ -60,18 +60,21 @@ class ValidateFileCommand(commands.Cog):
                     if " " in namespace:
                         issues.append(f"The namespace `{namespace}` contains a space. Namespaces can't have spaces.")
         
-        embed = disnake.Embed(
-            title="Result of analysis"
-        )
-        
-        if len(issues) > 0:
-            text_issues = ""
-            for issue in issues:
-                text_issues += f"- {issue}\n"
-            embed.description = f"I found {str(len(issues))} issues with the structure of your datapack.\n{text_issues}"
-            embed.color = disnake.Color.red()
-        else:
-            embed.description = f"I found no issues with the structure of your datapack."
-            embed.color = disnake.Color.green()
+            embed = disnake.Embed(
+                title="Result of analysis"
+            )
             
-        await inter.edit_original_message(embed=embed)
+            if len(issues) > 0:
+                text_issues = ""
+                for issue in issues:
+                    text_issues += f"- {issue}\n"
+                embed.description = f"I found {str(len(issues))} issues with the structure of your datapack.\n{text_issues}"
+                embed.color = disnake.Color.red()
+            else:
+                embed.description = f"I found no issues with the structure of your datapack."
+                embed.color = disnake.Color.green()
+                
+            await inter.edit_original_message(embed=embed)
+            
+        else:
+            await inter.response.send_message("This is not a ZIP file!",ephemeral=True)
