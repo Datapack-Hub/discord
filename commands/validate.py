@@ -13,7 +13,7 @@ class ValidateFileCommand(commands.Cog):
         await inter.response.defer()
         issues = []
         if inter.target.attachments.__len__() == 0:
-            return await inter.response.send_message(
+            return await inter.edit_original_message(
                 "There is no file attached to this message!", ephemeral=True
             )
         file = inter.target.attachments[0]
