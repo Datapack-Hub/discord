@@ -23,6 +23,7 @@ from commands.view import ViewFileCommand
 from commands.site import SiteCommand
 from commands.mod import ModCommand
 from commands.top import TopCommand
+from commands.validate import ValidateFileCommand
 
 # Stats
 from stats.daily import DailyStats
@@ -50,14 +51,15 @@ bot.add_cog(OnButtonClick(bot))
 bot.add_cog(OnMemberJoin(bot))
 bot.add_cog(OnMessage(bot))
 
-bot.add_cog(ResolveCommand(bot))
-bot.add_cog(StatsCommand(bot))
-bot.add_cog(RedirectCommand(bot))
-bot.add_cog(ViewFileCommand(bot))
 bot.add_cog(ModCommand(bot))
+bot.add_cog(RedirectCommand(bot))
+bot.add_cog(ResolveCommand(bot))
 bot.add_cog(SiteCommand(bot))
-bot.add_cog(TopCommand(bot))
+bot.add_cog(StatsCommand(bot))
 bot.add_cog(SummonCommand(bot))
+bot.add_cog(TopCommand(bot))
+bot.add_cog(ValidateFileCommand(bot))
+bot.add_cog(ViewFileCommand(bot))
 
 bot.add_cog(DailyStats(bot))
 
