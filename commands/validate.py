@@ -10,12 +10,12 @@ class ValidateFileCommand(commands.Cog):
 
     @commands.message_command(name="Validate Datapack")
     async def quicklook(self, inter: disnake.MessageCommandInteraction):
-        await inter.response.defer()
         issues = []
         if inter.target.attachments.__len__() == 0:
-            return await inter.edit_original_message(
+            return await inter.response.send_message(
                 "There is no file attached to this message!", ephemeral=True
             )
+        await inter.response.defer()
         file = inter.target.attachments[0]
         if file.content_type == "application/zip":
             read_file = await file.read()
