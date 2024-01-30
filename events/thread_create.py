@@ -36,11 +36,13 @@ class OnThreadCreate(commands.Cog):
             await messages[0].pin()
 
             await thread.send(
+                f"<@&{str(variables.comm_helper)}>",
                 embed=embed,
                 components=[
                     summon_helpers_button,
                     resolve_question_button,
                 ],
+                allowed_mentions=disnake.AllowedMentions(roles=True)
             )
 
             parent = thread.parent

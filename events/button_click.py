@@ -131,7 +131,7 @@ class OnButtonClick(commands.Cog):
             ):
                 if time_difference_minutes >= 30 or role in inter.author.roles:
                     await inter.response.send_message(
-                        "<@&" + str(variables.helper) + ">",
+                        f"<@&{str(variables.helper)}>",
                         embed=disnake.Embed(
                             color=disnake.Colour.blue(),
                             title=("**🙇 Helpers Arise!**"),
