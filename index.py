@@ -90,7 +90,7 @@ async def day():
     for i in variables.help_channels:
         for thread in bot.get_channel(i).threads:
             if thread.last_message:
-                last = await channel.history(limit=1).flatten()[0]
+                last = await thread.history(limit=1).flatten()[0]
                 if last:
                     diff = datetime.now(timezone.utc) - last.created_at
                     if diff > timedelta(days=2):
