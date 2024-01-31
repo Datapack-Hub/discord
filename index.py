@@ -14,6 +14,7 @@ from events.on_member_join import OnMemberJoin
 
 # Message Commands
 from commands.redirect import RedirectCommand
+from commands.remind import RemindCommand
 
 # Slash Commands
 from commands.resolve import ResolveCommand
@@ -35,11 +36,9 @@ bot = commands.Bot(
     command_prefix="nerds",
     activity=disnake.Activity(
         name="the game of life",
-        details="The best datapacking server",
         url="https://datapackhub.net",
         type=disnake.ActivityType.competing,
-        state="i am death, destroyer of worlds",
-        buttons=["Website"],
+        state="i am death, destroyer of worlds"
     ),
     test_guilds=[variables.guild],
     intents=disnake.Intents.all(),
@@ -53,6 +52,7 @@ bot.add_cog(OnMessage(bot))
 
 bot.add_cog(ModCommand(bot))
 bot.add_cog(RedirectCommand(bot))
+bot.add_cog(RemindCommand(bot))
 bot.add_cog(ResolveCommand(bot))
 bot.add_cog(SiteCommand(bot))
 bot.add_cog(StatsCommand(bot))
