@@ -36,7 +36,7 @@ class OnThreadCreate(commands.Cog):
             await messages[0].pin()
 
             await thread.send(
-                f"<@&{str(variables.comm_helper)}>",
+                f"<@&{str(variables.comm_helper_C)}>",
                 embed=embed,
                 components=[
                     summon_helpers_button,
