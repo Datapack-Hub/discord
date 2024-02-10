@@ -18,7 +18,6 @@ class PurgeCommand(commands.Cog):
             )
         ]
     )
-    @commands.has_role('Moderator', 'Project Manager')
     async def purge(self, inter: ApplicationCommandInteraction, limit: int):
         """Deletes a specified number of messages from the channel."""
         if limit > 100:
@@ -27,8 +26,3 @@ class PurgeCommand(commands.Cog):
 
         deleted = await inter.channel.purge(limit=limit)
         await inter.response.send_message(f"{len(deleted)} messages have been deleted")
-
-
-
-def setup(bot):
-    bot.add_cog(PurgeCommand(bot))
