@@ -18,7 +18,7 @@ class PurgeCommand(commands.Cog):
             )
         ]
     )
-    @commands.has_role('Moderator', 'Project Manager')
+    @commands.has_role(935629680520855552, 935560587113541633)
     async def purge(self, inter: ApplicationCommandInteraction, limit: int):
         """Deletes a specified number of messages from the channel."""
         if limit > 100:
