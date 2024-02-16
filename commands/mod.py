@@ -45,6 +45,16 @@ class ModCommand(commands.Cog):
     @commands.slash_command(name="mod")
     async def mod(self, inter: disnake.ApplicationCommandInteraction):
         return
+        
+    @mod.sub_command("purge","Bulk delete some messages")
+    async def purge(self, inter: ApplicationCommandInteraction, limit: int):
+        """Deletes a specified number of messages from the channel."""
+        if limit > 100:
+            await inter.response.send_message("You cannot delete more than 100 messages at once", ephemeral=True)
+            return
+
+        deleted = await inter.channel.purge(limit=limit)
+        await inter.response.send_message(f"{len(deleted)} messages have been deleted")
 
     @mod.sub_command("mute", "Mutes a member for a length of time")
     async def mute(
@@ -416,6 +426,7 @@ class ReasonModal(disnake.ui.Modal):
                     )
                     .add_field("Reason", inter.text_values["reason"], inline=False)
                 )
+                
 
     async def on_error(self, error: Exception, inter: disnake.ModalInteraction) -> None:
         await inter.response.send_message("Oops, something went wrong.", ephemeral=True)
