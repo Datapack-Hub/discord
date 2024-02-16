@@ -23,6 +23,7 @@ from commands.stats import StatsCommand
 from commands.view import ViewFileCommand
 from commands.site import SiteCommand
 from commands.mod import ModCommand
+from commands.purge import PurgeCommand
 from commands.top import TopCommand
 from commands.validate import ValidateFileCommand
 
@@ -51,6 +52,7 @@ bot.add_cog(OnMemberJoin(bot))
 bot.add_cog(OnMessage(bot))
 
 bot.add_cog(ModCommand(bot))
+bot.add_cog(PurgeCommand(bot))
 bot.add_cog(RedirectCommand(bot))
 bot.add_cog(RemindCommand(bot))
 bot.add_cog(ResolveCommand(bot))
