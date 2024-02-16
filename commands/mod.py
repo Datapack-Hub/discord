@@ -72,7 +72,7 @@ class ModCommand(commands.Cog):
         file_content.seek(0)
         file = disnake.File(fp=file_content, filename="purged messages.txt")
         
-        log_channel = await inter.guild.get_channel(variables.logs)
+        log_channel = inter.guild.get_channel(variables.logs)
         
         await log_channel.send(embed=log_embed, file=file)
 
