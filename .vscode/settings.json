@@ -11,5 +11,6 @@
         "textbbox",
         "textlength",
         "tysm"
-    ]
+    ],
+    "workbench.iconTheme": "vs-seti"
 }
