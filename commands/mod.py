@@ -67,7 +67,7 @@ class ModCommand(commands.Cog):
         # Add the autor and contents of the deleted messages to the log
         file_content = io.StringIO()
         for messages in deleted_messages:
-            file_content.write(f"[{datetime.utcnow().strftime('%d/%m/%y %H:%M:%S')}] @{messages.author.name}: {messages.content}")
+            file_content.write(f"[{datetime.utcnow().strftime('%d/%m/%y %H:%M:%S')}] @{messages.author.name}: {messages.content}\n")
 
         file_content.seek(0)
         file = disnake.File(fp=file_content, filename="purged messages.txt")
