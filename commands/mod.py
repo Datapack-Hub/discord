@@ -57,7 +57,7 @@ class ModCommand(commands.Cog):
         disnake.Option(
             name="user",
             description="User to delete message from",
-            type=disnake.User,
+            type=disnake.OptionType.user,
             required=False
         )
     ])
