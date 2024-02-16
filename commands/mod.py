@@ -3,6 +3,7 @@ from disnake.ext import commands
 from pytimeparse.timeparse import timeparse
 from datetime import datetime, timedelta
 import variables
+import io
 
 REASONS = [
     {
@@ -48,13 +49,35 @@ class ModCommand(commands.Cog):
         
     @mod.sub_command("purge","Bulk delete some messages")
     async def purge(self, inter: disnake.ApplicationCommandInteraction, limit: int):
-        """Deletes a specified number of messages from the channel."""
+        # Stops the purge if the purge amount is over the API's limit
         if limit > 100:
             await inter.response.send_message("You cannot delete more than 100 messages at once", ephemeral=True)
             return
 
-        deleted = await inter.channel.purge(limit=limit)
-        await inter.response.send_message(f"{len(deleted)} messages have been deleted")
+        # Deletes the messages
+        deleted_messages = await inter.channel.purge(limit=limit)
+
+        # Logs the purge action
+        log_embed = disnake.Embed(
+            color=disnake.Colour.orange(),
+            title="**`/purge` Command**",
+            description=f"{inter.user.name} purged {len(deleted_messages)} messages in {inter.channel.mention}."
+        )
+        
+        # Add the autor and contents of the deleted messages to the log
+        file_content = io.StringIO()
+        for messages in deleted_messages:
+            file_content.write(f"Author: {messages.author.name}\nContent: {messages.content}\n\n")
+
+        file_content.seek(0)
+        file = disnake.File(fp=file_content, filename="purged messages.txt")
+        
+        log_channel = await inter.guild.get_channel(variables.logs)
+        
+        await log_channel.send(embed=log_embed, file=file)
+
+        # Confirm the purge
+        await inter.response.send_message(f"{len(deleted_messages)} messages have been deleted", ephemeral=True)
 
     @mod.sub_command("mute", "Mutes a member for a length of time")
     async def mute(
