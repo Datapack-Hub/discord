@@ -47,7 +47,7 @@ class ModCommand(commands.Cog):
         return
         
     @mod.sub_command("purge","Bulk delete some messages")
-    async def purge(self, inter: ApplicationCommandInteraction, limit: int):
+    async def purge(self, inter: disnake.ApplicationCommandInteraction, limit: int):
         """Deletes a specified number of messages from the channel."""
         if limit > 100:
             await inter.response.send_message("You cannot delete more than 100 messages at once", ephemeral=True)
