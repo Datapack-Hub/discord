@@ -25,7 +25,7 @@ class ViewFileCommand(commands.Cog):
 
             with zipfile.ZipFile(BytesIO(read_file), "r") as zip_file:
                 for file_info in zip_file.infolist():
-                    if not file_info.is_dir() and not "__MACOSX" in file_info.filename:
+                    if not file_info.is_dir() and "__MACOSX" not in file_info.filename:
                         amount += 1
                         with zip_file.open(file_info.filename) as file:
                             current += 1
@@ -50,9 +50,13 @@ class ViewFileCommand(commands.Cog):
                 color=disnake.Color.orange(),
             ).add_field("Total Files", str(amount))
             if len(files_out) > 25:
-                await inter.response.send_message(embed=emb, view=SelectView(files_out),ephemeral=True)
+                await inter.response.send_message(
+                    embed=emb, view=SelectView(files_out), ephemeral=True
+                )
             else:
-                await inter.response.send_message(embed=emb, view=DropdownView(files_out),ephemeral=True)
+                await inter.response.send_message(
+                    embed=emb, view=DropdownView(files_out), ephemeral=True
+                )
         elif file.content_type == "text/plain" or file.content_type is None:
             formatting = "json"
             if file.filename.endswith("mcfunction"):
@@ -74,10 +78,13 @@ class SelectView(disnake.ui.View):
     def __init__(self, files):
         self.files = files
         super().__init__()
-        
+
     @disnake.ui.button(label="Open File", style=disnake.ButtonStyle.blurple)
-    async def confirm(self, button: disnake.ui.Button, inter: disnake.MessageInteraction):
+    async def confirm(
+        self, button: disnake.ui.Button, inter: disnake.MessageInteraction
+    ):
         await inter.response.send_modal(SelectModal(self.files))
+
 
 class SelectModal(disnake.ui.Modal):
     def __init__(self, files) -> None:
@@ -87,13 +94,11 @@ class SelectModal(disnake.ui.Modal):
                 label="ID",
                 placeholder="28",
                 custom_id="id",
-                style=disnake.TextInputStyle.short
+                style=disnake.TextInputStyle.short,
             ),
         ]
         super().__init__(
-            title=f"Open File",
-            custom_id="mod_reason",
-            components=components
+            title="Open File", custom_id="mod_reason", components=components
         )
 
     async def callback(self, inter: disnake.ModalInteraction) -> None:
@@ -111,7 +116,10 @@ class SelectModal(disnake.ui.Modal):
                 await inter.edit_original_message(embed=emb)
 
     async def on_error(self, error: Exception, inter: disnake.ModalInteraction) -> None:
-        await inter.channel.send(f"Oops, something went wrong. `{' '.join(error.args)}`")
+        await inter.channel.send(
+            f"Oops, something went wrong. `{' '.join(error.args)}`"
+        )
+
 
 class Dropdown(disnake.ui.StringSelect):
     def __init__(self, files):

@@ -46,34 +46,46 @@ class ModCommand(commands.Cog):
     @commands.slash_command(name="mod")
     async def mod(self, inter: disnake.ApplicationCommandInteraction):
         return
-        
-    @mod.sub_command("purge","Bulk delete some messages",[
-        disnake.Option(
-            name="limit",
-            description="Amount of messages to potentially be deleted",
-            type=int,
-            required=True
-        ),
-        disnake.Option(
-            name="user",
-            description="User to delete message from",
-            type=disnake.OptionType.user,
-            required=False
-        )
-    ])
-    async def purge(self, inter: disnake.ApplicationCommandInteraction, limit: int, user: disnake.User = None):
+
+    @mod.sub_command(
+        "purge",
+        "Bulk delete some messages",
+        [
+            disnake.Option(
+                name="limit",
+                description="Amount of messages to potentially be deleted",
+                type=int,
+                required=True,
+            ),
+            disnake.Option(
+                name="user",
+                description="User to delete message from",
+                type=disnake.OptionType.user,
+                required=False,
+            ),
+        ],
+    )
+    async def purge(
+        self,
+        inter: disnake.ApplicationCommandInteraction,
+        limit: int,
+        user: disnake.User = None,
+    ):
         # Stops the purge if the purge amount is over the API's limit
         if limit > 100:
-            await inter.response.send_message("You cannot delete more than 100 messages at once", ephemeral=True)
+            await inter.response.send_message(
+                "You cannot delete more than 100 messages at once", ephemeral=True
+            )
             return
-        
+
         def is_user(m: disnake.Message):
-            if m.author != user: return False
+            if m.author != user:
+                return False
             return True
 
         # Deletes the messages
         if user:
-            deleted_messages = await inter.channel.purge(limit=limit,check=is_user)
+            deleted_messages = await inter.channel.purge(limit=limit, check=is_user)
         else:
             deleted_messages = await inter.channel.purge(limit=limit)
 
@@ -81,23 +93,27 @@ class ModCommand(commands.Cog):
         log_embed = disnake.Embed(
             color=disnake.Colour.orange(),
             title="**`/purge` Command**",
-            description=f"{inter.user.name} purged {len(deleted_messages)} messages in {inter.channel.mention}."
+            description=f"{inter.user.name} purged {len(deleted_messages)} messages in {inter.channel.mention}.",
         )
-        
+
         # Add the autor and contents of the deleted messages to the log
         file_content = io.StringIO()
         for messages in deleted_messages:
-            file_content.write(f"[{datetime.utcnow().strftime('%d/%m/%y %H:%M:%S')}] @{messages.author.name}: {messages.content}\n")
+            file_content.write(
+                f"[{datetime.utcnow().strftime('%d/%m/%y %H:%M:%S')}] @{messages.author.name}: {messages.content}\n"
+            )
 
         file_content.seek(0)
         file = disnake.File(fp=file_content, filename="purged messages.txt")
-        
+
         log_channel = inter.guild.get_channel(variables.logs)
-        
+
         await log_channel.send(embed=log_embed, file=file)
 
         # Confirm the purge
-        await inter.response.send_message(f"{len(deleted_messages)} messages have been deleted", ephemeral=True)
+        await inter.response.send_message(
+            f"{len(deleted_messages)} messages have been deleted", ephemeral=True
+        )
 
     @mod.sub_command("mute", "Mutes a member for a length of time")
     async def mute(
@@ -469,7 +485,6 @@ class ReasonModal(disnake.ui.Modal):
                     )
                     .add_field("Reason", inter.text_values["reason"], inline=False)
                 )
-                
 
     async def on_error(self, error: Exception, inter: disnake.ModalInteraction) -> None:
         await inter.response.send_message("Oops, something went wrong.", ephemeral=True)

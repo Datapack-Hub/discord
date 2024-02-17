@@ -29,7 +29,7 @@ class StatsCommand(commands.Cog, name="stats"):
             disnake.Embed(
                 color=disnake.Color.orange(),
                 title="Datapack Hub Stats",
-                description="These stats are the up-to-date question counts as of right now. There may be a minor inaccuracy due to discord API limitations."
+                description="These stats are the up-to-date question counts as of right now. There may be a minor inaccuracy due to discord API limitations.",
             )
             .add_field("Datapack Questions", dp_questions, inline=True)
             .add_field("Resourcepack Questions", rp_questions, inline=True)

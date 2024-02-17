@@ -38,7 +38,7 @@ bot = commands.Bot(
         name="the game of life",
         url="https://datapackhub.net",
         type=disnake.ActivityType.competing,
-        state="i am death, destroyer of worlds"
+        state="i am death, destroyer of worlds",
     ),
     test_guilds=[variables.guild],
     intents=disnake.Intents.all(),
@@ -102,12 +102,14 @@ async def day():
                         )
                     )
                     await thread.edit(archived=True)
-    
+
                     # Logging
                     embed = disnake.Embed(
                         color=disnake.Colour.orange(),
                         title=("Recycled Thread"),
-                        description=(f"[{thread.name}]({thread.jump_url}) was archived for 2+ day inactivity."),
+                        description=(
+                            f"[{thread.name}]({thread.jump_url}) was archived for 2+ day inactivity."
+                        ),
                     )
                     channel = bot.get_channel(variables.logs)
                     await channel.send(embed=embed)
@@ -117,7 +119,6 @@ async def day():
 async def on_ready():
     day.start()
     ten.start()
-    
 
 
 bot.run(TOKEN)

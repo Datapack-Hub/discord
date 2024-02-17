@@ -61,7 +61,12 @@ async def get_member_join_card(user, self):
             if width <= 634:
                 bbox = draw.textbbox(
                     (1, 1),
-                    name.replace("y", "").replace("g", "").replace("j", "").replace("(", "").replace(")", "").replace("/", ""),
+                    name.replace("y", "")
+                    .replace("g", "")
+                    .replace("j", "")
+                    .replace("(", "")
+                    .replace(")", "")
+                    .replace("/", ""),
                     font=ImageFont.truetype(font_path, size=80 - i),
                 )
                 height = bbox[3] - bbox[1]

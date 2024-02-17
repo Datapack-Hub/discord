@@ -18,7 +18,14 @@ class RemindCommand(commands.Cog):
             text="Requested by " + inter.author.display_name,
             icon_url=inter.author.display_avatar.url,
         )
-        await inter.target.reply(embed=embed,components=[
-            disnake.ui.Button(style=disnake.ButtonStyle.success, label="Resolve Question", custom_id="resolve_question_button")
-        ])
+        await inter.target.reply(
+            embed=embed,
+            components=[
+                disnake.ui.Button(
+                    style=disnake.ButtonStyle.success,
+                    label="Resolve Question",
+                    custom_id="resolve_question_button",
+                )
+            ],
+        )
         await inter.response.send_message("Done! :D", ephemeral=True)

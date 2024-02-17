@@ -9,4 +9,7 @@ class SummonCommand(commands.Cog, name="summon"):
 
     @commands.slash_command(name="plzsomebodyhelpthisguy", description="Summon helpers")
     async def summon(self, inter: disnake.ApplicationCommandInteraction):
-        await inter.response.send_message(f"Psst, <@&{variables.helper}>!",allowed_mentions=disnake.AllowedMentions(roles=True))
+        await inter.response.send_message(
+            f"Psst, <@&{variables.helper}>!",
+            allowed_mentions=disnake.AllowedMentions(roles=True),
+        )
