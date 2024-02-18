@@ -50,26 +50,12 @@ class ModCommand(commands.Cog):
     @mod.sub_command(
         "purge",
         "Bulk delete some messages",
-        [
-            disnake.Option(
-                name="limit",
-                description="Amount of messages to potentially be deleted",
-                type=int,
-                required=True,
-            ),
-            disnake.Option(
-                name="user",
-                description="User to delete message from",
-                type=disnake.OptionType.user,
-                required=False,
-            ),
-        ],
     )
     async def purge(
         self,
         inter: disnake.ApplicationCommandInteraction,
-        limit: int,
-        user: disnake.User = None,
+        limit: int = commands.Param(description="How many messages to remove"),
+        user: disnake.User = commands.Param(description="User to delete messages from",default=None),
     ):
         # Stops the purge if the purge amount is over the API's limit
         if limit > 100:
