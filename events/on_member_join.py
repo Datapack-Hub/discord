@@ -61,12 +61,7 @@ async def get_member_join_card(user, self):
             if width <= 634:
                 bbox = draw.textbbox(
                     (1, 1),
-                    name.replace("y", "")
-                    .replace("g", "")
-                    .replace("j", "")
-                    .replace("(", "")
-                    .replace(")", "")
-                    .replace("/", ""),
+                    name.replace("y", "").replace("g", "").replace("j", "").replace("(", "").replace(")", "").replace("/", ""),
                     font=ImageFont.truetype(font_path, size=80 - i),
                 )
                 height = bbox[3] - bbox[1]
@@ -100,7 +95,7 @@ async def get_member_join_card(user, self):
 
 
 class OnMemberJoin(commands.Cog):
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot):
         self.bot = bot
 
     @commands.Cog.listener()
@@ -111,5 +106,7 @@ class OnMemberJoin(commands.Cog):
         os.chdir(script_dir)
         directory = os.getcwd()
         await channel.send(
-            file=disnake.File(os.path.join(directory, "files", "output.png"))
+            content=f"{member.mention}",
+            file=disnake.File(os.path.join(directory, "files", "output.png")),
+            allowed_mentions=disnake.AllowedMentions.none()
         )
