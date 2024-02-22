@@ -57,7 +57,7 @@ class ViewFileCommand(commands.Cog):
                 await inter.response.send_message(
                     embed=emb, view=DropdownView(files_out), ephemeral=True
                 )
-        elif file.content_type == "text/plain" or file.content_type is None:
+        elif "text/plain" in file.content_type or file.content_type is None:
             formatting = "json"
             if file.filename.endswith("mcfunction"):
                 formatting = "hs"

@@ -48,7 +48,7 @@ class OnButtonClick(commands.Cog):
                         description=f"Your question, <#{inter.channel.id}> ({inter.channel.name}), was resolved!",
                         color=disnake.Colour.green(),
                     )
-                    .add_field("Original Message", messages[0].content, inline=False)
+                    .add_field("Original Message", messages[0].jump_url, inline=False)
                     .add_field(
                         "Duration open",
                         format_duration_between(

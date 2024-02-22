@@ -54,7 +54,7 @@ class ResolveCommand(commands.Cog, name="resolve"):
                             color=disnake.Colour.green(),
                         )
                         .add_field(
-                            "Original Message", messages[0].content, inline=False
+                            "Original Message", messages[0].jump_url, inline=False
                         )
                         .add_field(
                             "Duration open",
