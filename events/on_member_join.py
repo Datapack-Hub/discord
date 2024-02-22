@@ -106,7 +106,6 @@ class OnMemberJoin(commands.Cog):
         os.chdir(script_dir)
         directory = os.getcwd()
         await channel.send(
-            content=f"{member.mention}",
-            file=disnake.File(os.path.join(directory, "files", "output.png")),
-            allowed_mentions=disnake.AllowedMentions.none()
+            content=f"👋 <@{member.id}>",
+            file=disnake.File(os.path.join(directory, "files", "output.png"))
         )
