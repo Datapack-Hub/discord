@@ -1,3 +1,5 @@
+# NOTE NO LONGER USED
+
 import disnake
 from disnake.ext import commands, tasks
 from datetime import datetime
@@ -137,6 +139,6 @@ class DailyStats(commands.Cog):
 
         json.dump(past_data, open("member_data.json", "w"))
 
-    @commands.Cog.listener()
-    async def on_ready(self):
-        self.each_day.start()
+    # @commands.Cog.listener()
+    # async def on_ready(self):
+    #     self.each_day.start()
