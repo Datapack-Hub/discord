@@ -62,23 +62,6 @@ class OnButtonClick(commands.Cog):
                     embed=emb,
                     components=[
                         disnake.ui.ActionRow()
-                        .add_button(label="Leave a rating:", disabled=True)
-                        .add_button(
-                            custom_id="feedback_great:" + str(inter.channel.owner_id),
-                            label="Great",
-                            style=disnake.ButtonStyle.success,
-                        )
-                        .add_button(
-                            custom_id="feedback_okay:" + str(inter.channel.owner_id),
-                            label="Meh",
-                            style=disnake.ButtonStyle.blurple,
-                        )
-                        .add_button(
-                            custom_id="feedback_bad:" + str(inter.channel.owner_id),
-                            label="Bad",
-                            style=disnake.ButtonStyle.red,
-                        ),
-                        disnake.ui.ActionRow()
                         .add_button(label="Jump to top", url=messages[0].jump_url)
                         .add_button(
                             label="Review Datapack Hub",
@@ -231,96 +214,6 @@ class OnButtonClick(commands.Cog):
             )
         if inter.component.custom_id == "del_this_button":
             await inter.message.delete()
-
-        if inter.component.custom_id.startswith("feedback_great"):
-            user = int(inter.component.custom_id.split(":")[1])
-            if inter.author.id != user:
-                await inter.response.send_message(
-                    "Only the question asker can respond!", ephemeral=True
-                )
-                return
-
-            chan = self.bot.get_channel(variables.feedback)
-            link = inter.message.components[1].children[0].url
-            await inter.message.edit(
-                components=disnake.ui.ActionRow()
-                .add_button(
-                    label="Jump to thread",
-                    url=inter.message.components[1].children[0].url,
-                    style=disnake.ButtonStyle.blurple,
-                )
-                .add_button(
-                    label="Review Datapack Hub",
-                    url="https://disboard.org/review/create/935560260725379143",
-                    style=disnake.ButtonStyle.gray,
-                )
-            )
-            await chan.send(f"**Great** feedback on [this thread]({link})")
-            await inter.response.send_message(
-                "Thanks for your feedback!", ephemeral=True
-            )
-
-            await inter.channel.edit(archived=True)
-
-        if inter.component.custom_id.startswith("feedback_okay"):
-            user = int(inter.component.custom_id.split(":")[1])
-            if inter.author.id != user:
-                await inter.response.send_message(
-                    "Only the question asker can respond!", ephemeral=True
-                )
-                return
-
-            chan = self.bot.get_channel(variables.feedback)
-            link = inter.message.components[1].children[0].url
-            await inter.message.edit(
-                components=disnake.ui.ActionRow()
-                .add_button(
-                    label="Jump to thread",
-                    url=inter.message.components[1].children[0].url,
-                    style=disnake.ButtonStyle.blurple,
-                )
-                .add_button(
-                    label="Review Datapack Hub",
-                    url="https://disboard.org/review/create/935560260725379143",
-                    style=disnake.ButtonStyle.gray,
-                )
-            )
-            await chan.send(f"**Meh** feedback on [this thread]({link})")
-            await inter.response.send_message(
-                "Thanks for your feedback!", ephemeral=True
-            )
-
-            await inter.channel.edit(archived=True)
-
-        if inter.component.custom_id.startswith("feedback_bad"):
-            user = int(inter.component.custom_id.split(":")[1])
-            if inter.author.id != user:
-                await inter.response.send_message(
-                    "Only the question asker can respond!", ephemeral=True
-                )
-                return
-
-            chan = self.bot.get_channel(variables.feedback)
-            link = inter.message.components[1].children[0].url
-            await inter.message.edit(
-                components=disnake.ui.ActionRow()
-                .add_button(
-                    label="Jump to thread",
-                    url=inter.message.components[1].children[0].url,
-                    style=disnake.ButtonStyle.blurple,
-                )
-                .add_button(
-                    label="Review Datapack Hub",
-                    url="https://disboard.org/review/create/935560260725379143",
-                    style=disnake.ButtonStyle.gray,
-                )
-            )
-            await chan.send(f"**Bad** feedback on [this thread]({link})")
-            await inter.response.send_message(
-                "Thanks for your feedback!", ephemeral=True
-            )
-
-            await inter.channel.edit(archived=True)
 
 
 class ChoiceMenu(disnake.ui.StringSelect):

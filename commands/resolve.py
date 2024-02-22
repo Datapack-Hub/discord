@@ -69,25 +69,6 @@ class ResolveCommand(commands.Cog, name="resolve"):
                         embed=emb,
                         components=[
                             disnake.ui.ActionRow()
-                            .add_button(label="Leave a rating:", disabled=True)
-                            .add_button(
-                                custom_id="feedback_great:"
-                                + str(inter.channel.owner_id),
-                                label="Great",
-                                style=disnake.ButtonStyle.success,
-                            )
-                            .add_button(
-                                custom_id="feedback_okay:"
-                                + str(inter.channel.owner_id),
-                                label="Meh",
-                                style=disnake.ButtonStyle.blurple,
-                            )
-                            .add_button(
-                                custom_id="feedback_bad:" + str(inter.channel.owner_id),
-                                label="Bad",
-                                style=disnake.ButtonStyle.red,
-                            ),
-                            disnake.ui.ActionRow()
                             .add_button(label="Jump to top", url=messages[0].jump_url)
                             .add_button(
                                 label="Review Datapack Hub",
