@@ -52,7 +52,7 @@ class OnMessage(commands.Cog):
                     hook = await message.channel.parent.create_webhook(name="DPH")
                 
                 await message.delete()
-                await hook.send(replace_code_blocks(message.content),wait=False,username=message.author.display_name,avatar_url=message.author.display_avatar.url,thread=message.channel)
+                await hook.send(replace_code_blocks(message.content),wait=False,username=message.author.display_name,avatar_url=message.author.display_avatar.url,thread=message.channel,allowed_mentions=disnake.AllowedMentions.none())
             else:
                 hooks = await message.channel.webhooks()
                 
@@ -63,4 +63,4 @@ class OnMessage(commands.Cog):
                     hook = await message.channel.create_webhook(name="DPH")
                 
                 await message.delete()
-                await hook.send(replace_code_blocks(message.content),wait=False,username=message.author.display_name,avatar_url=message.author.display_avatar.url)
+                await hook.send(replace_code_blocks(message.content),wait=False,username=message.author.display_name,avatar_url=message.author.display_avatar.url,allowed_mentions=disnake.AllowedMentions.none())
