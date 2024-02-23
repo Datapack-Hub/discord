@@ -27,3 +27,5 @@ class OnMessage(commands.Cog):
                     )
                 ],
             )
+        if message.channel.id == variables.intro:
+            message.add_reaction()
