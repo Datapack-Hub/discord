@@ -208,7 +208,6 @@ class Highlighter:
 		function_elements = function.split("\u001b[")[1:]
 		for element in function_elements:
 			matches = re.search(ansi_codes_re, element)
-			print(color_classes[matches.group(2)])
 			converted += f'<span class="ansi_{color_classes[matches.group(2)]}{" "+color_classes[matches.group(4)] if matches.group(4) != None else ""}">{element.replace(matches.group(1), "")}</span>'
 		return converted
 
