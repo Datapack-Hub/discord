@@ -41,7 +41,7 @@ class OnMessage(commands.Cog):
             )
         if message.channel.id == variables.intro:
             message.add_reaction()
-        if re.match(r'```mcf(?:unction)?\n([\s\S]+?)```',message.content) and not message.author.bot:
+        if re.findall(r'```mcf(?:unction)?\n([\s\S]+?)```',message.content) and not message.author.bot:
             if message.channel.type == disnake.ChannelType.public_thread:
                 hooks = await message.channel.parent.webhooks()
                 
