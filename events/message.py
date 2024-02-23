@@ -1,7 +1,19 @@
 import disnake
 from disnake.ext import commands
 import variables
+import re
+from events.highlighter.highlighter import Highlighter
 
+def replace_code_blocks(message):
+    pattern = re.compile(r'```mcf(?:unction)?\n([\s\S]+?)```', re.DOTALL)
+
+    def replace_function(match):
+        code_block_content = match.group(1).strip()
+        return f'```ansi\n{Highlighter.highlight(code_block_content)}\n```'
+
+    edited_message = pattern.sub(replace_function, message)
+
+    return edited_message
 
 class OnMessage(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -29,3 +41,15 @@ class OnMessage(commands.Cog):
             )
         if message.channel.id == variables.intro:
             message.add_reaction()
+        if re.match(r'```mcf(?:unction)?\n([\s\S]+?)```',message.content) and not message.author.bot:
+            print(message.channel.type)
+            hooks = await message.channel.webhooks()
+            
+            for hook in hooks:
+                if hook.name == "DPH":
+                    break
+            else:
+                hook = await message.channel.create_webhook(name="DPH")
+            
+            await message.delete()
+            await hook.send(replace_code_blocks(message.content),wait=False,username=message.author.display_name,avatar_url=message.author.display_avatar.url)
