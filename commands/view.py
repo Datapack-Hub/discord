@@ -113,7 +113,7 @@ class SelectModal(disnake.ui.Modal):
                     description=f"`{i['path']}`:\n```{formatting}\n{i['content']}```",
                     color=disnake.Color.orange(),
                 )
-                await inter.edit_original_message(embed=emb)
+                await inter.send(embed=emb,ephemeral=True)
 
     async def on_error(self, error: Exception, inter: disnake.ModalInteraction) -> None:
         await inter.channel.send(
