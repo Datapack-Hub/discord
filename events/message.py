@@ -42,14 +42,25 @@ class OnMessage(commands.Cog):
         if message.channel.id == variables.intro:
             message.add_reaction()
         if re.match(r'```mcf(?:unction)?\n([\s\S]+?)```',message.content) and not message.author.bot:
-            print(message.channel.type)
-            hooks = await message.channel.webhooks()
-            
-            for hook in hooks:
-                if hook.name == "DPH":
-                    break
+            if message.channel.type == disnake.ChannelType.public_thread:
+                hooks = await message.channel.parent.webhooks()
+                
+                for hook in hooks:
+                    if hook.name == "DPH":
+                        break
+                else:
+                    hook = await message.channel.parent.create_webhook(name="DPH")
+                
+                await message.delete()
+                await hook.send(replace_code_blocks(message.content),wait=False,username=message.author.display_name,avatar_url=message.author.display_avatar.url,thread=message.channel)
             else:
-                hook = await message.channel.create_webhook(name="DPH")
-            
-            await message.delete()
-            await hook.send(replace_code_blocks(message.content),wait=False,username=message.author.display_name,avatar_url=message.author.display_avatar.url)
+                hooks = await message.channel.webhooks()
+                
+                for hook in hooks:
+                    if hook.name == "DPH":
+                        break
+                else:
+                    hook = await message.channel.create_webhook(name="DPH")
+                
+                await message.delete()
+                await hook.send(replace_code_blocks(message.content),wait=False,username=message.author.display_name,avatar_url=message.author.display_avatar.url)
