@@ -49,7 +49,7 @@ class ModCommand(commands.Cog):
     
     @mod.sub_command("lockdown","Locks all server channels",)
     async def lockdown(self, inter: disnake.ApplicationCommandInteraction):
-        await inter.response.defer()
+        await inter.response.defer(ephemeral=True)
         
         current_perms = inter.guild.default_role.permissions
         
@@ -73,7 +73,7 @@ class ModCommand(commands.Cog):
         current_perms.create_public_threads = True
         current_perms.add_reactions = True
         
-        inter.guild.default_role.edit(permissions=current_perms)
+        await inter.guild.default_role.edit(permissions=current_perms)
                 
         await inter.edit_original_message(f"Unlocked the server")
             
