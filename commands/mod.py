@@ -46,7 +46,46 @@ class ModCommand(commands.Cog):
     @commands.slash_command(name="mod")
     async def mod(self, inter: disnake.ApplicationCommandInteraction):
         return
-
+    
+    @mod.sub_command("lockdown","Locks all server channels",)
+    async def lockdown(self, inter: disnake.ApplicationCommandInteraction):
+        await inter.response.defer()
+        
+        amount = 0
+        
+        channels = inter.guild.text_channels + inter.guild.forum_channels
+        for channel in channels:
+            try:
+                if not (channel.id in variables.lockdown_ignore):
+                    await channel.set_permissions(
+                        target=inter.guild.default_role,
+                        overwrite=disnake.PermissionOverwrite(send_messages=False,send_messages_in_threads=False,create_public_threads=False,create_private_threads=False,add_reactions=False))
+            except Exception as err:
+                print(" ".join(err.args))
+            else:
+                amount += 1
+                
+        await inter.edit_original_message(f"Locked down {amount!s}/{len(channels)!s} channels.")
+        
+    @mod.sub_command("unlockdown","Unlocks all server channels",)
+    async def unlockdown(self, inter: disnake.ApplicationCommandInteraction):
+        await inter.response.defer(ephemeral=True)
+        
+        amount = 0
+        
+        channels = inter.guild.text_channels + inter.guild.forum_channels
+        for channel in channels:
+            try:
+                if not (channel.id in variables.lockdown_ignore):
+                    await channel.set_permissions(target=inter.guild.default_role,overwrite=None)
+            except Exception as err:
+                print(" ".join(err.args))
+            else:
+                amount += 1
+                
+        await inter.edit_original_message(f"Unlocked {amount!s}/{len(channels)!s} channels.")
+            
+        
     @mod.sub_command(
         "purge",
         "Bulk delete some messages",
