@@ -51,39 +51,31 @@ class ModCommand(commands.Cog):
     async def lockdown(self, inter: disnake.ApplicationCommandInteraction):
         await inter.response.defer()
         
-        amount = 0
+        current_perms = inter.guild.default_role.permissions
         
-        channels = inter.guild.text_channels + inter.guild.forum_channels
-        for channel in channels:
-            try:
-                if not (channel.id in variables.lockdown_ignore):
-                    await channel.set_permissions(
-                        target=inter.guild.default_role,
-                        overwrite=disnake.PermissionOverwrite(send_messages=False,send_messages_in_threads=False,create_public_threads=False,create_private_threads=False,add_reactions=False))
-            except Exception as err:
-                print(" ".join(err.args))
-            else:
-                amount += 1
+        current_perms.send_messages = False
+        current_perms.send_messages_in_threads = False
+        current_perms.create_public_threads = False
+        current_perms.add_reactions = False
+        
+        inter.guild.default_role.edit(permissions=current_perms)
                 
-        await inter.edit_original_message(f"Locked down {amount!s}/{len(channels)!s} channels.")
+        await inter.edit_original_message(f"Locked down the server")
         
     @mod.sub_command("unlockdown","Unlocks all server channels",)
     async def unlockdown(self, inter: disnake.ApplicationCommandInteraction):
         await inter.response.defer(ephemeral=True)
         
-        amount = 0
+        current_perms = inter.guild.default_role.permissions
         
-        channels = inter.guild.text_channels + inter.guild.forum_channels
-        for channel in channels:
-            try:
-                if not (channel.id in variables.lockdown_ignore):
-                    await channel.set_permissions(target=inter.guild.default_role,overwrite=None)
-            except Exception as err:
-                print(" ".join(err.args))
-            else:
-                amount += 1
+        current_perms.send_messages = True
+        current_perms.send_messages_in_threads = True
+        current_perms.create_public_threads = True
+        current_perms.add_reactions = True
+        
+        inter.guild.default_role.edit(permissions=current_perms)
                 
-        await inter.edit_original_message(f"Unlocked {amount!s}/{len(channels)!s} channels.")
+        await inter.edit_original_message(f"Unlocked the server")
             
         
     @mod.sub_command(
