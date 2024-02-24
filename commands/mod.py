@@ -58,7 +58,7 @@ class ModCommand(commands.Cog):
         current_perms.create_public_threads = False
         current_perms.add_reactions = False
         
-        inter.guild.default_role.edit(permissions=current_perms)
+        await inter.guild.default_role.edit(permissions=current_perms)
                 
         await inter.edit_original_message(f"Locked down the server")
         
