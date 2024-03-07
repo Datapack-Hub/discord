@@ -2,14 +2,14 @@ import disnake
 from disnake.ext import commands
 import variables
 import re
-from events.highlighter.highlighter import Highlighter
+from events.highlighter.highlighter import Hl
 
 def replace_code_blocks(message):
     pattern = re.compile(r'```mcf(?:unction)?\n([\s\S]+?)```', re.DOTALL)
 
     def replace_function(match):
         code_block_content = match.group(1).strip()
-        return f'```ansi\n{Highlighter.highlight(code_block_content)}\n```'
+        return f'```ansi\n{Hl.highlight(code_block_content)}\n```'
 
     edited_message = pattern.sub(replace_function, message)
 
