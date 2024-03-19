@@ -9,8 +9,9 @@ from datetime import datetime, timedelta, timezone
 from events.thread_create import OnThreadCreate
 from events.button_click import OnButtonClick
 from events.message import OnMessage
-
 from events.on_member_join import OnMemberJoin
+
+from events.logs import Logs
 
 # Message Commands
 from commands.redirect import RedirectCommand
@@ -49,6 +50,7 @@ bot.add_cog(OnThreadCreate(bot))
 bot.add_cog(OnButtonClick(bot))
 bot.add_cog(OnMemberJoin(bot))
 bot.add_cog(OnMessage(bot))
+bot.add_cog(Logs(bot))
 
 bot.add_cog(ModCommand(bot))
 bot.add_cog(RedirectCommand(bot))
@@ -67,7 +69,6 @@ bot.add_cog(DailyStats(bot))
 # Loops
 @tasks.loop(minutes=10)
 async def ten():
-    print("Starting query")
     channel_asked = bot.get_channel(variables.stats_asked)
     total_threads = 0
     for i in variables.help_channels:
@@ -117,6 +118,7 @@ async def day():
 
 @bot.event
 async def on_ready():
+    print("Bot has started!")
     day.start()
     ten.start()
 
