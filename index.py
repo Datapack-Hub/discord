@@ -28,7 +28,7 @@ from commands.top import TopCommand
 from commands.validate import ValidateFileCommand
 
 # Stats
-from stats.daily import DailyStats
+from schedules.stats import DailyStats
 
 
 intents = disnake.Intents.all()
@@ -84,7 +84,6 @@ async def ten():
                 total_threads += 1
 
     await channel_asked.edit(name=f"Questions Asked: {total_threads}")
-
 
 @tasks.loop(hours=12)
 async def day():
