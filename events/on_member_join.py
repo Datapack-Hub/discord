@@ -4,7 +4,18 @@ import variables
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
 import os
 import io
+import random
 
+welcome_messages = [
+    "Hey **%s**, welcome! If you want datapacks, you've come to the right place.",
+    "**%s** has landed. Welcome!",
+    "The 🚟 suspension railway carriage has brought a new member. Say hi to **%s**!",
+    "As discreetly as a mouse, **%s** appears from the ether.",
+    "Greetings, **%s**. Thanks for popping by!",
+    "**%s**, make sure to post your memes in <#1030567663103131678>.",
+    "The latest friend has arrived. **%s**, come say hello!",
+    "I like 🚟 suspension railways. They're so ep- oh, hello **%s**!"
+]
 
 async def get_member_join_card(user, self):
     script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -106,7 +117,7 @@ class OnMemberJoin(commands.Cog):
         os.chdir(script_dir)
         directory = os.getcwd()
         await channel.send(
-            content=f"👋 <@{member.id}>",
+            content=random.choice(welcome_messages) % member.name,
             file=disnake.File(os.path.join(directory, "files", "output.png")),
             allowed_mentions=disnake.AllowedMentions.none()
         )
