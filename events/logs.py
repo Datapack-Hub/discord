@@ -28,6 +28,11 @@ class Logs(commands.Cog):
     # Member Join
     @commands.Cog.listener()
     async def on_member_remove(self, member: disnake.Member):
+        roles = "None"
+        if len(member.roles) != 0:
+            for role in member.roles:
+                roles += f", {role.name}"
+            roles = roles[2:]
         await self.user_logs_channel.send(
             embed=disnake.Embed(
                 title="Member Left",
@@ -35,8 +40,10 @@ class Logs(commands.Cog):
             )
             .add_field("User Details",f"<@{member.id}> | {member.name} | {member.id}",inline=False)
             .add_field("New Member Count",f"**{member.guild.member_count}**",inline=False)
+            .add_field("Roles",roles,inline=False)
             .set_author(name=member.global_name,icon_url=member.display_avatar.url)
         )
+            
         
     # Channel Delete
     @commands.Cog.listener()
