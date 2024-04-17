@@ -22,7 +22,7 @@ class Logs(commands.Cog):
             .add_field("User Details",f"<@{member.id}> | {member.name} | {member.id}")
             .add_field("Account Created",f"<t:{int(member.created_at.timestamp)}:D>",inline=False)
             .add_field("New Member Count",f"**{member.guild.member_count}**")
-            .set_author(name=member.global_name,icon_url=member.avatar.url)
+            .set_author(name=member.global_name,icon_url=member.display_avatar.url)
         )
         
     # Member Join
@@ -35,7 +35,7 @@ class Logs(commands.Cog):
             )
             .add_field("User Details",f"<@{member.id}> | {member.name} | {member.id}")
             .add_field("New Member Count",f"**{member.guild.member_count}**")
-            .set_author(name=member.global_name,icon_url=member.avatar.url)
+            .set_author(name=member.global_name,icon_url=member.display_avatar.url)
         )
         
     # Channel Delete
