@@ -13,7 +13,7 @@ class MembersCommand(commands.Cog):
         else:
             open("Member Names.txt","w").close()
             with open("Member Names.txt","w+") as file:
-                file.writelines([member.name for member in inter.guild.members])
+                file.writelines([member.name + "\n" for member in inter.guild.members])
                 file.close()
             
             file = open("Member Names.txt","r")
