@@ -20,7 +20,7 @@ class Logs(commands.Cog):
                 color=disnake.Color.green()
             )
             .add_field("User Details",f"<@{member.id}> | {member.name} | {member.id}",inline=False)
-            .add_field("Account Created",f"<t:{int(member.created_at.timestamp)}:D>",inline=False)
+            .add_field("Account Created",f"<t:{int(member.created_at.timestamp())}:D>",inline=False)
             .add_field("New Member Count",f"**{member.guild.member_count}**",inline=False)
             .set_author(name=member.global_name,icon_url=member.display_avatar.url)
         )
