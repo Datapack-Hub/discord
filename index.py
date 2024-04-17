@@ -21,6 +21,7 @@ from commands.remind import RemindCommand
 from commands.resolve import ResolveCommand
 from commands.summon import SummonCommand
 from commands.stats import StatsCommand
+from commands.members import MembersCommand
 from commands.view import ViewFileCommand
 from commands.site import SiteCommand
 from commands.mod import ModCommand
@@ -58,6 +59,7 @@ bot.add_cog(RemindCommand(bot))
 bot.add_cog(ResolveCommand(bot))
 bot.add_cog(SiteCommand(bot))
 bot.add_cog(StatsCommand(bot))
+bot.add_cog(MembersCommand(bot))
 bot.add_cog(SummonCommand(bot))
 bot.add_cog(TopCommand(bot))
 bot.add_cog(ValidateFileCommand(bot))

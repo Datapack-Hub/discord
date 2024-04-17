@@ -2,7 +2,7 @@ import disnake
 from disnake.ext import commands
 
 
-class Members(commands.Cog):
+class MembersCommand(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
