@@ -157,6 +157,10 @@ class ModCommand(commands.Cog):
             description=f"You're going to ban user {user.mention}.\n\nTo add a reason, select an option from the dropdown",
         )
         return await inter.send(embed=embed, ephemeral=True, view=BanDropdownView(user))
+    
+    @mod.sub_command("info","Datapack Hub Info",)
+    async def info(self, inter: disnake.ApplicationCommandInteraction):
+        await inter.response.send_message(str(inter.guild.created_at))
 
 
 # Mute

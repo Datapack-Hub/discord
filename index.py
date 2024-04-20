@@ -27,6 +27,7 @@ from commands.site import SiteCommand
 from commands.mod import ModCommand
 from commands.top import TopCommand
 from commands.validate import ValidateFileCommand
+from commands.help import HelpCommand
 
 # Stats
 from schedules.stats import DailyStats
@@ -64,6 +65,7 @@ bot.add_cog(SummonCommand(bot))
 bot.add_cog(TopCommand(bot))
 bot.add_cog(ValidateFileCommand(bot))
 bot.add_cog(ViewFileCommand(bot))
+# bot.add_cog(HelpCommand(bot))
 
 bot.add_cog(DailyStats(bot))
 
