@@ -171,16 +171,31 @@ class ModCommand(commands.Cog):
                     return
             helper_data.append({"username": username, "count": 1})
         
+        # Get all messages
         for channel in variables.help_channels:
             channel = inter.guild.get_channel(channel)
             for thread in channel.threads:
                 thread_owner = thread.owner_id
                 async for message in thread.history():
-                    if message.author.id != thread_owner:
+                    if message.author.id != thread_owner and not message.author.bot:
                         # Increment count on the message author
                         update_count(message.author.name)
                         
-        await inter.edit_original_message(str(helper_data))
+        # Sort array by count
+        helper_data = sorted(helper_data, key=lambda x: x['count'], reverse=True)
+        
+        # Construct embed body
+        total = sum(helper["count"] for helper in helper_data)
+        body = ""
+        for helper in helper_data:
+            percentage = (helper["count"] / total) * 100
+            body += f"**{helper['username']}**: `{percentage!s}%` ({helper['count']})"
+                        
+        await inter.edit_original_message(embed=disnake.Embed(
+            title="List of active helpers",
+            description=body,
+            color=disnake.Colour.orange()
+        ).add_field("Total messages queried",total))
                             
 
 
