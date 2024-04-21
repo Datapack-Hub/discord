@@ -180,7 +180,7 @@ class ModCommand(commands.Cog):
                         # Increment count on the message author
                         update_count(message.author.name)
                         
-        await inter.response.edit_message(str(helper_data))
+        await inter.edit_original_message(str(helper_data))
                             
 
 
