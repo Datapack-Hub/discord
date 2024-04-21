@@ -158,9 +158,30 @@ class ModCommand(commands.Cog):
         )
         return await inter.send(embed=embed, ephemeral=True, view=BanDropdownView(user))
     
-    @mod.sub_command("info","Datapack Hub Info",)
+    @mod.sub_command("helpers","Show active helpers in the last few threads",)
     async def info(self, inter: disnake.ApplicationCommandInteraction):
-        await inter.response.send_message(str(inter.guild.created_at))
+        await inter.response.defer()
+
+        helper_data = []
+        
+        def update_count(username):
+            for member in helper_data:
+                if member["username"] == username:
+                    member["count"] += 1
+                    return
+            helper_data.append({"username": username, "count": 1})
+        
+        for channel in variables.help_channels:
+            channel = inter.guild.get_channel(channel)
+            for thread in channel.threads:
+                thread_owner = thread.owner.id
+                async for message in thread.history():
+                    if message.author.id != thread_owner:
+                        # Increment count on the message author
+                        update_count(message.author.name)
+                        
+        await inter.response.edit_message(str(helper_data))
+                            
 
 
 # Mute
