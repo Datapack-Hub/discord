@@ -188,8 +188,8 @@ class ModCommand(commands.Cog):
         total = sum(helper["count"] for helper in helper_data)
         body = ""
         for helper in helper_data:
-            percentage = (helper["count"] / total) * 100
-            body += f"**{helper['username']}**: `{percentage!s}%` ({helper['count']})"
+            percentage = round((helper["count"] / total) * 100, 1)
+            body += f"**{helper['username']}**: `{percentage!s}%` ({helper['count']})\n"
                         
         await inter.edit_original_message(embed=disnake.Embed(
             title="List of active helpers",
