@@ -174,7 +174,7 @@ class ModCommand(commands.Cog):
         for channel in variables.help_channels:
             channel = inter.guild.get_channel(channel)
             for thread in channel.threads:
-                thread_owner = thread.owner.id
+                thread_owner = thread.owner_id
                 async for message in thread.history():
                     if message.author.id != thread_owner:
                         # Increment count on the message author
