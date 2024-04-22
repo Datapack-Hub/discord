@@ -136,7 +136,7 @@ class ModCommand(commands.Cog):
     async def mute(self, inter: disnake.ApplicationCommandInteraction, user: disnake.Member, length: str, reason: str):
         seconds = timeparse(length)
         try:
-            await user.timeout(duration=seconds, reason=reason["label"])
+            await user.timeout(duration=seconds, reason=reason)
         except disnake.errors.Forbidden:
             await inter.response.send_message(f"Failed to mute user {user.mention}: I don't have permission to do this.",ephemeral=True)
         except Exception as e:
