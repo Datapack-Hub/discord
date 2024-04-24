@@ -11,15 +11,16 @@ class RedirectCommand(commands.Cog):
         # embed = disnake.Embed().set_image("https://cdn.discordapp.com/attachments/723984082853298297/1153381044322570260/Z.png")
         embed = disnake.Embed(
             title="Please ask this in the help channels!",
-            description="""
-            **If you've got a question, please head to the help channels**
-            - <#1051225367807000706> for questions about datapacks
-            - <#1051227454980755546> for questions about resource packs
-            - <#1143095605577654392> for anything else
-            More info about the help channels can be found in <#935570290317086841>.
-            
-            *If you can't see the above channels, make sure you have `Show All Channels` enabled in the server menu.*
-            """,
+            description=
+"""
+**If you've got a question, please head to the help channels**
+- <#1051225367807000706> for questions about datapacks
+- <#1051227454980755546> for questions about resource packs
+- <#1143095605577654392> for anything else
+More info about the help channels can be found in <#935570290317086841>.
+
+*If you can't see the above channels, make sure you have `Show All Channels` enabled in the server menu.*
+""",
             color=disnake.Colour.orange(),
         ).set_footer(
             text="Requested by " + inter.author.display_name,
