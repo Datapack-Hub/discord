@@ -40,6 +40,7 @@ class Logs(commands.Cog):
             )
             .add_field("User Details",f"<@{member.id}> | {member.name} | {member.id}",inline=False)
             .add_field("New Member Count",f"**{member.guild.member_count}**",inline=False)
+            .add_field("Join Date",f"<t:{int(member.joined_at.timestamp())}:D>")
             .add_field("Roles",roles,inline=False)
             .set_author(name=member.global_name,icon_url=member.display_avatar.url)
         )
