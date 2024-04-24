@@ -26,4 +26,4 @@ class RedirectCommand(commands.Cog):
             icon_url=inter.author.display_avatar.url,
         )
         await inter.target.reply(embed=embed)
-        await inter.response.send_message("Done! :D", ephemeral=True)
+        await inter.response.send_message("skibidi redirect", ephemeral=True)
