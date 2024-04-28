@@ -212,6 +212,11 @@ class ModCommand(commands.Cog):
                     timestamp=datetime.now(),
                 )
             )
+        except disnake.errors.Forbidden:
+            await inter.response.send_message(
+                f"I could not warn {user.mention} because either they have not enabled DMs from this server, or they have blocked the bot. Either way, they are a skibidi rizzler.",
+                ephemeral=True,
+            )
         except Exception as e:
             await inter.response.send_message(
                 f"Failed to warn user {user.mention}: `{' '.join(e.args)}`",
