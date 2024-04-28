@@ -49,7 +49,7 @@ class ModCommand(commands.Cog):
     
     @mod.sub_command("lockdown","Locks all server channels",)
     async def lockdown(self, inter: disnake.ApplicationCommandInteraction):
-        await inter.response.defer(ephemeral=True)
+        await inter.response.defer()
         
         current_perms = inter.guild.default_role.permissions
         
@@ -60,11 +60,11 @@ class ModCommand(commands.Cog):
         
         await inter.guild.default_role.edit(permissions=current_perms)
                 
-        await inter.edit_original_message(f"Locked down the server")
+        await inter.edit_original_message(f"🔒 **All server channels have been locked**")
         
     @mod.sub_command("unlockdown","Unlocks all server channels",)
     async def unlockdown(self, inter: disnake.ApplicationCommandInteraction):
-        await inter.response.defer(ephemeral=True)
+        await inter.response.defer()
         
         current_perms = inter.guild.default_role.permissions
         
@@ -75,7 +75,7 @@ class ModCommand(commands.Cog):
         
         await inter.guild.default_role.edit(permissions=current_perms)
                 
-        await inter.edit_original_message(f"Unlocked the server")
+        await inter.edit_original_message(f"🔓 **All server channels have been unlocked**")
             
         
     @mod.sub_command(
@@ -200,9 +200,40 @@ class ModCommand(commands.Cog):
                 .set_author(name=inter.author.global_name, icon_url=inter.author.avatar.url)
                 .add_field("Reason", reason, inline=False)
             )
+            
+    @mod.sub_command("warn", "Sends a user a warning")
+    async def warn(self, inter: disnake.ApplicationCommandInteraction, user: disnake.Member, message: str):
+        try:
+            await user.send(
+                embed=disnake.Embed(
+                    title="You have been warned.",
+                    color=disnake.Color.orange(),
+                    description=f"You have been warned in the Datapack Hub server for the following reason:```\n{message}```",
+                    timestamp=datetime.utcnow(),
+                )
+            )
+        except Exception as e:
+            await inter.response.send_message(
+                f"Failed to warn user {user.mention}: `{' '.join(e.args)}`",
+                ephemeral=True,
+            )
+        else:
+            await inter.response.send_message(
+                f"Warned user {user.mention} for reason:```\n{message}```",
+                ephemeral=True,
+            )
+            await inter.guild.get_channel(variables.modlogs).send(
+                embed=disnake.Embed(
+                    title="User Warned",
+                    description=f"{user.name} (UID {user.id}) was warned.",
+                    color=disnake.Color.red(),
+                )
+                .set_author(name=inter.author.global_name, icon_url=inter.author.avatar.url)
+                .add_field("Warn Message", message, inline=False)
+            )
     
     @mod.sub_command("helpers","Show active helpers in the last few threads",)
-    async def info(self, inter: disnake.ApplicationCommandInteraction):
+    async def helpers(self, inter: disnake.ApplicationCommandInteraction):
         await inter.response.defer()
         
         MAX = 15
