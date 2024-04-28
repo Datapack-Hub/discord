@@ -117,7 +117,7 @@ class ModCommand(commands.Cog):
         file_content = io.StringIO()
         for messages in deleted_messages:
             file_content.write(
-                f"[{datetime.utcnow().strftime('%d/%m/%y %H:%M:%S')}] @{messages.author.name}: {messages.content}\n"
+                f"[{datetime.now().strftime('%d/%m/%y %H:%M:%S')}] @{messages.author.name}: {messages.content}\n"
             )
 
         file_content.seek(0)
@@ -172,7 +172,7 @@ class ModCommand(commands.Cog):
                     title="You were banned",
                     color=disnake.Color.red(),
                     description=f"You were banned in Datapack Hub.\n\nReason:```\n{reason}```",
-                    timestamp=datetime.utcnow(),
+                    timestamp=datetime.now(),
                 )
             )
             await user.ban(reason=reason)
@@ -209,7 +209,7 @@ class ModCommand(commands.Cog):
                     title="You have been warned.",
                     color=disnake.Color.orange(),
                     description=f"You have been warned in the Datapack Hub server for the following reason:```\n{message}```",
-                    timestamp=datetime.utcnow(),
+                    timestamp=datetime.now(),
                 )
             )
         except Exception as e:
