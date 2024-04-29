@@ -27,7 +27,6 @@ from commands.site import SiteCommand
 from commands.mod import ModCommand
 from commands.top import TopCommand
 from commands.validate import ValidateFileCommand
-from commands.help import HelpCommand
 
 # Stats
 from schedules.stats import DailyStats

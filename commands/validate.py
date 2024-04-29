@@ -58,6 +58,8 @@ class ValidateFileCommand(commands.Cog):
                         if file_info.filename.endswith(".json"):
                             with zip_file.open(file_info, "r") as json_file:
                                 try:
+                                    # not sure what this is for or if it's needed, 
+                                    # but its unused and vscode isn't liking it
                                     this = json.load(json_file)
                                 except json.JSONDecodeError:
                                     issues.append(

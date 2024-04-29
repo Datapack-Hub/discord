@@ -1,6 +1,5 @@
 from re import match, findall, sub, search, MULTILINE
 from json import loads
-from string import ascii_letters
 
 class Hl:
 	class Database:
@@ -37,7 +36,7 @@ class Hl:
 		# Magec
 		for idx, char in enumerate(func):
 			next_char = func[idx+1:idx+2]
-			prev_char = func[idx-1]
+			# prev_char = func[idx-1]
 			prev_tokens = tokens[::-1]
 			next_chars = func[idx+1:]
 			if state["mode"] == "normal":
@@ -204,7 +203,7 @@ class Hl:
 		colors = Hl.Database.color_codes if theme == "default" else theme
 		commands = Hl.Database.commands
 		# Setting up vars
-		commands_count = 0
+		# commands_count = 0
 		possible_subcommands = []
 		bracket_index = 0
 		highlighted = ""
@@ -212,13 +211,13 @@ class Hl:
 		tokens = Hl.lex(func)
 		clear_tokens = tokens[:]
 		# god sorry me for that
-		for i in range(clear_tokens.count(" ")):
+		for _ in range(clear_tokens.count(" ")):
 			clear_tokens.remove(" ")
-		for i in range(clear_tokens.count("\\")):
+		for _ in range(clear_tokens.count("\\")):
 			clear_tokens.remove("\\")
-		for i in range(clear_tokens.count("\n")):
+		for _ in range(clear_tokens.count("\n")):
 			clear_tokens.remove("\n")
-		for i in range(clear_tokens.count("\t")):
+		for _ in range(clear_tokens.count("\t")):
 			clear_tokens.remove("\t")
 		clear_tokens.append('')
 		clear_index = 0
@@ -228,7 +227,7 @@ class Hl:
 			clear_index += 1 if token not in " \\\n\t" else 0
 			next_clear_tokens = clear_tokens[clear_index:]
 			prev_clear_tokens = clear_tokens[clear_index-2::-1]
-			fut_tokens = tokens[index+1:]
+			# fut_tokens = tokens[index+1:]
 			if token[0] == "\u200b":
 				token = token[1:]
 				comment_content = sub(r"^\s*#(#|>)?", "", token, flags=MULTILINE)
@@ -300,5 +299,5 @@ class Hl:
 		function_elements = function.replace("\n", "<br>").split("\u001b[")[1:]
 		for element in function_elements:
 			matches = search(ansi_codes_re, element)
-			converted += f'<span class="ansi_{color_classes[matches.group(2)]}{" "+color_classes[matches.group(4)] if matches.group(4) != None else ""}">{element.replace(matches.group(1), "")}</span>'
+			converted += f'<span class="ansi_{color_classes[matches.group(2)]}{" "+color_classes[matches.group(4)] if matches.group(4) is not None else ""}">{element.replace(matches.group(1), "")}</span>'
 		return f"<pre>{converted}</pre>"

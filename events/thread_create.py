@@ -46,6 +46,10 @@ class OnThreadCreate(commands.Cog):
             )
 
             parent = thread.parent
+            
+            if parent is None:
+                return
+            
             for t in parent.threads:
                 if (
                     t.owner_id == thread.owner_id
