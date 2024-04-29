@@ -10,7 +10,7 @@ class ViewFileCommand(commands.Cog):
 
     @commands.message_command(name="Quick Look")
     async def quicklook(self, inter: disnake.MessageCommandInteraction):
-        if inter.target.attachments.__len__() == 0:
+        if len(inter.target.attachments) == 0:
             return await inter.response.send_message(
                 "There is no file attached to this message!", ephemeral=True
             )

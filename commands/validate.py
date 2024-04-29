@@ -12,7 +12,7 @@ class ValidateFileCommand(commands.Cog):
     @commands.message_command(name="Validate Datapack")
     async def quicklook(self, inter: disnake.MessageCommandInteraction):
         issues = []
-        if inter.target.attachments.__len__() == 0:
+        if len(inter.target.attachments) == 0:
             return await inter.response.send_message(
                 "There is no file attached to this message!", ephemeral=True
             )

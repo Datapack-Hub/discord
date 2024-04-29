@@ -54,6 +54,7 @@ class OnThreadCreate(commands.Cog):
                 if (
                     t.owner_id == thread.owner_id
                     and not t.archived
+                    and thread.parent is not None
                     and thread.parent.get_tag_by_name("RESOLVED") not in t.applied_tags
                     and not t.id == thread.id
                 ):

@@ -75,11 +75,11 @@ async def ten():
     channel_asked = bot.get_channel(variables.stats_asked)
     total_threads = 0
     for i in variables.help_channels:
-        questions = bot.get_channel(i).threads.__len__()
+        questions = len(bot.get_channel(i).threads)
         archived_qns = await bot.get_channel(i).archived_threads(limit=None).flatten()
         for _ in bot.get_channel(i).threads:
             total_threads += 1
-        questions = questions + archived_qns.__len__()
+        questions = questions + len(archived_qns)
 
         for thread in archived_qns:
             creation_unix = time.mktime(thread.create_timestamp.timetuple())

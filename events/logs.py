@@ -80,4 +80,4 @@ class Logs(commands.Cog):
         await self.logs_channel.send(embed=disnake.Embed(
             title="Message Deleted",
             color=disnake.Color.from_rgb(230, 50, 50)
-        ).add_field("Content",message.content,inline=False).add_field("Channel",message.channel.jump_url,inline=False).add_field("Attachments",f"{message.attachments.__len__()!s} attachments",inline=False).set_author(name=message.author.global_name,icon_url=message.author.avatar.url))
+        ).add_field("Content",message.content,inline=False).add_field("Channel",message.channel.jump_url,inline=False).add_field("Attachments",f"{len(message.attachments)!s} attachments",inline=False).set_author(name=message.author.global_name,icon_url=message.author.avatar.url))
