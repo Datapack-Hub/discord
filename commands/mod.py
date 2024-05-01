@@ -251,9 +251,12 @@ class ModCommand(commands.Cog):
                 if member["username"] == user.name:
                     member["count"] += 1
                     return
-            if role in user.roles:
-                helper_data.append({"username": user.name, "count": 1, "helper":True})
-            else:
+            try:
+                if role in user.roles:
+                    helper_data.append({"username": user.name, "count": 1, "helper":True})
+                else:
+                    helper_data.append({"username": user.name, "count": 1, "helper":False})
+            except:
                 helper_data.append({"username": user.name, "count": 1, "helper":False})
 
         # Find helper role
