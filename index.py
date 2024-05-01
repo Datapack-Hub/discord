@@ -4,6 +4,7 @@ from bottoken import TOKEN
 import variables
 import time
 from datetime import datetime, timedelta, timezone
+import traceback
 
 # Events
 from events.thread_create import OnThreadCreate
@@ -29,10 +30,7 @@ from commands.top import TopCommand
 from commands.validate import ValidateFileCommand
 from commands.help import HelpCommand
 
-# Stats
-from schedules.stats import DailyStats
-
-
+# Setup bot
 intents = disnake.Intents.all()
 
 bot = commands.Bot(
@@ -47,13 +45,12 @@ bot = commands.Bot(
     intents=disnake.Intents.all(),
 )
 
-
+# Register modules
 bot.add_cog(OnThreadCreate(bot))
 bot.add_cog(OnButtonClick(bot))
 bot.add_cog(OnMemberJoin(bot))
 bot.add_cog(OnMessage(bot))
 bot.add_cog(Logs(bot))
-
 bot.add_cog(ModCommand(bot))
 bot.add_cog(RedirectCommand(bot))
 bot.add_cog(RemindCommand(bot))
@@ -65,10 +62,17 @@ bot.add_cog(SummonCommand(bot))
 bot.add_cog(TopCommand(bot))
 bot.add_cog(ValidateFileCommand(bot))
 bot.add_cog(ViewFileCommand(bot))
-# bot.add_cog(HelpCommand(bot))
 
-bot.add_cog(DailyStats(bot))
-
+# Erorr handling
+@bot.event
+async def on_error(event: disnake.Event):
+    embed = disnake.Embed(
+        title=f"`{event.name}` error",
+        description=f"The following error occurred during runtime, and has been logged for debug purposes.```\n{traceback.format_exc()}```",
+        color=disnake.Color.red()
+    )
+    channel = bot.get_channel(variables.botlogs)
+    await channel.send(embed=embed)
 
 # Loops
 @tasks.loop(minutes=10)
