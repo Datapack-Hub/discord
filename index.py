@@ -4,31 +4,28 @@ from bottoken import TOKEN
 import variables
 import time
 from datetime import datetime, timedelta, timezone
-import traceback
 
 # Events
-from events.thread_create import OnThreadCreate
-from events.button_click import OnButtonClick
-from events.message import OnMessage
-from events.on_member_join import OnMemberJoin
-
-from events.logs import Logs
+from cogs.events.thread_create import OnThreadCreate
+from cogs.events.button_click import OnButtonClick
+from cogs.events.message import OnMessage
+from cogs.events.on_member_join import OnMemberJoin
+from cogs.events.logs import Logs
 
 # Message Commands
-from commands.redirect import RedirectCommand
-from commands.remind import RemindCommand
+from cogs.message_commands.redirect import RedirectCommand
+from cogs.message_commands.remind import RemindCommand
+from cogs.message_commands.validate import ValidateFileCommand
+from cogs.message_commands.view import ViewFileCommand
 
 # Slash Commands
-from commands.resolve import ResolveCommand
-from commands.summon import SummonCommand
-from commands.stats import StatsCommand
-from commands.members import MembersCommand
-from commands.view import ViewFileCommand
-from commands.site import SiteCommand
-from commands.mod import ModCommand
-from commands.top import TopCommand
-from commands.validate import ValidateFileCommand
-from commands.help import HelpCommand
+from cogs.commands.resolve import ResolveCommand
+from cogs.commands.summon import SummonCommand
+from cogs.commands.stats import StatsCommand
+from cogs.commands.members import MembersCommand
+from cogs.commands.site import SiteCommand
+from cogs.commands.mod import ModCommand
+from cogs.commands.top import TopCommand
 
 # Setup bot
 intents = disnake.Intents.all()
@@ -36,43 +33,35 @@ intents = disnake.Intents.all()
 bot = commands.Bot(
     command_prefix="nerds",
     activity=disnake.Activity(
-        name="the game of life",
+        name="Datapack Jam",
         url="https://datapackhub.net",
         type=disnake.ActivityType.competing,
-        state="i am death, destroyer of worlds",
     ),
     test_guilds=[variables.guild],
     intents=disnake.Intents.all(),
 )
 
-# Register modules
+# Events
 bot.add_cog(OnThreadCreate(bot))
 bot.add_cog(OnButtonClick(bot))
 bot.add_cog(OnMemberJoin(bot))
 bot.add_cog(OnMessage(bot))
 bot.add_cog(Logs(bot))
+
+# Slash Commands
 bot.add_cog(ModCommand(bot))
+bot.add_cog(ResolveCommand(bot))
+bot.add_cog(StatsCommand(bot))
+bot.add_cog(SummonCommand(bot))
+bot.add_cog(SiteCommand(bot))
+bot.add_cog(TopCommand(bot))
+bot.add_cog(MembersCommand(bot))
+
+# Message Commands
 bot.add_cog(RedirectCommand(bot))
 bot.add_cog(RemindCommand(bot))
-bot.add_cog(ResolveCommand(bot))
-bot.add_cog(SiteCommand(bot))
-bot.add_cog(StatsCommand(bot))
-bot.add_cog(MembersCommand(bot))
-bot.add_cog(SummonCommand(bot))
-bot.add_cog(TopCommand(bot))
 bot.add_cog(ValidateFileCommand(bot))
 bot.add_cog(ViewFileCommand(bot))
-
-# Erorr handling
-@bot.event
-async def on_error(event: disnake.Event):
-    embed = disnake.Embed(
-        title=f"`{event.name}` error",
-        description=f"The following error occurred during runtime, and has been logged for debug purposes.```\n{traceback.format_exc()}```",
-        color=disnake.Color.red()
-    )
-    channel = bot.get_channel(variables.botlogs)
-    await channel.send(embed=embed)
 
 # Loops
 @tasks.loop(minutes=10)

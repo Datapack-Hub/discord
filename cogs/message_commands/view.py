@@ -81,7 +81,7 @@ class SelectView(disnake.ui.View):
 
     @disnake.ui.button(label="Open File", style=disnake.ButtonStyle.blurple)
     async def confirm(
-        self, button: disnake.ui.Button, inter: disnake.MessageInteraction
+        self, inter: disnake.MessageInteraction
     ):
         await inter.response.send_modal(SelectModal(self.files))
 
