@@ -15,6 +15,10 @@ def replace_code_blocks(message):
 
     return edited_message
 
+def has_arabic_symbols(message):
+    arabic_regex = re.compile(r"[\u0600-\u06FF]")
+    return arabic_regex.search(message.content) is not None
+
 class OnMessage(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
@@ -67,3 +71,6 @@ class OnMessage(commands.Cog):
                 
                 await message.delete()
                 await hook.send(replace_code_blocks(message.content),wait=False,username=message.author.display_name,avatar_url=message.author.display_avatar.url,allowed_mentions=disnake.AllowedMentions.none())
+        if has_arabic_symbols:
+            await message.delete()
+
