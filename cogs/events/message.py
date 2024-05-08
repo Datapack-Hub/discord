@@ -2,18 +2,6 @@ import disnake
 from disnake.ext import commands
 import variables
 import re
-from events.highlighter.highlighter import Hl
-
-def replace_code_blocks(message):
-    pattern = re.compile(r'```mcf(?:unction)?\n([\s\S]+?)```', re.DOTALL)
-
-    def replace_function(match):
-        code_block_content = match.group(1).strip()
-        return f'```ansi\n{Hl.highlight(code_block_content)}\n```'
-
-    edited_message = pattern.sub(replace_function, message)
-
-    return edited_message
 
 class OnMessage(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -41,29 +29,3 @@ class OnMessage(commands.Cog):
             )
         if message.channel.id == variables.intro:
             await message.add_reaction("👋")
-        if re.findall(r'```mcf(?:unction)?\n([\s\S]+?)```',message.content) and not message.author.bot:
-            if message.channel.type == disnake.ChannelType.public_thread:
-                hooks = await message.channel.parent.webhooks()
-                
-                for hook in hooks:
-                    if hook.name == "DPH":
-                        break
-                else:
-                    hook = await message.channel.parent.create_webhook(name="DPH")
-                
-                await message.delete()
-                try:
-                    await hook.send(replace_code_blocks(message.content),wait=False,username=message.author.display_name,avatar_url=message.author.display_avatar.url,thread=message.channel,allowed_mentions=disnake.AllowedMentions.none())
-                except:
-                    await hook.send(message.content,wait=False,username=message.author.display_name,avatar_url=message.author.display_avatar.url,thread=message.channel,allowed_mentions=disnake.AllowedMentions.none(),components=[disnake.ui.Button(style=disnake.ButtonStyle.red,disabled=True,label="Syntax highlighting failed")])
-            else:
-                hooks = await message.channel.webhooks()
-                
-                for hook in hooks:
-                    if hook.name == "DPH":
-                        break
-                else:
-                    hook = await message.channel.create_webhook(name="DPH")
-                
-                await message.delete()
-                await hook.send(replace_code_blocks(message.content),wait=False,username=message.author.display_name,avatar_url=message.author.display_avatar.url,allowed_mentions=disnake.AllowedMentions.none())
