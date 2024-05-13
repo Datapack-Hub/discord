@@ -4,6 +4,7 @@ from pytimeparse.timeparse import timeparse
 from datetime import datetime, timedelta
 import variables
 import io
+from uwufier import Uwuifier
 
 REASONS = [
     {
@@ -133,7 +134,10 @@ class ModCommand(commands.Cog):
         )
 
     @mod.sub_command("mute", "Mutes a member for a length of time")
-    async def mute(self, inter: disnake.ApplicationCommandInteraction, user: disnake.Member, length: str, reason: str):
+    async def mute(self, inter: disnake.ApplicationCommandInteraction, user: disnake.Member, length: str, reason: str, uwufy: bool = False):
+        if uwufy == True:
+            uwu = Uwuifier()
+            reason = uwu.uwuify_sentence(reason)
         seconds = timeparse(length)
         try:
             await user.timeout(duration=seconds, reason=reason)
@@ -164,8 +168,11 @@ class ModCommand(commands.Cog):
 
     @mod.sub_command("ban", "Bans a member for a length of time")
     async def ban(
-        self, inter: disnake.ApplicationCommandInteraction, user: disnake.Member, reason: str
+        self, inter: disnake.ApplicationCommandInteraction, user: disnake.Member, reason: str, uwufy: bool = False
     ):
+        if uwufy == True:
+            uwu = Uwuifier()
+            reason = uwu.uwuify_sentence(reason)
         try:
             await user.send(
                 embed=disnake.Embed(
@@ -202,7 +209,10 @@ class ModCommand(commands.Cog):
             )
             
     @mod.sub_command("warn", "Sends a user a warning")
-    async def warn(self, inter: disnake.ApplicationCommandInteraction, user: disnake.Member, message: str):
+    async def warn(self, inter: disnake.ApplicationCommandInteraction, user: disnake.Member, message: str, uwufy: bool = False):
+        if uwufy == True:
+            uwu = Uwuifier()
+            message = uwu.uwuify_sentence(message)
         try:
             await user.send(
                 embed=disnake.Embed(
