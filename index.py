@@ -17,6 +17,7 @@ from cogs.message_commands.redirect import RedirectCommand
 from cogs.message_commands.remind import RemindCommand
 from cogs.message_commands.view import ViewFileCommand
 from cogs.message_commands.moderate import ModerateCommand
+from cogs.message_commands.report import ReportCommand
 
 # Slash Commands
 from cogs.commands.resolve import ResolveCommand
@@ -62,6 +63,7 @@ bot.add_cog(RedirectCommand(bot))
 bot.add_cog(RemindCommand(bot))
 bot.add_cog(ModerateCommand(bot))
 bot.add_cog(ViewFileCommand(bot))
+bot.add_cog(ReportCommand(bot))
 
 # Loops
 @tasks.loop(minutes=10)

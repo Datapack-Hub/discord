@@ -198,3 +198,12 @@ class OnButtonClick(commands.Cog):
                 await channel.send(embed=embed)
         if inter.component.custom_id == "del_this_button":
             await inter.message.delete()
+        if inter.component.custom_id == "close_report":
+            embed = inter.message.embeds[0]
+            embed.color = disnake.Colour.blue()
+            embed.title = "Closed Message Report"
+            embed.add_field("Closed by",f"{inter.author.global_name} ({inter.author.id})",inline=False)
+            
+            await inter.message.edit(embed=embed)
+            
+            await inter.response.send_message("Closed the report",ephemeral=True)
