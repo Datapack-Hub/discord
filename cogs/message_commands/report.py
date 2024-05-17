@@ -37,6 +37,8 @@ class ReportModal(disnake.ui.Modal):
         report_embed.set_author(name=inter.author.global_name,icon_url=inter.author.avatar.url)
         
         await inter.guild.get_channel(variables.report_channel).send(
+            content=f"<@&{variables.report_ping}>",
+            allowed_mentions=disnake.AllowedMentions(roles=True),
             embed=report_embed,
             components=[
                 disnake.ui.Button(url=self.message.jump_url,label="View Message"),
@@ -45,8 +47,6 @@ class ReportModal(disnake.ui.Modal):
         )
         
         await inter.response.send_message(
-            content=f"<@&{variables.report_ping}>",
-            allowed_mentions=disnake.AllowedMentions(roles=True),
             embed=disnake.Embed(
                 title="Reported message",
                 color=disnake.Color.orange(),
