@@ -46,7 +46,7 @@ class ReportModal(disnake.ui.Modal):
         
         await inter.response.send_message(
             content=f"<@&{variables.report_ping}>",
-            allowed_mentions=disnake.AllowedMentions(roles=True)
+            allowed_mentions=disnake.AllowedMentions(roles=True),
             embed=disnake.Embed(
                 title="Reported message",
                 color=disnake.Color.orange(),
