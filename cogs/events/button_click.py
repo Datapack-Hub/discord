@@ -204,6 +204,6 @@ class OnButtonClick(commands.Cog):
             embed.title = "Closed Message Report"
             embed.add_field("Closed by",f"{inter.author.global_name} ({inter.author.id})",inline=False)
             
-            await inter.message.edit(embed=embed,components=[])
+            await inter.message.edit(embed=embed,components=[],content="")
             
             await inter.response.send_message("Closed the report",ephemeral=True)
