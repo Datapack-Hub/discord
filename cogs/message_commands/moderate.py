@@ -96,7 +96,7 @@ class WarnModal(disnake.ui.Modal):
         super().__init__(title="Warn User", custom_id="warn", components=components)
 
     async def callback(self, inter: disnake.ModalInteraction) -> None:
-        reason = uwu.uwuify_sentence(inter.text_values["message"]) if self.member.id == 711944262173982822 else inter.text_values["message"]
+        reason = uwu.uwuify_sentence(inter.text_values["message"]) if (self.member.id == 711944262173982822 or self.member.id == 848808992314884107) else inter.text_values["message"]
         try:
             await self.member.send(
                 embed=disnake.Embed(
@@ -161,7 +161,7 @@ class MuteModal(disnake.ui.Modal):
         super().__init__(title="Mute User", custom_id="mute", components=components)
 
     async def callback(self, inter: disnake.ModalInteraction) -> None:
-        reason = uwu.uwuify_sentence(inter.text_values["message"]) if self.member.id == 711944262173982822 else inter.text_values["message"]
+        reason = uwu.uwuify_sentence(inter.text_values["message"]) if (self.member.id == 711944262173982822 or self.member.id == 848808992314884107) else inter.text_values["message"]
         length = inter.text_values["length"]
         seconds = timeparse(length)
         
@@ -229,7 +229,7 @@ class BanModal(disnake.ui.Modal):
         super().__init__(title="Ban User", custom_id="ban", components=components)
 
     async def callback(self, inter: disnake.ModalInteraction) -> None:
-        reason = uwu.uwuify_sentence(inter.text_values["message"]) if self.member.id == 711944262173982822 else inter.text_values["message"]
+        reason = uwu.uwuify_sentence(inter.text_values["message"]) if (self.member.id == 711944262173982822 or self.member.id == 848808992314884107) else inter.text_values["message"]
         delete = not bool(inter.text_values["message"].strip())
         
         await self.member.send(
