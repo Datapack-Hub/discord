@@ -26,9 +26,7 @@ class Uwuifier:
             "*runs away*",
             "*screeches*",
             "*walks away*",
-            "*sees bulge*",
             "*looks at you*",
-            "*notices buldge*",
             "*starts twerking*",
             "*huggles tightly*",
             "*boops your nose*"
