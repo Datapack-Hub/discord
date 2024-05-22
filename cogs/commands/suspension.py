@@ -42,7 +42,7 @@ IMAGES = [
 ]
 
 
-class SuspensionRailwayCommand(commands.Cog, name="resolve"):
+class SuspensionRailwayCommand(commands.Cog, name="suspension_railway"):
     def __init__(self, bot):
         self.bot = bot
 
