@@ -312,6 +312,7 @@ class ModCommand(commands.Cog):
     
     @mod.sub_command("banall","Ban literally everyone",)
     async def banall(self, inter: disnake.ApplicationCommandInteraction):
+        #legi go away
         emb = disnake.Embed(
             title="⚠️ BAN ALL MEMBERS",
             description="Are you sure? This action is IRREVERSIBLE. Flyne is going to be very angry if you run this command. ONLY USE THIS IN EMERGENCIES. You have been warned.",
