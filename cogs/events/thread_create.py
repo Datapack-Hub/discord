@@ -13,7 +13,7 @@ class OnThreadCreate(commands.Cog):
         await asyncio.sleep(1)
         if thread.parent_id in variables.help_channels:
             embed = disnake.Embed(
-                color=disnake.Colour.orange(),
+                colour=disnake.Colour.orange(),
                 title=("Someone will come and help soon!"),
                 description=(
                     "💬 While you wait, take this time to provide more context and details.\n\n🙇 After a while, hit the Summon Helpers button to ping the helper team. They'll be happy to help you\n\n✅ Once your question has been resolved (or you no longer need it), please click Resolve Question or run /resolve"
@@ -57,6 +57,6 @@ class OnThreadCreate(commands.Cog):
                         embed=disnake.Embed(
                             title="⚠️ You already have a question open!",
                             description=f"Don't forget to close or resolve your old questions once you're done with them. It makes our lives much easier! :D\n\n**Open question**: <#{t.id}>",
-                            color=disnake.Color.red(),
+                            colour=disnake.Colour.red(),
                         )
                     )

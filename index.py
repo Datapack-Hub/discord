@@ -97,14 +97,14 @@ async def day():
                         embed=disnake.Embed(
                             title="🗑️ Recycling Thread",
                             description="This thread has been inactive for some time, so I'm going to archive it.\n\nIf you're still using the thread, just send a message and it'll pop back on the thread list.",
-                            color=disnake.Color.dark_gray(),
+                            colour=disnake.Colour.dark_gray(),
                         )
                     )
                     await thread.edit(archived=True)
 
                     # Logging
                     embed = disnake.Embed(
-                        color=disnake.Colour.orange(),
+                        colour=disnake.Colour.orange(),
                         title=("Recycled Thread"),
                         description=(
                             f"[{thread.name}]({thread.jump_url}) was archived for 2+ day inactivity."

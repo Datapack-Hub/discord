@@ -109,7 +109,7 @@ class ModCommand(commands.Cog):
 
         # Logs the purge action
         log_embed = disnake.Embed(
-            color=disnake.Colour.orange(),
+            colour=disnake.Colour.orange(),
             title="**`/purge` Command**",
             description=f"{inter.user.name} purged {len(deleted_messages)} messages in {inter.channel.mention}.",
         )
@@ -150,7 +150,7 @@ class ModCommand(commands.Cog):
             await user.send(
                 embed=disnake.Embed(
                     title="You were muted",
-                    color=disnake.Color.red(),
+                    colour=disnake.Colour.red(),
                     description=f"You were muted in Datapack Hub for {length}. You'll be unmuted {generate_discord_relative_timestamp(seconds)}.\n\nReason:```\n{reason}```",
                     timestamp=datetime.now(),
                 )
@@ -158,7 +158,7 @@ class ModCommand(commands.Cog):
             await inter.guild.get_channel(variables.modlogs).send(embed=disnake.Embed(
                 title="User Muted",
                 description=f"{user.name} (UID {user.id}) was muted.",
-                color=disnake.Color.red(),
+                colour=disnake.Colour.red(),
             )
             .set_author(name=inter.author.global_name, icon_url=inter.author.avatar.url)
             .add_field("Reason", reason, inline=False)
@@ -177,7 +177,7 @@ class ModCommand(commands.Cog):
             await user.send(
                 embed=disnake.Embed(
                     title="You were banned",
-                    color=disnake.Color.red(),
+                    colour=disnake.Colour.red(),
                     description=f"You were banned in Datapack Hub.\n\nReason:```\n{reason}```",
                     timestamp=datetime.now(),
                 )
@@ -202,7 +202,7 @@ class ModCommand(commands.Cog):
                 embed=disnake.Embed(
                     title="User Banned",
                     description=f"{user.name} (UID {user.id}) was banned.",
-                    color=disnake.Color.red(),
+                    colour=disnake.Colour.red(),
                 )
                 .set_author(name=inter.author.global_name, icon_url=inter.author.avatar.url)
                 .add_field("Reason", reason, inline=False)
@@ -217,7 +217,7 @@ class ModCommand(commands.Cog):
             await user.send(
                 embed=disnake.Embed(
                     title="You have been warned.",
-                    color=disnake.Color.orange(),
+                    colour=disnake.Colour.orange(),
                     description=f"You have been warned in the Datapack Hub server for the following reason:```\n{message}```",
                     timestamp=datetime.now(),
                 )
@@ -241,7 +241,7 @@ class ModCommand(commands.Cog):
                 embed=disnake.Embed(
                     title="User Warned",
                     description=f"{user.name} (UID {user.id}) was warned.",
-                    color=disnake.Color.red(),
+                    colour=disnake.Colour.red(),
                 )
                 .set_author(name=inter.author.global_name, icon_url=inter.author.avatar.url)
                 .add_field("Warn Message", message, inline=False)
@@ -307,7 +307,7 @@ class ModCommand(commands.Cog):
         await inter.edit_original_message(embed=disnake.Embed(
             title="List of active helpers",
             description=body,
-            color=disnake.Colour.orange()
+            colour=disnake.Colour.orange()
         ).add_field("Total messages queried",total))
     
     @mod.sub_command("banall","Ban literally everyone",)
@@ -316,6 +316,6 @@ class ModCommand(commands.Cog):
         emb = disnake.Embed(
             title="⚠️ BAN ALL MEMBERS",
             description="Are you sure? This action is IRREVERSIBLE. Flyne is going to be very angry if you run this command. ONLY USE THIS IN EMERGENCIES. You have been warned.",
-            color=disnake.Color.dark_red()
+            colour=disnake.Colour.dark_red()
         )
         await inter.response.send_message(embed=emb,components=[disnake.ui.Button(style=disnake.ButtonStyle.red,label="CONFIRM")])

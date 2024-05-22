@@ -32,7 +32,7 @@ async def get_member_join_card(user, self):
     blur_radius = 0
     offset = 4
 
-    back_color = Image.new("RGBA", pfp_image.size, (0, 0, 0, 0))
+    back_colour = Image.new("RGBA", pfp_image.size, (0, 0, 0, 0))
     offset = blur_radius * 2 + offset
     mask = Image.new("L", pfp_image.size, 0)
     draw = ImageDraw.Draw(mask)
@@ -42,7 +42,7 @@ async def get_member_join_card(user, self):
     )
     mask = mask.filter(ImageFilter.GaussianBlur(blur_radius))
 
-    pfp_image_round = Image.composite(pfp_image, back_color, mask)
+    pfp_image_round = Image.composite(pfp_image, back_colour, mask)
     pfp_image_round = pfp_image_round.resize((180, 180), Image.LANCZOS)
     background_pfp = background_image.convert("RGBA")
 

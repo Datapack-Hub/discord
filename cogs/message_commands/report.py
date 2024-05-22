@@ -29,7 +29,7 @@ class ReportModal(disnake.ui.Modal):
         
         report_embed = disnake.Embed(
             title="New Message Report",
-            color=disnake.Color.red()
+            colour=disnake.Colour.red()
         )
         
         report_embed.add_field("Message",self.message.clean_content,inline=False)
@@ -49,7 +49,7 @@ class ReportModal(disnake.ui.Modal):
         await inter.response.send_message(
             embed=disnake.Embed(
                 title="Reported message",
-                color=disnake.Color.orange(),
+                colour=disnake.Colour.orange(),
                 description=f"Successfully reported the message to moderators.",
             )
             .add_field("Report Message",report_message if bool(report_message.strip()) else "None supplied",inline=False)

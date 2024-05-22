@@ -47,7 +47,7 @@ class ViewFileCommand(commands.Cog):
             emb = disnake.Embed(
                 title="Quick Look",
                 description=f"All Files:\n```\n{paths_out}```",
-                color=disnake.Color.orange(),
+                colour=disnake.Colour.orange(),
             ).add_field("Total Files", str(amount))
             if len(files_out) > 25:
                 await inter.response.send_message(
@@ -65,7 +65,7 @@ class ViewFileCommand(commands.Cog):
             emb = disnake.Embed(
                 title="Quick Look",
                 description=f"```{formatting}\n{file.decode()}```",
-                color=disnake.Color.orange(),
+                colour=disnake.Colour.orange(),
             )
             await inter.response.send_message(embed=emb)
         else:
@@ -111,7 +111,7 @@ class SelectModal(disnake.ui.Modal):
                 emb = disnake.Embed(
                     title="Quick Look",
                     description=f"`{i['path']}`:\n```{formatting}\n{i['content']}```",
-                    color=disnake.Color.orange(),
+                    colour=disnake.Colour.orange(),
                 )
                 await inter.send(embed=emb,ephemeral=True)
 
@@ -144,7 +144,7 @@ class Dropdown(disnake.ui.StringSelect):
                 emb = disnake.Embed(
                     title="Quick Look",
                     description=f"`{i['path']}`:\n```{formatting}\n{i['content']}```",
-                    color=disnake.Color.orange(),
+                    colour=disnake.Colour.orange(),
                 )
                 await inter.edit_original_message(embed=emb)
 

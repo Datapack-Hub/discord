@@ -27,7 +27,7 @@ class StatsCommand(commands.Cog, name="stats"):
 
         embed = (
             disnake.Embed(
-                color=disnake.Color.orange(),
+                colour=disnake.Colour.orange(),
                 title="Datapack Hub Stats",
                 description="These stats are the up-to-date question counts as of right now. There may be a minor inaccuracy due to discord API limitations.",
             )

@@ -20,7 +20,7 @@ class RedirectCommand(commands.Cog):
         embed = disnake.Embed(
             title="Please ask this in the help channels!",
             description=MESSAGE,
-            color=disnake.Colour.orange(),
+            colour=disnake.Colour.orange(),
         ).set_footer(
             text="Requested by " + inter.author.display_name,
             icon_url=inter.author.display_avatar.url,

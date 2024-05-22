@@ -27,7 +27,7 @@ class SiteCommand(commands.Cog, name="site"):
             embed=disnake.Embed(
                 title="Search: " + query,
                 description=results,
-                color=disnake.Color.orange(),
+                colour=disnake.Colour.orange(),
             )
         )
 
@@ -47,7 +47,7 @@ class SiteCommand(commands.Cog, name="site"):
                 title=out["title"],
                 url=f"https://datapackhub.net/project/{out['url']}",
                 description=out["description"],
-                color=disnake.Color.orange(),
+                colour=disnake.Colour.orange(),
             )
             .set_author(
                 name=out["author"]["username"],

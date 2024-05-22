@@ -51,7 +51,7 @@ class ResolveCommand(commands.Cog, name="resolve"):
             emb = disnake.Embed(
                     title="Question Closed",
                     description=f"Your question, <#{inter.channel.id}> ({inter.channel.name}), was resolved!",
-                    color=disnake.Colour.green()
+                    colour=disnake.Colour.green()
                 ).add_field("Original Message", messages[0].jump_url, inline=False).add_field("Duration open",format_duration_between(messages[0].created_at, datetime.datetime.now(messages[0].created_at.tzinfo)))
             
             # Send message

@@ -101,7 +101,7 @@ class WarnModal(disnake.ui.Modal):
             await self.member.send(
                 embed=disnake.Embed(
                     title="You have been warned.",
-                    color=disnake.Color.orange(),
+                    colour=disnake.Colour.orange(),
                     description=f"You have recieved a warning in Datapack Hub.",
                     timestamp=datetime.now(),
                 )
@@ -130,7 +130,7 @@ class WarnModal(disnake.ui.Modal):
                 embed=disnake.Embed(
                     title="User Warned",
                     description=f"{self.member.name} (UID {self.member.id}) was warned.",
-                    color=disnake.Color.red(),
+                    colour=disnake.Colour.red(),
                 )
                 .set_author(name=inter.author.global_name, icon_url=inter.author.avatar.url)
                 .add_field("Warn Message", reason, inline=False)
@@ -182,7 +182,7 @@ class MuteModal(disnake.ui.Modal):
             await self.member.send(
                 embed=disnake.Embed(
                     title=f"You were muted in Datapack Hub for {length}.",
-                    color=disnake.Color.red(),
+                    colour=disnake.Colour.red(),
                     description=f"You were banned in Datapack Hub.",
                     timestamp=datetime.now(),
                 )
@@ -196,7 +196,7 @@ class MuteModal(disnake.ui.Modal):
             await inter.guild.get_channel(variables.modlogs).send(embed=disnake.Embed(
                 title="User Muted",
                 description=f"{self.member.name} (UID {self.member.id}) was muted.",
-                color=disnake.Color.red(),
+                colour=disnake.Colour.red(),
             )
             .set_author(name=inter.author.global_name, icon_url=inter.author.avatar.url)
             .add_field("Reason", reason, inline=False)
@@ -235,7 +235,7 @@ class BanModal(disnake.ui.Modal):
         await self.member.send(
             embed=disnake.Embed(
                 title="You were banned",
-                color=disnake.Color.red(),
+                colour=disnake.Colour.red(),
                 description=f"You were banned in Datapack Hub.",
                 timestamp=datetime.now(),
             )
@@ -263,7 +263,7 @@ class BanModal(disnake.ui.Modal):
             await inter.guild.get_channel(variables.modlogs).send(embed=disnake.Embed(
                 title="User Banned",
                 description=f"{self.member.name} (UID {self.member.id}) was banned.",
-                color=disnake.Color.red(),
+                colour=disnake.Colour.red(),
             )
             .set_author(name=inter.author.global_name, icon_url=inter.author.avatar.url)
             .add_field("Reason", reason, inline=False)

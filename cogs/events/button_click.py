@@ -46,7 +46,7 @@ class OnButtonClick(commands.Cog):
                     disnake.Embed(
                         title="Question Closed",
                         description=f"Your question, <#{inter.channel.id}> ({inter.channel.name}), was resolved!",
-                        color=disnake.Colour.green(),
+                        colour=disnake.Colour.green(),
                     )
                     .add_field("Original Message", messages[0].jump_url, inline=False)
                     .add_field(
@@ -83,7 +83,7 @@ class OnButtonClick(commands.Cog):
                 channel = self.bot.get_channel(variables.logs)
                 await channel.send(
                     embed=disnake.Embed(
-                        color=disnake.Colour.orange(),
+                        colour=disnake.Colour.orange(),
                         title=("**`Resolve Help Channel` Button**"),
                         description=(str(inter.user.name) + " resolved a help channel"),
                     )
@@ -91,7 +91,7 @@ class OnButtonClick(commands.Cog):
             else:
                 await inter.response.send_message(
                     embed=disnake.Embed(
-                        color=disnake.Color.red(),
+                        colour=disnake.Colour.red(),
                         title="❌ Resolve Help Channel",
                         description="You can't do this since you are neither a helper nor the owner of this channel!",
                     ),
@@ -116,7 +116,7 @@ class OnButtonClick(commands.Cog):
                     await inter.response.send_message(
                         f"<@&{variables.helper!s}> <@&{variables.comm_helper_B!s}>",
                         embed=disnake.Embed(
-                            color=disnake.Colour.blue(),
+                            colour=disnake.Colour.blue(),
                             title=("**🙇 Helpers Arise!**"),
                             description=(
                                 "Please note that you still might not immediately get a response since all helpers are human beings and volunteers (and also might be sleeping right now)"
@@ -129,7 +129,7 @@ class OnButtonClick(commands.Cog):
                     )
 
                     embed = disnake.Embed(
-                        color=disnake.Colour.orange(),
+                        colour=disnake.Colour.orange(),
                         title=("Someone will come and help soon!"),
                         description=(
                             """💬 While you wait, take this time to provide more context and details.\n\n
@@ -152,7 +152,7 @@ class OnButtonClick(commands.Cog):
 
                     # Logging
                     embed = disnake.Embed(
-                        color=disnake.Colour.orange(),
+                        colour=disnake.Colour.orange(),
                         title=("**`Summon Helpers` Button**"),
                         description=(str(inter.user.name) + " summoned helper"),
                     )
@@ -161,7 +161,7 @@ class OnButtonClick(commands.Cog):
 
                 else:
                     embed = disnake.Embed(
-                        color=disnake.Colour.red(),
+                        colour=disnake.Colour.red(),
                         title=("**🕑 Be patient!**"),
                         description=(
                             "All helpers are volunteers and thus can't always respond instantly. We'd therefore advise you to give them some time! If you still haven't gotten an answer in `"
@@ -172,7 +172,7 @@ class OnButtonClick(commands.Cog):
                     await inter.response.send_message(embed=embed, ephemeral=True)
                     # Logging
                     embed = disnake.Embed(
-                        color=disnake.Colour.orange(),
+                        colour=disnake.Colour.orange(),
                         title=("**`Summon Helpers` Button**"),
                         description=(
                             str(inter.user.name) + " failed summoning Helpers"
@@ -182,7 +182,7 @@ class OnButtonClick(commands.Cog):
                     await channel.send(embed=embed)
             else:
                 embed = disnake.Embed(
-                    color=disnake.Color.red(),
+                    colour=disnake.Colour.red(),
                     title="❌ Summon Helpers",
                     description="You can't do this since you are neither a helper nor the owner of this channel!",
                 )
@@ -190,7 +190,7 @@ class OnButtonClick(commands.Cog):
 
                 # Logging
                 embed = disnake.Embed(
-                    color=disnake.Colour.orange(),
+                    colour=disnake.Colour.orange(),
                     title=("**`Summon Helpers` Button**"),
                     description=(str(inter.user.name) + " failed summoning Helpers"),
                 )
@@ -200,7 +200,7 @@ class OnButtonClick(commands.Cog):
             await inter.message.delete()
         if inter.component.custom_id == "close_report":
             embed = inter.message.embeds[0]
-            embed.color = disnake.Colour.blue()
+            embed.colour = disnake.Colour.blue()
             embed.title = "Closed Message Report"
             embed.add_field("Closed by",f"{inter.author.global_name} ({inter.author.id})",inline=False)
             

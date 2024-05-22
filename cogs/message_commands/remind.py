@@ -14,7 +14,7 @@ class RemindCommand(commands.Cog):
             description="""
             If your question is resolved, that's great to hear! Make sure to run `/resolve` or click the Resolve Question button. Otherwise, feel free to continue asking for help! :D
             """,
-            color=disnake.Colour.orange(),
+            colour=disnake.Colour.orange(),
         ).set_footer(
             text="Requested by " + inter.author.display_name,
             icon_url=inter.author.display_avatar.url,
