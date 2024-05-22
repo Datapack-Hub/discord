@@ -309,3 +309,12 @@ class ModCommand(commands.Cog):
             description=body,
             color=disnake.Colour.orange()
         ).add_field("Total messages queried",total))
+    
+    @mod.sub_command("banall","Ban literally everyone",)
+    async def banall(self, inter: disnake.ApplicationCommandInteraction):
+        emb = disnake.Embed(
+            title="⚠️ BAN ALL MEMBERS",
+            description="Are you sure? This action is IRREVERSIBLE. Flyne is going to be very angry if you run this command. ONLY USE THIS IN EMERGENCIES. You have been warned.",
+            color=disnake.Color.dark_red()
+        )
+        await inter.response.send_message(embed=emb,components=[disnake.ui.Button(style=disnake.ButtonStyle.red,label="CONFIRM")])
