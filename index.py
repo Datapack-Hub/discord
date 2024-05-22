@@ -27,6 +27,7 @@ from cogs.commands.members import MembersCommand
 from cogs.commands.site import SiteCommand
 from cogs.commands.mod import ModCommand
 from cogs.commands.top import TopCommand
+from cogs.commands.suspension import SuspensionRailwayCommand
 
 # Setup bot
 intents = disnake.Intents.all()
@@ -57,6 +58,7 @@ bot.add_cog(SummonCommand(bot))
 bot.add_cog(SiteCommand(bot))
 bot.add_cog(TopCommand(bot))
 bot.add_cog(MembersCommand(bot))
+bot.add_cog(SuspensionRailwayCommand(bot))
 
 # Message Commands
 bot.add_cog(RedirectCommand(bot))
