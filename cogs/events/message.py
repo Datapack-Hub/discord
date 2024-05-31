@@ -44,4 +44,4 @@ class OnMessage(commands.Cog):
             
             uwu = Uwuifier()
             
-            await hook.send(uwu.uwuify_sentences(message.content),wait=False,username=message.author.display_name,avatar_url=message.author.display_avatar.url,allowed_mentions=disnake.AllowedMentions.none())
+            await hook.send(uwu.uwuify_sentence(message.content),wait=False,username=message.author.display_name,avatar_url=message.author.display_avatar.url,allowed_mentions=disnake.AllowedMentions.none())
