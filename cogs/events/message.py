@@ -2,6 +2,7 @@ import disnake
 from disnake.ext import commands
 import variables
 import re
+from uwufier import Uwufier
 
 class OnMessage(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -29,3 +30,18 @@ class OnMessage(commands.Cog):
             )
         if message.channel.id == variables.intro:
             await message.add_reaction("👋")
+            
+        if variables.uwu_trigger in message.content.lower():
+            hooks = await message.channel.webhooks()
+
+            for hook in hooks:
+                if hook.name == "DPH":
+                    break
+            else:
+                hook = await message.channel.create_webhook(name="DPH")
+
+            await message.delete()
+            
+            uwu = Uwufier()
+            
+            await hook.send(uwu.uwufy_sentences(message.content),wait=False,username=message.author.display_name,avatar_url=message.author.display_avatar.url,allowed_mentions=disnake.AllowedMentions.none())
