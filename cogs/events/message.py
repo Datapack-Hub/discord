@@ -42,6 +42,6 @@ class OnMessage(commands.Cog):
 
             await message.delete()
             
-            uwu = Uwufier()
+            uwu = Uwuifier()
             
             await hook.send(uwu.uwufy_sentences(message.content),wait=False,username=message.author.display_name,avatar_url=message.author.display_avatar.url,allowed_mentions=disnake.AllowedMentions.none())
