@@ -2,7 +2,7 @@ import disnake
 from disnake.ext import commands
 import variables
 import re
-from uwufier import Uwufier
+from uwufier import Uwuifier
 
 class OnMessage(commands.Cog):
     def __init__(self, bot: commands.Bot):
