@@ -4,6 +4,7 @@ from pytimeparse.timeparse import timeparse
 from datetime import datetime, timedelta
 import variables
 import io
+import re
 from uwufier import Uwuifier
 
 REASONS = [
@@ -256,7 +257,6 @@ class ModCommand(commands.Cog):
         helper_data = []
 
         async def update_count(user: disnake.Member, role: disnake.Role):
-            helper = False
             for member in helper_data:
                 if member["username"] == user.name:
                     member["count"] += 1
@@ -268,6 +268,18 @@ class ModCommand(commands.Cog):
                     helper_data.append({"username": user.name, "count": 1, "helper":False})
             except:
                 helper_data.append({"username": user.name, "count": 1, "helper":False})
+
+        async def sanitize_name(name: str) -> str:
+            pattern: re.Pattern[str] = re.compile("[_~*|#`>-]")
+            new_name: str = ""
+
+            for char in name:
+                if (re.match(pattern, char)):
+                    new_name += f"\{char}"
+                else:
+                    new_name += char
+                    
+            return new_name
 
         # Find helper role
         role = inter.guild.get_role(variables.helper)
@@ -283,7 +295,7 @@ class ModCommand(commands.Cog):
                 async for message in thread.history():
                     if message.author.id != thread_owner and not message.author.bot:
                         # Increment count on the message author
-                        await update_count(message.author, role=role)
+                        await update_count(user=message.author, role=role)
 
         # Sort array by count
         helper_data = sorted(helper_data, key=lambda x: x['count'], reverse=True)
@@ -296,9 +308,9 @@ class ModCommand(commands.Cog):
         for helper in helper_data[:MAX]:
             percentage = round((helper["count"] / total) * 100, 1)
             if helper["helper"]:
-                body += f"{index!s}. 🔹 **{helper['username']}**: `{percentage!s}%` ({helper['count']})\n"
+                body += f"{index!s}. 🔹 **{sanitize_name(helper['username'])}**: `{percentage!s}%` ({helper['count']})\n"
             else:
-                body += f"{index!s}. **{helper['username']}**: `{percentage!s}%` ({helper['count']})\n"
+                body += f"{index!s}. **{sanitize_name(helper['username'])}**: `{percentage!s}%` ({helper['count']})\n"
             index += 1
         
         if len(helper_data) > MAX:
