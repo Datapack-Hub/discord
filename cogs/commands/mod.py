@@ -269,7 +269,7 @@ class ModCommand(commands.Cog):
             except:
                 helper_data.append({"username": user.name, "count": 1, "helper":False})
 
-        async def sanitize_name(name: str) -> str:
+        async def escape_name(name: str) -> str:
             pattern: re.Pattern[str] = re.compile("[_~*|#`>-]")
             new_name: str = ""
 
@@ -278,7 +278,7 @@ class ModCommand(commands.Cog):
                     new_name += f"\{char}"
                 else:
                     new_name += char
-                    
+
             return new_name
 
         # Find helper role
@@ -308,9 +308,9 @@ class ModCommand(commands.Cog):
         for helper in helper_data[:MAX]:
             percentage = round((helper["count"] / total) * 100, 1)
             if helper["helper"]:
-                body += f"{index!s}. 🔹 **{sanitize_name(helper['username'])}**: `{percentage!s}%` ({helper['count']})\n"
+                body += f"{index!s}. 🔹 **{escape_name(helper['username'])}**: `{percentage!s}%` ({helper['count']})\n"
             else:
-                body += f"{index!s}. **{sanitize_name(helper['username'])}**: `{percentage!s}%` ({helper['count']})\n"
+                body += f"{index!s}. **{escape_name(helper['username'])}**: `{percentage!s}%` ({helper['count']})\n"
             index += 1
         
         if len(helper_data) > MAX:
