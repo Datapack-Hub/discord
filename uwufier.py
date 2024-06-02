@@ -22,12 +22,10 @@ class Uwuifier:
             "*cries*",
             "*screams*",
             "*sweats*",
-            "*twerks*",
             "*runs away*",
             "*screeches*",
             "*walks away*",
             "*looks at you*",
-            "*starts twerking*",
             "*huggles tightly*",
             "*boops your nose*"
         ]
