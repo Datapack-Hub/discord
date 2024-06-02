@@ -44,4 +44,6 @@ class OnMessage(commands.Cog):
             
             uwu = Uwuifier()
             
+            print(message.content.lower().replace("screwdriver",""))
+            
             await hook.send(uwu.uwuify_sentence(message.content.lower().replace("screwdriver","")),wait=False,username=message.author.display_name,avatar_url=message.author.display_avatar.url,allowed_mentions=disnake.AllowedMentions.none())
