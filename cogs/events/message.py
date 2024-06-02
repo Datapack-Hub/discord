@@ -31,7 +31,7 @@ class OnMessage(commands.Cog):
         if message.channel.id == variables.intro:
             await message.add_reaction("👋")
             
-        if variables.uwu_trigger in message.content.lower():
+        if variables.uwu_trigger in message.content.lower() and not message.author.bot:
             hooks = await message.channel.webhooks()
 
             for hook in hooks:
@@ -44,6 +44,4 @@ class OnMessage(commands.Cog):
             
             uwu = Uwuifier()
             
-            print(message.content.lower().replace(variables.uwu_trigger,"???"))
-            
-            await hook.send(uwu.uwuify_sentence(message.content.lower().replace("screwdriver","")),wait=False,username=message.author.display_name,avatar_url=message.author.display_avatar.url,allowed_mentions=disnake.AllowedMentions.none())
+            await hook.send(uwu.uwuify_sentence(message.content.lower()),wait=False,username=message.author.display_name,avatar_url=message.author.display_avatar.url,allowed_mentions=disnake.AllowedMentions.none())
