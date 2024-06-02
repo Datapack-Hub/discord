@@ -269,7 +269,7 @@ class ModCommand(commands.Cog):
             except:
                 helper_data.append({"username": user.name, "count": 1, "helper":False})
 
-        async def escape_name(name: str) -> str:
+        def escape_name(name: str) -> str:
             pattern: re.Pattern[str] = re.compile("[_~*|#`>-]")
             new_name: str = ""
 
