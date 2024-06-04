@@ -72,3 +72,8 @@ class OnMessage(commands.Cog):
             
             # Resend
             await hook.send(censored,wait=False,files=files,username=message.author.display_name,avatar_url=message.author.display_avatar.url,allowed_mentions=disnake.AllowedMentions.none())
+
+            await self.bot.get_channel(variables.automodlogs).send(embed=disnake.Embed(
+                title="Message Censored",
+                colour=disnake.Colour.orange()
+            ).add_field("Content",f"||{message.content}||",inline=False).add_field("Channel",message.channel.jump_url,inline=False).add_field("Attachments",f"{message.attachments.__len__()!s} attachments",inline=False).set_author(name=message.author.global_name,icon_url=message.author.avatar.url))
