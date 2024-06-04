@@ -107,7 +107,7 @@ class OnMessage(commands.Cog):
                 data[str(message.author.id)] = 1
                 seconds = 1
             else:
-                data[str(message.author.id)] += 0.5
+                data[str(message.author.id)] += 0.4
                 seconds = data[str(message.author.id)]
                 
             json.dump(data,open("mute_lengths.json","w"))
