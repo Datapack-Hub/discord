@@ -107,13 +107,13 @@ class OnMessage(commands.Cog):
                 data[str(message.author.id)] = 1
                 seconds = 1
             else:
-                data[str(message.author.id)] += 0.3
+                data[str(message.author.id)] += 0.5
                 seconds = data[str(message.author.id)]
                 
             json.dump(data,open("mute_lengths.json","w"))
             
             try:
-                await message.author.timeout(duration=seconds,reason="Censor Timeout (7 seconds)")
+                await message.author.timeout(duration=seconds,reason="Censor Timeout")
             except disnake.errors.Forbidden:
                 pass
             
