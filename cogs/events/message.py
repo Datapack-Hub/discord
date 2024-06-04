@@ -65,10 +65,16 @@ class OnMessage(commands.Cog):
             # Delete message
             await message.delete()
             
-            # Censor
+            # Create filter
             censored = message.content
+            search_string = ""
             for term in automod.terms:
-                censored = censored.replace(term,"<:r1:1100839366005358692><:r2:1100839228792901752><:r3:1100839175361671309>")            
+                search_string += f"({term})|"
+            search_string = search_string[:-1]
+            pattern = re.compile(search_string,re.IGNORECASE)
+            
+            # Censor
+            censored = pattern.sub("<:r1:1100839366005358692><:r2:1100839228792901752><:r3:1100839175361671309>",message.content)
             
             # Resend
             await hook.send(censored,wait=False,files=files,username=message.author.display_name,avatar_url=message.author.display_avatar.url,allowed_mentions=disnake.AllowedMentions.none())
