@@ -65,8 +65,16 @@ class OnMessage(commands.Cog):
             # Delete message
             await message.delete()
             
+            # Start modification
+            text = message.content
+            
+            # Uwufy if jeferwalg
+            if message.author.id in [711944262173982822, 543741360478355456]:
+                uwu = Uwuifier()
+                text = uwu.uwuify_sentence(text)
+            
             # Create filter
-            censored = message.content
+            censored = text
             search_string = ""
             for term in automod.terms:
                 search_string += f"({term})|"
@@ -74,11 +82,15 @@ class OnMessage(commands.Cog):
             pattern = re.compile(search_string,re.IGNORECASE)
             
             # Censor
-            censored = pattern.sub("<:r1:1100839366005358692><:r2:1100839228792901752><:r3:1100839175361671309>",message.content)
+            censored = pattern.sub("<:r1:1100839366005358692><:r2:1100839228792901752><:r3:1100839175361671309>",text)
             
             # Resend
             await hook.send(censored,wait=False,files=files,username=message.author.display_name,avatar_url=message.author.display_avatar.url,allowed_mentions=disnake.AllowedMentions.none())
-
+            
+            # Timeout
+            await message.author.timeout(duration=7)
+            
+            # Log
             await self.bot.get_channel(variables.automodlogs).send(embed=disnake.Embed(
                 title="Message Censored",
                 colour=disnake.Colour.orange()
