@@ -1,6 +1,7 @@
 import disnake
 from disnake.ext import commands
 import variables
+import automod
 import re
 from uwufier import Uwuifier
 
@@ -45,3 +46,29 @@ class OnMessage(commands.Cog):
             uwu = Uwuifier()
             
             await hook.send(uwu.uwuify_sentence(message.content.lower()),wait=False,username=message.author.display_name,avatar_url=message.author.display_avatar.url,allowed_mentions=disnake.AllowedMentions.none())
+
+        if any(ext in message.content.lower() for ext in automod.terms) and not message.author.bot:
+            # Find/create the webhook
+            hooks = await message.channel.webhooks()
+            for hook in hooks:
+                if hook.name == "DPH":
+                    break
+            else:
+                hook = await message.channel.create_webhook(name="DPH")
+
+            # Keep attachments
+            files = []
+            for attachment in message.attachments:
+                file = await attachment.to_file()
+                files.append(file)
+
+            # Delete message
+            await message.delete()
+            
+            # Censor
+            censored = message.content
+            for term in automod.terms:
+                censored = censored.replace(term,"<:r1:1100839366005358692><:r2:1100839228792901752><:r3:1100839175361671309>")            
+            
+            # Resend
+            await hook.send(censored,wait=False,files=files,username=message.author.display_name,avatar_url=message.author.display_avatar.url,allowed_mentions=disnake.AllowedMentions.none())

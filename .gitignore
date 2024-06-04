@@ -1,5 +1,6 @@
 bottoken.py
 variables.py
+automod.py
 *.pyc
 points.json
 events/files/output.png
