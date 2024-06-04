@@ -48,13 +48,21 @@ class OnMessage(commands.Cog):
             await hook.send(uwu.uwuify_sentence(message.content.lower()),wait=False,username=message.author.display_name,avatar_url=message.author.display_avatar.url,allowed_mentions=disnake.AllowedMentions.none())
 
         if any(ext in message.content.lower() for ext in automod.terms) and not message.author.bot:
-            # Find/create the webhook
-            hooks = await message.channel.webhooks()
-            for hook in hooks:
-                if hook.name == "DPH":
-                    break
+            if message.channel.type != disnake.ChannelType.public_thread and message.channel.type != disnake.ChannelType.private_thread:
+                hooks = await message.channel.webhooks()
+                for hook in hooks:
+                    if hook.name == "DPH":
+                        break
+                else:
+                    hook = await message.channel.create_webhook(name="DPH")
             else:
-                hook = await message.channel.create_webhook(name="DPH")
+                hooks = await message.channel.parent.webhooks()
+                
+                for hook in hooks:
+                    if hook.name == "DPH":
+                        break
+                else:
+                    hook = await message.channel.parent.create_webhook(name="DPH")
 
             # Keep attachments
             files = []
@@ -85,7 +93,10 @@ class OnMessage(commands.Cog):
             censored = pattern.sub("<:r1:1100839366005358692><:r2:1100839228792901752><:r3:1100839175361671309>",text)
             
             # Resend
-            await hook.send(censored,wait=False,files=files,username=message.author.display_name,avatar_url=message.author.display_avatar.url,allowed_mentions=disnake.AllowedMentions.none())
+            if message.channel.type != disnake.ChannelType.public_thread and message.channel.type != disnake.ChannelType.private_thread:
+                await hook.send(censored,wait=False,files=files,username=message.author.display_name,avatar_url=message.author.display_avatar.url,allowed_mentions=disnake.AllowedMentions.none())
+            else:
+                await hook.send(censored,wait=False,files=files,username=message.author.display_name,avatar_url=message.author.display_avatar.url,allowed_mentions=disnake.AllowedMentions.none(),thread=message.channel)
             
             # Timeout
             try:
