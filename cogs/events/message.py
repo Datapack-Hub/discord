@@ -3,6 +3,7 @@ from disnake.ext import commands
 import variables
 import automod
 import re
+import json
 from uwufier import Uwuifier
 
 class OnMessage(commands.Cog):
@@ -99,8 +100,20 @@ class OnMessage(commands.Cog):
                 await hook.send(censored,wait=False,files=files,username=message.author.display_name,avatar_url=message.author.display_avatar.url,allowed_mentions=disnake.AllowedMentions.none(),thread=message.channel)
             
             # Timeout
+            data = json.load(open("mute_lengths.json","r"))
             try:
-                await message.author.timeout(duration=7,reason="Censor Timeout (7 seconds)")
+                data[str(message.author.id)]
+            except:
+                data[str(message.author.id)] = 1
+                seconds = 1
+            else:
+                data[str(message.author.id)] += 0.3
+                seconds = data[str(message.author.id)]
+                
+            json.dump(data,open("mute_lengths.json","w"))
+            
+            try:
+                await message.author.timeout(duration=seconds,reason="Censor Timeout (7 seconds)")
             except disnake.errors.Forbidden:
                 pass
             

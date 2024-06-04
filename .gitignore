@@ -6,6 +6,7 @@ points.json
 events/files/output.png
 out.png
 member_data.json
+mute_lengths.json
 
 *.vscode/
 *.vscode/*
