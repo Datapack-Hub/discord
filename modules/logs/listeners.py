@@ -2,7 +2,7 @@ import disnake
 from disnake.ext import commands
 import variables
 
-class Logs(commands.Cog):
+class LogsListeners(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         

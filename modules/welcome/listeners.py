@@ -93,7 +93,7 @@ async def get_member_join_card(user, self):
     background_pfp.save(output_path)
 
 
-class OnMemberJoin(commands.Cog):
+class WelcomeListeners(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
@@ -109,3 +109,8 @@ class OnMemberJoin(commands.Cog):
             file=disnake.File(os.path.join(directory, "files", "output.png")),
             allowed_mentions=disnake.AllowedMentions.none()
         )
+        
+    @commands.Cog.listener()
+    async def on_message(self, message: disnake.Message):
+        if message.channel.id == variables.intro:
+            await message.add_reaction("👋")

@@ -5,33 +5,7 @@ import variables
 import time
 from datetime import datetime, timedelta, timezone
 
-# Events
-from cogs.events.thread_create import OnThreadCreate
-from cogs.events.button_click import OnButtonClick
-from cogs.events.message import OnMessage
-from cogs.events.on_member_join import OnMemberJoin
-from cogs.events.logs import Logs
-
-# Message Commands
-from cogs.message_commands.redirect import RedirectCommand
-from cogs.message_commands.remind import RemindCommand
-from cogs.message_commands.view import ViewFileCommand
-from cogs.message_commands.moderate import ModerateCommand
-from cogs.message_commands.report import ReportCommand
-
-# Slash Commands
-from cogs.commands.resolve import ResolveCommand
-from cogs.commands.summon import SummonCommand
-from cogs.commands.stats import StatsCommand
-from cogs.commands.members import MembersCommand
-from cogs.commands.site import SiteCommand
-from cogs.commands.mod import ModCommand
-from cogs.commands.top import TopCommand
-from cogs.commands.suspension import SuspensionRailwayCommand
-
 # Setup bot
-intents = disnake.Intents.all()
-
 bot = commands.Bot(
     command_prefix="nerds",
     activity=disnake.Activity(
@@ -43,29 +17,55 @@ bot = commands.Bot(
     intents=disnake.Intents.all(),
 )
 
-# Events
-bot.add_cog(OnThreadCreate(bot))
-bot.add_cog(OnButtonClick(bot))
-bot.add_cog(OnMemberJoin(bot))
-bot.add_cog(OnMessage(bot))
-bot.add_cog(Logs(bot))
+# Logs
+from modules.logs.listeners import LogsListeners
+bot.add_cog(LogsListeners(bot))
 
-# Slash Commands
+# Moderation
+from modules.moderation.listeners import ModerationListeners
+bot.add_cog(ModerationListeners(bot))
+from modules.moderation.commands.mod import ModCommand
 bot.add_cog(ModCommand(bot))
+from modules.moderation.message_commands.moderate import ModerateCommand
+bot.add_cog(ModerateCommand(bot))
+from modules.moderation.message_commands.report import ReportCommand
+bot.add_cog(ReportCommand(bot))
+
+# Help Channels
+from modules.help_channels.listeners import HelpChannelListeners
+bot.add_cog(HelpChannelListeners(bot))
+from modules.help_channels.commands.resolve import ResolveCommand
 bot.add_cog(ResolveCommand(bot))
-bot.add_cog(StatsCommand(bot))
+from modules.help_channels.commands.summon import SummonCommand
 bot.add_cog(SummonCommand(bot))
-bot.add_cog(SiteCommand(bot))
+from modules.help_channels.commands.top import TopCommand
 bot.add_cog(TopCommand(bot))
+from modules.help_channels.message_commands.redirect import RedirectCommand
+bot.add_cog(RedirectCommand(bot))
+from modules.help_channels.message_commands.remind import RemindCommand
+bot.add_cog(RemindCommand(bot))
+
+# Utilities
+from modules.utilities.commands.stats import StatsCommand
+bot.add_cog(StatsCommand(bot))
+from modules.utilities.commands.members import MembersCommand
 bot.add_cog(MembersCommand(bot))
+from modules.utilities.message_commands.view import ViewFileCommand
+bot.add_cog(ViewFileCommand(bot))
+
+# Fun
+from modules.fun.listeners import FunListeners
+bot.add_cog(FunListeners(bot))
+from modules.fun.commands.suspension import SuspensionRailwayCommand
 bot.add_cog(SuspensionRailwayCommand(bot))
 
-# Message Commands
-bot.add_cog(RedirectCommand(bot))
-bot.add_cog(RemindCommand(bot))
-bot.add_cog(ModerateCommand(bot))
-bot.add_cog(ViewFileCommand(bot))
-bot.add_cog(ReportCommand(bot))
+# Welcome
+from modules.welcome.listeners import WelcomeListeners
+bot.add_cog(WelcomeListeners(bot))
+
+# Events
+from modules.events.button_click import OnButtonClick
+bot.add_cog(OnButtonClick(bot))
 
 # Loops
 @tasks.loop(minutes=10)
@@ -122,7 +122,5 @@ async def on_ready():
     day.start()
     ten.start()
 
-
+# Run bot
 bot.run(TOKEN)
-
-# oldest resolved thread timestamp 1674615000
