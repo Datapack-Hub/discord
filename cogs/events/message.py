@@ -33,7 +33,7 @@ class OnMessage(commands.Cog):
         if message.channel.id == variables.intro:
             await message.add_reaction("👋")
             
-        if variables.uwu_trigger in message.content.lower() and not message.author.bot:
+        if variables.uwu_trigger in message.content.lower() and not message.author.bot and not re.findall(fr"\b[rR](?!{variables.uwu_trigger[1:]}\b)[a-zA-Z]{{6}}\b",message.content.lower()):
             hooks = await message.channel.webhooks()
 
             for hook in hooks:
