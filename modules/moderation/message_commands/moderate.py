@@ -2,7 +2,7 @@ import disnake
 from disnake.ext import commands
 from datetime import datetime, timedelta
 import variables
-from uwufier import Uwuifier
+from utils.uwufier import Uwuifier
 from pytimeparse.timeparse import timeparse
 
 uwu = Uwuifier()

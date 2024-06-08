@@ -2,7 +2,7 @@ import disnake
 from disnake.ext import commands
 import variables
 import asyncio
-from uwufier import Uwuifier
+from utils.uwufier import Uwuifier
 import re
 import automod
 import json

@@ -1,7 +1,7 @@
 import disnake
 from disnake.ext import commands
 import variables
-from uwufier import Uwuifier
+from utils.uwufier import Uwuifier
 
 
 class FunListeners(commands.Cog):
