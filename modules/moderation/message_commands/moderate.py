@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 import variables
 from utils.uwufier import Uwuifier
 from pytimeparse.timeparse import timeparse
+import utils.modlogs as modlogs
 
 uwu = Uwuifier()
 
@@ -136,6 +137,12 @@ class WarnModal(disnake.ui.Modal):
                 .add_field("Warn Message", reason, inline=False)
                 .add_field("Infringing Message", f"`{self.message.clean_content}`", inline=False)
             )
+            
+            modlogs.log({
+                "action":"warn",
+                "user":self.member.id,
+                "reason":reason
+            })
 
     async def on_error(self, error: Exception, inter: disnake.ModalInteraction) -> None:
         await inter.response.send_message("Oops, something went wrong.", ephemeral=True)
@@ -191,8 +198,6 @@ class MuteModal(disnake.ui.Modal):
                 .add_field("Infringing Message",f"`{self.message.clean_content}`",inline=False)
             )
             
-            
-            
             await inter.guild.get_channel(variables.modlogs).send(embed=disnake.Embed(
                 title="User Muted",
                 description=f"{self.member.name} (UID {self.member.id}) was muted.",
@@ -204,6 +209,13 @@ class MuteModal(disnake.ui.Modal):
             .add_field("Length",length,inline=False)
             .add_field("Infringing Message", f"`{self.message.clean_content}`", inline=False)
             )
+            
+            modlogs.log({
+                "action":"mute",
+                "user":self.member.id,
+                "reason":reason,
+                "length":length
+            })
 
     async def on_error(self, error: Exception, inter: disnake.ModalInteraction) -> None:
         await inter.response.send_message("Oops, something went wrong.", ephemeral=True)
@@ -269,6 +281,12 @@ class BanModal(disnake.ui.Modal):
             .add_field("Reason", reason, inline=False)
             .add_field("Infringing Message", f"`{self.message.clean_content}`", inline=False)
             )
+            
+            modlogs.log({
+                "action":"ban",
+                "user":self.member.id,
+                "reason":reason
+            })
 
     async def on_error(self, error: Exception, inter: disnake.ModalInteraction) -> None:
         await inter.response.send_message("Oops, something went wrong.", ephemeral=True)
