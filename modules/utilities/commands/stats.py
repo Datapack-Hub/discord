@@ -23,7 +23,7 @@ class StatsCommand(commands.Cog, name="stats"):
             .archived_threads(limit=None)
             .flatten()
         )
-        rp_questions = rp_questions + len(archived_rps)
+        rp_questions += len(archived_rps)
 
         embed = (
             disnake.Embed(

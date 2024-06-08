@@ -57,5 +57,5 @@ class ReportModal(disnake.ui.Modal):
             ephemeral=True
         )
 
-    async def on_error(self, error: Exception, inter: disnake.ModalInteraction) -> None:
-        await inter.response.send_message("Oops, something went wrong.", ephemeral=True)
+    async def on_error(self, error, interaction: disnake.ModalInteraction) -> None:
+        await interaction.response.send_message("Oops, something went wrong.", ephemeral=True)

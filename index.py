@@ -71,12 +71,13 @@ bot.add_cog(OnButtonClick(bot))
 # Loops
 @tasks.loop(minutes=10)
 async def ten():
-    channel_asked = bot.get_channel(variables.stats_asked)
+    channel_asked: disnake.VoiceChannel = bot.get_channel(variables.stats_asked)
     total_threads = 0
     for i in variables.help_channels:
-        questions = len(bot.get_channel(i).threads)
-        archived_qns = await bot.get_channel(i).archived_threads(limit=None).flatten()
-        for _ in bot.get_channel(i).threads:
+        channel: disnake.ForumChannel = bot.get_channel(i)
+        questions = len(channel.threads)
+        archived_qns = await channel.archived_threads(limit=None).flatten()
+        for _ in channel.threads:
             total_threads += 1
         questions = questions + len(archived_qns)
 
@@ -90,7 +91,8 @@ async def ten():
 @tasks.loop(hours=12)
 async def day():
     for i in variables.help_channels:
-        for thread in bot.get_channel(i).threads:
+        forum_channel: disnake.ForumChannel = bot.get_channel(i)
+        for thread in forum_channel.threads:
             last = await thread.history(limit=1).flatten()
             last = last[0]
             if last:

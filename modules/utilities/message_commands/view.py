@@ -115,10 +115,8 @@ class SelectModal(disnake.ui.Modal):
                 )
                 await inter.send(embed=emb,ephemeral=True)
 
-    async def on_error(self, error: Exception, inter: disnake.ModalInteraction) -> None:
-        await inter.channel.send(
-            f"Oops, something went wrong. `{' '.join(error.args)}`"
-        )
+    async def on_error(self, error, interaction: disnake.ModalInteraction) -> None:
+        await interaction.response.send_message("Oops, something went wrong.", ephemeral=True)
 
 
 class Dropdown(disnake.ui.StringSelect):

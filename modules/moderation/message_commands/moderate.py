@@ -144,8 +144,8 @@ class WarnModal(disnake.ui.Modal):
                 "reason":reason
             })
 
-    async def on_error(self, error: Exception, inter: disnake.ModalInteraction) -> None:
-        await inter.response.send_message("Oops, something went wrong.", ephemeral=True)
+    async def on_error(self, error, interaction: disnake.ModalInteraction) -> None:
+        await interaction.response.send_message("Oops, something went wrong.", ephemeral=True)
         
 class MuteModal(disnake.ui.Modal):
     def __init__(self, message: disnake.Message) -> None:
@@ -217,8 +217,8 @@ class MuteModal(disnake.ui.Modal):
                 "length":length
             })
 
-    async def on_error(self, error: Exception, inter: disnake.ModalInteraction) -> None:
-        await inter.response.send_message("Oops, something went wrong.", ephemeral=True)
+    async def on_error(self, error, interaction: disnake.ModalInteraction) -> None:
+        await interaction.response.send_message("Oops, something went wrong.", ephemeral=True)
         
 class BanModal(disnake.ui.Modal):
     def __init__(self, message: disnake.Message) -> None:
@@ -288,5 +288,5 @@ class BanModal(disnake.ui.Modal):
                 "reason":reason
             })
 
-    async def on_error(self, error: Exception, inter: disnake.ModalInteraction) -> None:
-        await inter.response.send_message("Oops, something went wrong.", ephemeral=True)
+    async def on_error(self, error, interaction: disnake.ModalInteraction) -> None:
+        await interaction.response.send_message("Oops, something went wrong.", ephemeral=True)
