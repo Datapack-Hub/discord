@@ -14,6 +14,7 @@ class ModerationListeners(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message: disnake.Message):
+        # * CENSOR
         if any(ext in message.content.lower() for ext in automod.terms) and not message.author.bot:
             if message.channel.type != disnake.ChannelType.public_thread and message.channel.type != disnake.ChannelType.private_thread:
                 hooks = await message.channel.webhooks()

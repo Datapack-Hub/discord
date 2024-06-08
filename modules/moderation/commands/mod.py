@@ -6,6 +6,8 @@ import variables
 import io
 import re
 from utils.uwufier import Uwuifier
+import json
+import utils.modlogs as modlogs
 
 REASONS = [
     {
@@ -166,6 +168,13 @@ class ModCommand(commands.Cog):
             .add_field("Expires",generate_discord_relative_timestamp(seconds),inline=False)
             .add_field("Length",length,inline=False)
             )
+            
+            modlogs.log({
+                "action":"mute",
+                "user":user.id,
+                "reason":reason,
+                "length":length
+            })
 
     @mod.sub_command("ban", "Bans a member for a length of time")
     async def ban(
@@ -208,6 +217,11 @@ class ModCommand(commands.Cog):
                 .set_author(name=inter.author.global_name, icon_url=inter.author.avatar.url)
                 .add_field("Reason", reason, inline=False)
             )
+            modlogs.log({
+                "action":"ban",
+                "user":user.id,
+                "reason":reason
+            })
             
     @mod.sub_command("warn", "Sends a user a warning")
     async def warn(self, inter: disnake.ApplicationCommandInteraction, user: disnake.Member, message: str, uwufy: bool = False):
@@ -247,6 +261,11 @@ class ModCommand(commands.Cog):
                 .set_author(name=inter.author.global_name, icon_url=inter.author.avatar.url)
                 .add_field("Warn Message", message, inline=False)
             )
+            modlogs.log({
+                "action":"warn",
+                "user":user.id,
+                "reason":message
+            })
     
     @mod.sub_command("helpers","Show active helpers in the last few threads",)
     async def helpers(self, inter: disnake.ApplicationCommandInteraction):
