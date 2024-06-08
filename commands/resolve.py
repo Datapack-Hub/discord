@@ -30,8 +30,6 @@ class ResolveCommand(commands.Cog, name="resolve"):
 
     @commands.slash_command(title="resolve", description="Marks question as resolved")
     async def resolve(self, inter: disnake.ApplicationCommandInteraction):
-        
-        print(len(inter.channel.parent.threads))
         role = inter.guild.get_role(variables.helper)
 
         try:

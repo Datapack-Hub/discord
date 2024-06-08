@@ -1,3 +1,4 @@
+import logging
 import disnake
 from disnake.ext import commands, tasks
 from bottoken import TOKEN
@@ -118,7 +119,8 @@ async def day():
 
 @bot.event
 async def on_ready():
-    print("Bot has started!")
+    logging.basicConfig()
+    logging.info("Bot has started!")
     day.start()
     ten.start()
 
