@@ -46,7 +46,7 @@ class OnButtonClick(commands.Cog):
                     disnake.Embed(
                         title="Question Closed",
                         description=f"Your question, <#{inter.channel.id}> ({inter.channel.name}), was resolved!",
-                        color=disnake.Colour.green(),
+                        colour=disnake.Colour.green(),
                     )
                     .add_field("Original Message", messages[0].jump_url, inline=False)
                     .add_field(
@@ -83,7 +83,7 @@ class OnButtonClick(commands.Cog):
                 channel = self.bot.get_channel(variables.logs)
                 await channel.send(
                     embed=disnake.Embed(
-                        color=disnake.Colour.orange(),
+                        colour=disnake.Colour.orange(),
                         title=("**`Resolve Help Channel` Button**"),
                         description=(str(inter.user.name) + " resolved a help channel"),
                     )
@@ -91,7 +91,7 @@ class OnButtonClick(commands.Cog):
             else:
                 await inter.response.send_message(
                     embed=disnake.Embed(
-                        color=disnake.Color.red(),
+                        colour=disnake.Colour.red(),
                         title="❌ Resolve Help Channel",
                         description="You can't do this since you are neither a helper nor the owner of this channel!",
                     ),
@@ -116,7 +116,7 @@ class OnButtonClick(commands.Cog):
                     await inter.response.send_message(
                         f"<@&{variables.helper!s}> <@&{variables.comm_helper_B!s}>",
                         embed=disnake.Embed(
-                            color=disnake.Colour.blue(),
+                            colour=disnake.Colour.blue(),
                             title=("**🙇 Helpers Arise!**"),
                             description=(
                                 "Please note that you still might not immediately get a response since all helpers are human beings and volunteers (and also might be sleeping right now)"
@@ -129,7 +129,7 @@ class OnButtonClick(commands.Cog):
                     )
 
                     embed = disnake.Embed(
-                        color=disnake.Colour.orange(),
+                        colour=disnake.Colour.orange(),
                         title=("Someone will come and help soon!"),
                         description=(
                             """💬 While you wait, take this time to provide more context and details.\n\n
@@ -152,7 +152,7 @@ class OnButtonClick(commands.Cog):
 
                     # Logging
                     embed = disnake.Embed(
-                        color=disnake.Colour.orange(),
+                        colour=disnake.Colour.orange(),
                         title=("**`Summon Helpers` Button**"),
                         description=(str(inter.user.name) + " summoned helper"),
                     )
@@ -161,7 +161,7 @@ class OnButtonClick(commands.Cog):
 
                 else:
                     embed = disnake.Embed(
-                        color=disnake.Colour.red(),
+                        colour=disnake.Colour.red(),
                         title=("**🕑 Be patient!**"),
                         description=(
                             "All helpers are volunteers and thus can't always respond instantly. We'd therefore advise you to give them some time! If you still haven't gotten an answer in `"
@@ -172,7 +172,7 @@ class OnButtonClick(commands.Cog):
                     await inter.response.send_message(embed=embed, ephemeral=True)
                     # Logging
                     embed = disnake.Embed(
-                        color=disnake.Colour.orange(),
+                        colour=disnake.Colour.orange(),
                         title=("**`Summon Helpers` Button**"),
                         description=(
                             str(inter.user.name) + " failed summoning Helpers"
@@ -182,7 +182,7 @@ class OnButtonClick(commands.Cog):
                     await channel.send(embed=embed)
             else:
                 embed = disnake.Embed(
-                    color=disnake.Color.red(),
+                    colour=disnake.Colour.red(),
                     title="❌ Summon Helpers",
                     description="You can't do this since you are neither a helper nor the owner of this channel!",
                 )
@@ -190,103 +190,20 @@ class OnButtonClick(commands.Cog):
 
                 # Logging
                 embed = disnake.Embed(
-                    color=disnake.Colour.orange(),
+                    colour=disnake.Colour.orange(),
                     title=("**`Summon Helpers` Button**"),
                     description=(str(inter.user.name) + " failed summoning Helpers"),
                 )
                 channel = self.bot.get_channel(variables.logs)
                 await channel.send(embed=embed)
-        if inter.component.custom_id == "close_button":
-            helper = role = inter.guild.get_role(variables.helper)
-            if helper not in inter.author.roles:
-                return await inter.response.send_message(
-                    "Only helpers can use this :)", ephemeral=True
-                )
-
-            await inter.response.send_message(
-                embed=disnake.Embed(
-                    title="Close Post",
-                    description="If this post is not appropriate for this channel, use one of the options below to close the post along with a reason to help the user know what they did wrong",
-                    colour=disnake.Colour.red(),
-                ),
-                view=DropDownView(),
-                ephemeral=True,
-            )
         if inter.component.custom_id == "del_this_button":
             await inter.message.delete()
-
-
-class ChoiceMenu(disnake.ui.StringSelect):
-    def __init__(self):
-        options = [
-            disnake.SelectOption(
-                label="Incorrect Channel",
-                description="This post is in an incorrect help channel.",
-            ),
-            disnake.SelectOption(
-                label="Not Enough Information",
-                description="This post does not have enough information.",
-            ),
-            disnake.SelectOption(label="Spam", description="This post is purely spam."),
-            disnake.SelectOption(
-                label="Off-topic",
-                description="This post is not a question relevant to this context.",
-            ),
-        ]
-
-        super().__init__(
-            placeholder="Select a reason",
-            min_values=1,
-            max_values=1,
-            options=options,
-        )
-
-    # This callback is called each time a user has selected an option
-    async def callback(self, inter: disnake.MessageInteraction):
-        selection = self.values[0]
-        if selection == "Incorrect Channel":
-            await inter.response.send_message(
-                embed=disnake.Embed(
-                    title="CHANNEL CLOSED: Incorrect Channel",
-                    description="You've posted this question in an incorrect help channel. Please take another look at your question and put it in another help channel. Thanks.",
-                    color=disnake.Color.red(),
-                )
-            )
-            await inter.channel.edit(archived=True)
-        elif selection == "Not Enough Information":
-            await inter.response.send_message(
-                embed=disnake.Embed(
-                    title="CHANNEL CLOSED: Not Enough Information",
-                    description="This post does not provide enough information for us to be able to help you. Please take a look in <#935570290317086841> to get some tips on how to write a good question. Thanks! :D",
-                    color=disnake.Color.red(),
-                )
-            )
-            await inter.channel.edit(archived=True)
-        elif selection == "Spam":
-            await inter.response.send_message(
-                embed=disnake.Embed(
-                    title="CHANNEL CLOSED: Spam",
-                    description="This post is just spam. Please only post actual relevant questions in the help channels, otherwise you could face a punishment. Thanks!",
-                    color=disnake.Color.red(),
-                )
-            )
-            await inter.channel.edit(archived=True)
-        elif selection == "Off-topic":
-            await inter.response.send_message(
-                embed=disnake.Embed(
-                    title="CHANNEL CLOSED: Off-topic",
-                    description="This post is off-topic. The help forums are for asking questions related to creating and using Minecraft datapacks and resource packs. For off-topic discussions, use the general or off topic text channels. Thanks!",
-                    color=disnake.Color.red(),
-                )
-            )
-            await inter.channel.edit(archived=True)
-
-
-class DropDownView(disnake.ui.View):
-    def __init__(self):
-        # You would pass a new `timeout=` if you wish to alter it, but
-        # we will leave it empty for this example so that it uses the default 180s.
-        super().__init__()
-
-        # Now let's add the `StringSelect` object we created above to this view
-        self.add_item(ChoiceMenu())
+        if inter.component.custom_id == "close_report":
+            embed = inter.message.embeds[0]
+            embed.colour = disnake.Colour.blue()
+            embed.title = "Closed Message Report"
+            embed.add_field("Closed by",f"{inter.author.global_name} ({inter.author.id})",inline=False)
+            
+            await inter.message.edit(embed=embed,components=[],content="")
+            
+            await inter.response.send_message("Closed the report",ephemeral=True)

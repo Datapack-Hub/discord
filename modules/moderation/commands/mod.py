@@ -4,6 +4,10 @@ from pytimeparse.timeparse import timeparse
 from datetime import datetime, timedelta
 import variables
 import io
+import re
+from utils.uwufier import Uwuifier
+import json
+import utils.modlogs as modlogs
 
 REASONS = [
     {
@@ -108,7 +112,7 @@ class ModCommand(commands.Cog):
 
         # Logs the purge action
         log_embed = disnake.Embed(
-            color=disnake.Colour.orange(),
+            colour=disnake.Colour.orange(),
             title="**`/purge` Command**",
             description=f"{inter.user.name} purged {len(deleted_messages)} messages in {inter.channel.mention}.",
         )
@@ -133,7 +137,10 @@ class ModCommand(commands.Cog):
         )
 
     @mod.sub_command("mute", "Mutes a member for a length of time")
-    async def mute(self, inter: disnake.ApplicationCommandInteraction, user: disnake.Member, length: str, reason: str):
+    async def mute(self, inter: disnake.ApplicationCommandInteraction, user: disnake.Member, length: str, reason: str, uwufy: bool = False):
+        if uwufy == True:
+            uwu = Uwuifier()
+            reason = uwu.uwuify_sentence(reason)
         seconds = timeparse(length)
         try:
             await user.timeout(duration=seconds, reason=reason)
@@ -146,7 +153,7 @@ class ModCommand(commands.Cog):
             await user.send(
                 embed=disnake.Embed(
                     title="You were muted",
-                    color=disnake.Color.red(),
+                    colour=disnake.Colour.red(),
                     description=f"You were muted in Datapack Hub for {length}. You'll be unmuted {generate_discord_relative_timestamp(seconds)}.\n\nReason:```\n{reason}```",
                     timestamp=datetime.now(),
                 )
@@ -154,23 +161,33 @@ class ModCommand(commands.Cog):
             await inter.guild.get_channel(variables.modlogs).send(embed=disnake.Embed(
                 title="User Muted",
                 description=f"{user.name} (UID {user.id}) was muted.",
-                color=disnake.Color.red(),
+                colour=disnake.Colour.red(),
             )
             .set_author(name=inter.author.global_name, icon_url=inter.author.avatar.url)
             .add_field("Reason", reason, inline=False)
             .add_field("Expires",generate_discord_relative_timestamp(seconds),inline=False)
             .add_field("Length",length,inline=False)
             )
+            
+            modlogs.log({
+                "action":"mute",
+                "user":user.id,
+                "reason":reason,
+                "length":length
+            })
 
     @mod.sub_command("ban", "Bans a member for a length of time")
     async def ban(
-        self, inter: disnake.ApplicationCommandInteraction, user: disnake.Member, reason: str
+        self, inter: disnake.ApplicationCommandInteraction, user: disnake.Member, reason: str, uwufy: bool = False
     ):
+        if uwufy == True:
+            uwu = Uwuifier()
+            reason = uwu.uwuify_sentence(reason)
         try:
             await user.send(
                 embed=disnake.Embed(
                     title="You were banned",
-                    color=disnake.Color.red(),
+                    colour=disnake.Colour.red(),
                     description=f"You were banned in Datapack Hub.\n\nReason:```\n{reason}```",
                     timestamp=datetime.now(),
                 )
@@ -195,19 +212,27 @@ class ModCommand(commands.Cog):
                 embed=disnake.Embed(
                     title="User Banned",
                     description=f"{user.name} (UID {user.id}) was banned.",
-                    color=disnake.Color.red(),
+                    colour=disnake.Colour.red(),
                 )
                 .set_author(name=inter.author.global_name, icon_url=inter.author.avatar.url)
                 .add_field("Reason", reason, inline=False)
             )
+            modlogs.log({
+                "action":"ban",
+                "user":user.id,
+                "reason":reason
+            })
             
     @mod.sub_command("warn", "Sends a user a warning")
-    async def warn(self, inter: disnake.ApplicationCommandInteraction, user: disnake.Member, message: str):
+    async def warn(self, inter: disnake.ApplicationCommandInteraction, user: disnake.Member, message: str, uwufy: bool = False):
+        if uwufy == True:
+            uwu = Uwuifier()
+            message = uwu.uwuify_sentence(message)
         try:
             await user.send(
                 embed=disnake.Embed(
                     title="You have been warned.",
-                    color=disnake.Color.orange(),
+                    colour=disnake.Colour.orange(),
                     description=f"You have been warned in the Datapack Hub server for the following reason:```\n{message}```",
                     timestamp=datetime.now(),
                 )
@@ -231,11 +256,16 @@ class ModCommand(commands.Cog):
                 embed=disnake.Embed(
                     title="User Warned",
                     description=f"{user.name} (UID {user.id}) was warned.",
-                    color=disnake.Color.red(),
+                    colour=disnake.Colour.red(),
                 )
                 .set_author(name=inter.author.global_name, icon_url=inter.author.avatar.url)
                 .add_field("Warn Message", message, inline=False)
             )
+            modlogs.log({
+                "action":"warn",
+                "user":user.id,
+                "reason":message
+            })
     
     @mod.sub_command("helpers","Show active helpers in the last few threads",)
     async def helpers(self, inter: disnake.ApplicationCommandInteraction):
@@ -250,10 +280,25 @@ class ModCommand(commands.Cog):
                 if member["username"] == user.name:
                     member["count"] += 1
                     return
-            if role in user.roles:
-                helper_data.append({"username": user.name, "count": 1, "helper":True})
-            else:
+            try:
+                if role in user.roles:
+                    helper_data.append({"username": user.name, "count": 1, "helper":True})
+                else:
+                    helper_data.append({"username": user.name, "count": 1, "helper":False})
+            except:
                 helper_data.append({"username": user.name, "count": 1, "helper":False})
+
+        def escape_name(name: str) -> str:
+            pattern: re.Pattern[str] = re.compile("[_~*|#`>-]")
+            new_name: str = ""
+
+            for char in name:
+                if (re.match(pattern, char)):
+                    new_name += f"\{char}"
+                else:
+                    new_name += char
+
+            return new_name
 
         # Find helper role
         role = inter.guild.get_role(variables.helper)
@@ -269,7 +314,7 @@ class ModCommand(commands.Cog):
                 async for message in thread.history():
                     if message.author.id != thread_owner and not message.author.bot:
                         # Increment count on the message author
-                        await update_count(message.author, role=role)
+                        await update_count(user=message.author, role=role)
 
         # Sort array by count
         helper_data = sorted(helper_data, key=lambda x: x['count'], reverse=True)
@@ -282,9 +327,9 @@ class ModCommand(commands.Cog):
         for helper in helper_data[:max]:
             percentage = round((helper["count"] / total) * 100, 1)
             if helper["helper"]:
-                body += f"{index!s}. 🔹 **{helper['username']}**: `{percentage!s}%` ({helper['count']})\n"
+                body += f"{index!s}. 🔹 **{escape_name(helper['username'])}**: `{percentage!s}%` ({helper['count']})\n"
             else:
-                body += f"{index!s}. **{helper['username']}**: `{percentage!s}%` ({helper['count']})\n"
+                body += f"{index!s}. **{escape_name(helper['username'])}**: `{percentage!s}%` ({helper['count']})\n"
             index += 1
         
         if len(helper_data) > max:
@@ -293,5 +338,15 @@ class ModCommand(commands.Cog):
         await inter.edit_original_message(embed=disnake.Embed(
             title="List of active helpers",
             description=body,
-            color=disnake.Colour.orange()
+            colour=disnake.Colour.orange()
         ).add_field("Total messages queried",total))
+    
+    @mod.sub_command("banall","Ban literally everyone",)
+    async def banall(self, inter: disnake.ApplicationCommandInteraction):
+        #legi go away
+        emb = disnake.Embed(
+            title="⚠️ BAN ALL MEMBERS",
+            description="Are you sure? This action is IRREVERSIBLE. Flyne is going to be very angry if you run this command. ONLY USE THIS IN EMERGENCIES. You have been warned.",
+            colour=disnake.Colour.dark_red()
+        )
+        await inter.response.send_message(embed=emb,components=[disnake.ui.Button(style=disnake.ButtonStyle.red,label="CONFIRM")])

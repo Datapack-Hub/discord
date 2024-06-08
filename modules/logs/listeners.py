@@ -2,7 +2,7 @@ import disnake
 from disnake.ext import commands
 import variables
 
-class Logs(commands.Cog):
+class LogsListeners(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         
@@ -17,7 +17,7 @@ class Logs(commands.Cog):
         await self.user_logs_channel.send(
             embed=disnake.Embed(
                 title="Member Joined",
-                color=disnake.Color.green()
+                colour=disnake.Colour.green()
             )
             .add_field("User Details",f"<@{member.id}> | {member.name} | {member.id}",inline=False)
             .add_field("Account Created",f"<t:{int(member.created_at.timestamp())}:D>",inline=False)
@@ -36,7 +36,7 @@ class Logs(commands.Cog):
         await self.user_logs_channel.send(
             embed=disnake.Embed(
                 title="Member Left",
-                color=disnake.Color.brand_red()
+                colour=disnake.Colour.brand_red()
             )
             .add_field("User Details",f"<@{member.id}> | {member.name} | {member.id}",inline=False)
             .add_field("New Member Count",f"**{member.guild.member_count}**",inline=False)
@@ -52,7 +52,7 @@ class Logs(commands.Cog):
         entry = await channel.guild.audit_logs(action=disnake.AuditLogAction.channel_delete, limit=1).get()
         await self.logs_channel.send(embed=disnake.Embed(
             title="Guild Channel Deleted",
-            color=disnake.Color.from_rgb(130, 7, 31)
+            colour=disnake.Colour.from_rgb(130, 7, 31)
         ).add_field("Channel Name",channel.name,inline=False).add_field("Category",channel.category.name,inline=False).set_author(name=entry.user.global_name,icon_url=entry.user.avatar.url))
     
     # Channel Create
@@ -61,7 +61,7 @@ class Logs(commands.Cog):
         entry = await channel.guild.audit_logs(action=disnake.AuditLogAction.channel_create, limit=1).get()
         await self.logs_channel.send(embed=disnake.Embed(
             title="Guild Channel Created",
-            color=disnake.Color.from_rgb(37, 199, 32)
+            colour=disnake.Colour.from_rgb(37, 199, 32)
         ).add_field("Channel Name",channel.name,inline=False).add_field("Category",channel.category.name,inline=False).set_author(name=entry.user.global_name,icon_url=entry.user.avatar.url))
     
     # Message Edit
@@ -71,7 +71,7 @@ class Logs(commands.Cog):
             await self.logs_channel.send(embed=disnake.Embed(
                 title="Message Edited",
                 description=f"**[Jump to the message]({after.jump_url})**",
-                color=disnake.Color.from_rgb(209, 192, 59)
+                colour=disnake.Colour.from_rgb(209, 192, 59)
             ).add_field("Before",before.content,inline=False).add_field("After",after.content,inline=False).set_author(name=after.author.global_name,icon_url=after.author.avatar.url))
     
     # Message Delete
@@ -79,5 +79,5 @@ class Logs(commands.Cog):
     async def on_message_delete(self, message: disnake.Message):
         await self.logs_channel.send(embed=disnake.Embed(
             title="Message Deleted",
-            color=disnake.Color.from_rgb(230, 50, 50)
-        ).add_field("Content",message.content,inline=False).add_field("Channel",message.channel.jump_url,inline=False).add_field("Attachments",f"{len(message.attachments)!s} attachments",inline=False).set_author(name=message.author.global_name,icon_url=message.author.avatar.url))
+            colour=disnake.Colour.from_rgb(230, 50, 50)
+        ).add_field("Content",message.content,inline=False).add_field("Channel",message.channel.jump_url,inline=False).add_field("Attachments",f"{message.attachments.__len__()!s} attachments",inline=False).set_author(name=message.author.global_name,icon_url=message.author.avatar.url))

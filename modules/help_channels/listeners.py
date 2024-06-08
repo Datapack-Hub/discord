@@ -4,7 +4,7 @@ import variables
 import asyncio
 
 
-class OnThreadCreate(commands.Cog):
+class HelpChannelListeners(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -13,7 +13,7 @@ class OnThreadCreate(commands.Cog):
         await asyncio.sleep(1)
         if thread.parent_id in variables.help_channels:
             embed = disnake.Embed(
-                color=disnake.Colour.orange(),
+                colour=disnake.Colour.orange(),
                 title=("Someone will come and help soon!"),
                 description=(
                     "💬 While you wait, take this time to provide more context and details.\n\n🙇 After a while, hit the Summon Helpers button to ping the helper team. They'll be happy to help you\n\n✅ Once your question has been resolved (or you no longer need it), please click Resolve Question or run /resolve"
@@ -62,6 +62,27 @@ class OnThreadCreate(commands.Cog):
                         embed=disnake.Embed(
                             title="⚠️ You already have a question open!",
                             description=f"Don't forget to close or resolve your old questions once you're done with them. It makes our lives much easier! :D\n\n**Open question**: <#{t.id}>",
-                            color=disnake.Color.red(),
+                            colour=disnake.Colour.red(),
                         )
                     )
+    
+    @commands.Cog.listener()
+    async def on_message(self, message: disnake.Message):
+        if (
+            type(message.channel) is disnake.Thread
+            and message.channel.parent.id in variables.help_channels
+            and message.channel.parent.get_tag_by_name("RESOLVED")
+            in message.channel.applied_tags
+            and not (message.author.id == self.bot.user.id)
+        ):
+            await message.channel.remove_tags(
+                message.channel.parent.get_tag_by_name("RESOLVED")
+            )
+            await message.reply(
+                "**Re-opened the channel.** Make sure to close it again once you're done.",
+                components=[
+                    disnake.ui.Button(
+                        label="Close Question", custom_id="resolve_question_button"
+                    )
+                ],
+            )

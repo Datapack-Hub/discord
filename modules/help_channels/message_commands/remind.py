@@ -8,16 +8,19 @@ class RemindCommand(commands.Cog):
 
     @commands.message_command(name="Remind them to resolve thread")
     async def remind(self, inter: disnake.MessageCommandInteraction):
+        # Build the embed
         embed = disnake.Embed(
             title="🎗️ Is your question resolved?",
             description="""
             If your question is resolved, that's great to hear! Make sure to run `/resolve` or click the Resolve Question button. Otherwise, feel free to continue asking for help! :D
             """,
-            color=disnake.Colour.orange(),
+            colour=disnake.Colour.orange(),
         ).set_footer(
             text="Requested by " + inter.author.display_name,
             icon_url=inter.author.display_avatar.url,
         )
+        
+        # Send embed with resolve button
         await inter.target.reply(
             embed=embed,
             components=[
@@ -28,4 +31,6 @@ class RemindCommand(commands.Cog):
                 )
             ],
         )
+        
+        # Send confirmation message
         await inter.response.send_message("Done! :D", ephemeral=True)

@@ -1,10 +1,16 @@
 bottoken.py
 variables.py
+automod.py
 *.pyc
 points.json
 events/files/output.png
 out.png
 member_data.json
+mute_lengths.json
+modlogs.json
+
+*.vscode/
+*.vscode/*
 
 # Byte-compiled / optimized / DLL files 
 *__pycache__/*
