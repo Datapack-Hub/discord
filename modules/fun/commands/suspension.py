@@ -51,7 +51,7 @@ class SuspensionRailwayCommand(commands.Cog, name="suspension_railway"):
         return
     
     @susprail.sub_command("image","Generate a random image of a suspension railway")
-    async def image(inter: disnake.ApplicationCommandInteraction):
+    async def image(self, inter: disnake.ApplicationCommandInteraction):
         image = random.choice(IMAGES)
         embed = disnake.Embed(
             title=image["title"],
@@ -60,7 +60,7 @@ class SuspensionRailwayCommand(commands.Cog, name="suspension_railway"):
         await inter.response.send_message(embed=embed)
         
     @susprail.sub_command("info","Learn about suspension railways")
-    async def info(inter: disnake.ApplicationCommandInteraction):
+    async def info(self, inter: disnake.ApplicationCommandInteraction):
         embed = disnake.Embed(
             title="Learn about Suspension Railways",
             colour=disnake.Colour.blue()

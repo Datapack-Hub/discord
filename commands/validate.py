@@ -60,6 +60,7 @@ class ValidateFileCommand(commands.Cog):
                                 try:
                                     # not sure what this is for or if it's needed, 
                                     # but its unused and vscode isn't liking it
+                                    # sincerely, me
                                     this = json.load(json_file)
                                 except json.JSONDecodeError:
                                     issues.append(

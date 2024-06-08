@@ -9,7 +9,7 @@ class Hl:
 		commands = database_content["commands"]
 		color_classes = database_content["color_classes"]
 
-	def lex(func):
+	def lex(self, func):
 		state = {
 			"mode": "normal",
 			"history": ["normal"],
@@ -198,7 +198,7 @@ class Hl:
 				break
 		return tokens
 
-	def highlight(func, theme="default"):
+	def highlight(self, func, theme="default"):
 		# Shortcuts
   
 		# the "shut up" type
@@ -210,7 +210,7 @@ class Hl:
 		bracket_index = 0
 		highlighted = ""
 		# Магія ✨
-		tokens = Hl.lex(func)
+		tokens = Hl.lex(self, func)
 		clear_tokens = tokens[:]
 		# god sorry me for that
 		for _ in range(clear_tokens.count(" ")):
@@ -294,12 +294,16 @@ class Hl:
 				highlighted += colours[text_type] + token
 		return highlighted
 
-	def ansi2html(function):
+	def ansi2html(self, function):
 		color_classes = Hl.Database.color_classes
 		ansi_codes_re = r'(([30][0-7]?)(;(4[0-7]))?m)'
 		converted = ""
 		function_elements = function.replace("\n", "<br>").split("\u001b[")[1:]
 		for element in function_elements:
 			matches = search(ansi_codes_re, element)
+
+			if matches is None:
+				return # not sure what to do here
+   
 			converted += f'<span class="ansi_{color_classes[matches.group(2)]}{" "+color_classes[matches.group(4)] if matches.group(4) is not None else ""}">{element.replace(matches.group(1), "")}</span>'
 		return f"<pre>{converted}</pre>"
