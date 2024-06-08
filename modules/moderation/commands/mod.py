@@ -358,7 +358,7 @@ class ModCommand(commands.Cog):
             description=f"`{user.name}` has been moderated {len(logs)} times.\n\n**Most recent 10 logs**:\n{details}",
             colour=disnake.Colour.orange()
         ).set_thumbnail(user.avatar.url)
-        await inter.response.send_message(embed=emb)
+        await inter.response.send_message(embed=emb, ephemeral=True)
 
     
     @mod.sub_command("banall","Ban literally everyone",)
