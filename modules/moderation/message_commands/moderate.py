@@ -103,7 +103,7 @@ class WarnModal(disnake.ui.Modal):
                 embed=disnake.Embed(
                     title="You have been warned.",
                     colour=disnake.Colour.orange(),
-                    description=f"You have recieved a warning in Datapack Hub.",
+                    description="You have recieved a warning in Datapack Hub.",
                     timestamp=datetime.now(),
                 )
                 .add_field("Warn Message",reason,inline=False)
@@ -190,7 +190,7 @@ class MuteModal(disnake.ui.Modal):
                 embed=disnake.Embed(
                     title=f"You were muted in Datapack Hub for {length}.",
                     colour=disnake.Colour.red(),
-                    description=f"You were banned in Datapack Hub.",
+                    description="You were banned in Datapack Hub.",
                     timestamp=datetime.now(),
                 )
                 .add_field("Reason",reason,inline=False)
@@ -248,7 +248,7 @@ class BanModal(disnake.ui.Modal):
             embed=disnake.Embed(
                 title="You were banned",
                 colour=disnake.Colour.red(),
-                description=f"You were banned in Datapack Hub.",
+                description="You were banned in Datapack Hub.",
                 timestamp=datetime.now(),
             )
             .add_field("Reason",reason,inline=False)

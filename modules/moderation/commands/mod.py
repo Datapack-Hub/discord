@@ -6,7 +6,6 @@ import variables
 import io
 import re
 from utils.uwufier import Uwuifier
-import json
 import utils.modlogs as modlogs
 
 REASONS = [
@@ -19,7 +18,7 @@ REASONS = [
         "description": "Please don't spam in the channels - it's unnecessary and bad.",
     },
     {
-        "label": "Inapropriate",
+        "label": "Inappropriate",
         "description": "This server is meant to be friendly for all ages. Please don't post inappropriate things.",
     },
     {
@@ -117,7 +116,7 @@ class ModCommand(commands.Cog):
             description=f"{inter.user.name} purged {len(deleted_messages)} messages in {inter.channel.mention}.",
         )
 
-        # Add the autor and contents of the deleted messages to the log
+        # Add the author and contents of the deleted messages to the log
         file_content = io.StringIO()
         for messages in deleted_messages:
             file_content.write(
@@ -138,7 +137,7 @@ class ModCommand(commands.Cog):
 
     @mod.sub_command("mute", "Mutes a member for a length of time")
     async def mute(self, inter: disnake.ApplicationCommandInteraction, user: disnake.Member, length: str, reason: str, uwufy: bool = False):
-        if uwufy == True:
+        if uwufy:
             uwu = Uwuifier()
             reason = uwu.uwuify_sentence(reason)
         seconds = timeparse(length)
@@ -180,7 +179,7 @@ class ModCommand(commands.Cog):
     async def ban(
         self, inter: disnake.ApplicationCommandInteraction, user: disnake.Member, reason: str, uwufy: bool = False
     ):
-        if uwufy == True:
+        if uwufy:
             uwu = Uwuifier()
             reason = uwu.uwuify_sentence(reason)
         try:
@@ -225,7 +224,7 @@ class ModCommand(commands.Cog):
             
     @mod.sub_command("warn", "Sends a user a warning")
     async def warn(self, inter: disnake.ApplicationCommandInteraction, user: disnake.Member, message: str, uwufy: bool = False):
-        if uwufy == True:
+        if uwufy:
             uwu = Uwuifier()
             message = uwu.uwuify_sentence(message)
         try:
@@ -285,6 +284,7 @@ class ModCommand(commands.Cog):
                     helper_data.append({"username": user.name, "count": 1, "helper":True})
                 else:
                     helper_data.append({"username": user.name, "count": 1, "helper":False})
+            # ???
             except:
                 helper_data.append({"username": user.name, "count": 1, "helper":False})
 
@@ -294,7 +294,7 @@ class ModCommand(commands.Cog):
 
             for char in name:
                 if (re.match(pattern, char)):
-                    new_name += f"\{char}"
+                    new_name += f"\{char}" # type: ignore
                 else:
                     new_name += char
 
@@ -342,7 +342,7 @@ class ModCommand(commands.Cog):
         ).add_field("Total messages queried",total))
         
     @mod.sub_command("user","Get moderation history of a user",)
-    async def banall(self, inter: disnake.ApplicationCommandInteraction, user: disnake.User):
+    async def history(self, inter: disnake.ApplicationCommandInteraction, user: disnake.User):
         logs = modlogs.get_logs(user.id)
         details = ""
         for i in logs:

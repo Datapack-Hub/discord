@@ -4,20 +4,6 @@ import variables
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
 import os
 import io
-<<<<<<< HEAD:events/on_member_join.py
-
-welcome_messages = [
-    "Hey **%s**, welcome! If you want datapacks, you've come to the right place.",
-    "**%s** has landed. Welcome!",
-    "The 🚟 suspension railway carriage has brought a new member. Say hi to **%s**!",
-    "As discreetly as a mouse, **%s** appears from the ether.",
-    "Greetings, **%s**. Thanks for popping by!",
-    "**%s**, make sure to post your memes in <#1030567663103131678>.",
-    "The latest friend has arrived. **%s**, come say hello!",
-    "I like 🚟 suspension railways. They're so ep- oh, hello **%s**!"
-]
-=======
->>>>>>> db0e387b9fba67ddf43bce9b8e0eae1c82c74302:modules/welcome/listeners.py
 
 async def get_member_join_card(user, self):
     script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -56,13 +42,8 @@ async def get_member_join_card(user, self):
     )
     mask = mask.filter(ImageFilter.GaussianBlur(blur_radius))
 
-<<<<<<< HEAD:events/on_member_join.py
-    pfp_image_round = Image.composite(pfp_image, back_color, mask)
-    pfp_image_round = pfp_image_round.resize((180, 180), Image.Resampling.LANCZOS)
-=======
     pfp_image_round = Image.composite(pfp_image, back_colour, mask)
-    pfp_image_round = pfp_image_round.resize((180, 180), Image.LANCZOS)
->>>>>>> db0e387b9fba67ddf43bce9b8e0eae1c82c74302:modules/welcome/listeners.py
+    pfp_image_round = pfp_image_round.resize((180, 180), Image.Resampling.LANCZOS)
     background_pfp = background_image.convert("RGBA")
 
     draw = ImageDraw.Draw(background_pfp)

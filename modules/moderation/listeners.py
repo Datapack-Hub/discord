@@ -1,7 +1,6 @@
 import disnake
 from disnake.ext import commands
 import variables
-import asyncio
 from utils.uwufier import Uwuifier
 import re
 import automod
@@ -70,7 +69,7 @@ class ModerationListeners(commands.Cog):
             data = json.load(open("mute_lengths.json","r"))
             try:
                 data[str(message.author.id)]
-            except:
+            except KeyError:
                 data[str(message.author.id)] = 1
                 seconds = 1
             else:
