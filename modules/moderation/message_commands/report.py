@@ -50,12 +50,12 @@ class ReportModal(disnake.ui.Modal):
             embed=disnake.Embed(
                 title="Reported message",
                 colour=disnake.Colour.orange(),
-                description=f"Successfully reported the message to moderators.",
+                description="Successfully reported the message to moderators.",
             )
             .add_field("Report Message",report_message if bool(report_message.strip()) else "None supplied",inline=False)
             .add_field("Infringing Message",f"`{self.message.clean_content}`",inline=False),
             ephemeral=True
         )
 
-    async def on_error(self, error: Exception, inter: disnake.ModalInteraction) -> None:
-        await inter.response.send_message("Oops, something went wrong.", ephemeral=True)
+    async def on_error(self, error, interaction: disnake.ModalInteraction) -> None:
+        await interaction.response.send_message("Oops, something went wrong.", ephemeral=True)

@@ -10,7 +10,7 @@ class ViewFileCommand(commands.Cog):
 
     @commands.message_command(name="Quick Look")
     async def quicklook(self, inter: disnake.MessageCommandInteraction):
-        if inter.target.attachments.__len__() == 0:
+        if len(inter.target.attachments) == 0:
             return await inter.response.send_message(
                 "There is no file attached to this message!", ephemeral=True
             )
@@ -57,7 +57,7 @@ class ViewFileCommand(commands.Cog):
                 await inter.response.send_message(
                     embed=emb, view=DropdownView(files_out), ephemeral=True
                 )
-        elif "text/plain" in file.content_type or file.content_type is None:
+        elif file.content_type is None or "text/plain" in file.content_type:
             formatting = "json"
             if file.filename.endswith("mcfunction"):
                 formatting = "hs"
@@ -115,10 +115,8 @@ class SelectModal(disnake.ui.Modal):
                 )
                 await inter.send(embed=emb,ephemeral=True)
 
-    async def on_error(self, error: Exception, inter: disnake.ModalInteraction) -> None:
-        await inter.channel.send(
-            f"Oops, something went wrong. `{' '.join(error.args)}`"
-        )
+    async def on_error(self, error, interaction: disnake.ModalInteraction) -> None:
+        await interaction.response.send_message("Oops, something went wrong.", ephemeral=True)
 
 
 class Dropdown(disnake.ui.StringSelect):

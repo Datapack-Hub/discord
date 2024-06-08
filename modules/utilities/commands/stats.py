@@ -10,20 +10,20 @@ class StatsCommand(commands.Cog, name="stats"):
     async def stats(self, inter: disnake.ApplicationCommandInteraction):
         await inter.response.defer()
 
-        dp_questions = inter.guild.get_channel(1051225367807000706).threads.__len__()
+        dp_questions = len(inter.guild.get_channel(1051225367807000706).threads)
         archived_dps = (
             await inter.guild.get_channel(1051225367807000706)
             .archived_threads(limit=None)
             .flatten()
         )
-        dp_questions = dp_questions + archived_dps.__len__()
-        rp_questions = inter.guild.get_channel(1051227454980755546).threads.__len__()
+        dp_questions = dp_questions + len(archived_dps)
+        rp_questions = len(inter.guild.get_channel(1051227454980755546).threads)
         archived_rps = (
             await inter.guild.get_channel(1051227454980755546)
             .archived_threads(limit=None)
             .flatten()
         )
-        rp_questions = rp_questions + archived_rps.__len__()
+        rp_questions += len(archived_rps)
 
         embed = (
             disnake.Embed(

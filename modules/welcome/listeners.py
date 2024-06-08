@@ -43,7 +43,7 @@ async def get_member_join_card(user, self):
     mask = mask.filter(ImageFilter.GaussianBlur(blur_radius))
 
     pfp_image_round = Image.composite(pfp_image, back_colour, mask)
-    pfp_image_round = pfp_image_round.resize((180, 180), Image.LANCZOS)
+    pfp_image_round = pfp_image_round.resize((180, 180), Image.Resampling.LANCZOS)
     background_pfp = background_image.convert("RGBA")
 
     draw = ImageDraw.Draw(background_pfp)
@@ -100,6 +100,10 @@ class WelcomeListeners(commands.Cog):
     @commands.Cog.listener()
     async def on_member_join(self, member: disnake.Member):
         channel = self.bot.get_channel(variables.new_member_channel)
+        
+        if channel is None:
+            return
+        
         await get_member_join_card(member, self)
         script_dir = os.path.dirname(os.path.abspath(__file__))
         os.chdir(script_dir)

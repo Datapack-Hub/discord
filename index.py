@@ -1,3 +1,4 @@
+import logging
 import disnake
 from disnake.ext import commands, tasks
 from bottoken import TOKEN
@@ -70,14 +71,15 @@ bot.add_cog(OnButtonClick(bot))
 # Loops
 @tasks.loop(minutes=10)
 async def ten():
-    channel_asked = bot.get_channel(variables.stats_asked)
+    channel_asked: disnake.VoiceChannel = bot.get_channel(variables.stats_asked)
     total_threads = 0
     for i in variables.help_channels:
-        questions = bot.get_channel(i).threads.__len__()
-        archived_qns = await bot.get_channel(i).archived_threads(limit=None).flatten()
-        for _ in bot.get_channel(i).threads:
+        channel: disnake.ForumChannel = bot.get_channel(i)
+        questions = len(channel.threads)
+        archived_qns = await channel.archived_threads(limit=None).flatten()
+        for _ in channel.threads:
             total_threads += 1
-        questions = questions + archived_qns.__len__()
+        questions = questions + len(archived_qns)
 
         for thread in archived_qns:
             creation_unix = time.mktime(thread.create_timestamp.timetuple())
@@ -89,7 +91,8 @@ async def ten():
 @tasks.loop(hours=12)
 async def day():
     for i in variables.help_channels:
-        for thread in bot.get_channel(i).threads:
+        forum_channel: disnake.ForumChannel = bot.get_channel(i)
+        for thread in forum_channel.threads:
             last = await thread.history(limit=1).flatten()
             last = last[0]
             if last:
@@ -118,7 +121,8 @@ async def day():
 
 @bot.event
 async def on_ready():
-    print("Bot has started!")
+    logging.basicConfig()
+    logging.info("Bot has started!")
     day.start()
     ten.start()
 
