@@ -340,6 +340,26 @@ class ModCommand(commands.Cog):
             description=body,
             colour=disnake.Colour.orange()
         ).add_field("Total messages queried",total))
+        
+    @mod.sub_command("user","Get moderation history of a user",)
+    async def banall(self, inter: disnake.ApplicationCommandInteraction, user: disnake.User):
+        logs = modlogs.get_logs(user.id)
+        details = ""
+        for i in logs:
+            if i["action"] == "mute":
+                details += f"**Mute** | {disnake.utils.format_dt(i['time'],'R')} for `{i['length']}` | *{i['reason']}*\n"
+            elif i["action"] == "warn":
+                details += f"**Warn** | {disnake.utils.format_dt(i['time'],'R')} | *{i['reason']}*\n"
+            elif i["action"] == "ban":
+                details += f"**Ban** | {disnake.utils.format_dt(i['time'],'R')} | *{i['reason']}*\n"
+        
+        emb = disnake.Embed(
+            title=f"Moderation history for `{user.name}`",
+            description=f"`{user.name}` has been moderated {len(logs)} times.\n\n**Most recent 10 logs**:\n{details}",
+            colour=disnake.Colour.orange()
+        ).set_thumbnail(user.avatar.url)
+        await inter.response.send_message(embed=emb)
+
     
     @mod.sub_command("banall","Ban literally everyone",)
     async def banall(self, inter: disnake.ApplicationCommandInteraction):

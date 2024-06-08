@@ -1,6 +1,8 @@
 import json
+import disnake
 
 def log(data: dict):
+    data["time"] = int(disnake.utils.utcnow().timestamp())
     modlogs_file = open("modlogs.json","r+")
     modlogs = json.load(modlogs_file)
     modlogs.append(data)
