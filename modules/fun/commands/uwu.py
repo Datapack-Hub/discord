@@ -24,18 +24,33 @@ class UwuCommand(commands.Cog, name="uwu"):
         await hook.send(uwu.uwuify_sentence(text.lower()),wait=False,username=inter.author.display_name,avatar_url=inter.author.display_avatar.url,allowed_mentions=disnake.AllowedMentions.none())
     
     @uwu.sub_command("auto","Enable the auto uwufier")
-    async def message(self, inter: disnake.ApplicationCommandInteraction):
+    async def auto(self, inter: disnake.ApplicationCommandInteraction):
         with open("uwufied.json","r+") as fp:
             data: list[int] = json.load(fp)
             if inter.author.id in data:
-                data.remove(inter.author.id)
-                await inter.response.send_message("**Disabled** auto uwufier for user " + inter.author.display_name)
+                data["users"].remove(inter.author.id)
+                await inter.response.send_message("**Disabled** auto uwufier for user " + inter.author.mention)
             else:
-                data.append(inter.author.id)
-                await inter.response.send_message("**Enabled** auto uwufier for user " + inter.author.display_name)
+                data["users"].append(inter.author.id)
+                await inter.response.send_message("**Enabled** auto uwufier for user " + inter.author.mention)
             with open("uwufied.json","w") as fp:
                 fp.seek(0)
                 json.dump(data,fp)
                 fp.close()
             fp.close()
-            
+    
+    @uwu.sub_command("channel","Enable the auto uwufier for the current channel")
+    async def channel(self, inter: disnake.ApplicationCommandInteraction):
+        with open("uwufied.json","r+") as fp:
+            data: list[int] = json.load(fp)
+            if inter.channel.id in data["channels"]:
+                data["channels"].remove(inter.channel.id)
+                await inter.response.send_message("**Disabled** auto uwufier for channel " + inter.channel.mention)
+            else:
+                data["channels"].append(inter.channel.id)
+                await inter.response.send_message("**Enabled** auto uwufier for channel " + inter.channel.mention)
+            with open("uwufied.json","w") as fp:
+                fp.seek(0)
+                json.dump(data,fp)
+                fp.close()
+            fp.close()

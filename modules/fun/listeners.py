@@ -27,7 +27,8 @@ class FunListeners(commands.Cog):
             uwu = Uwuifier()
             await hook.send(uwu.uwuify_sentence(message.content.lower()),wait=False,username=message.author.display_name,avatar_url=message.author.display_avatar.url,allowed_mentions=disnake.AllowedMentions.none())
         with open("uwufied.json","r") as fp:
-            if message.author.id in json.load(fp) and message.channel.type == disnake.ChannelType.text:
+            data = json.load(fp)
+            if ((message.author.id in data["users"]) or (message.channel.id in data["channels"])) and message.channel.type == disnake.ChannelType.text and not message.author.bot:
                 # Create/get hook
                 hooks = await message.channel.webhooks()
                 for hook in hooks:
