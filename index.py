@@ -59,6 +59,8 @@ from modules.fun.listeners import FunListeners
 bot.add_cog(FunListeners(bot))
 from modules.fun.commands.suspension import SuspensionRailwayCommand
 bot.add_cog(SuspensionRailwayCommand(bot))
+from modules.fun.commands.uwu import UwuCommand
+bot.add_cog(UwuCommand(bot))
 
 # Welcome
 from modules.welcome.listeners import WelcomeListeners
