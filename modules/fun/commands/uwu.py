@@ -27,13 +27,15 @@ class UwuCommand(commands.Cog, name="uwu"):
     @uwu.sub_command("auto","Enable the auto uwufier")
     async def auto(self, inter: disnake.ApplicationCommandInteraction):
         with open("uwufied.json","r+") as fp:
-            data: list[int] = json.load(fp)
-            if inter.author.id in data["users"]:
-                data["users"].remove(inter.author.id)
+            data: dict = json.load(fp)
+            users = data["users"]
+            if inter.author.id in users:
+                users.remove(inter.author.id)
                 await inter.response.send_message("**Disabled** auto uwufier for user " + inter.author.mention)
             else:
-                data["users"].append(inter.author.id)
+                users.append(inter.author.id)
                 await inter.response.send_message("**Enabled** auto uwufier for user " + inter.author.mention)
+            data["users"] = users
             with open("uwufied.json","w") as fp:
                 fp.seek(0)
                 json.dump(data,fp)
@@ -43,7 +45,7 @@ class UwuCommand(commands.Cog, name="uwu"):
     @uwu.sub_command("channel","Enable the auto uwufier for the current channel")
     async def channel(self, inter: disnake.ApplicationCommandInteraction):
         with open("uwufied.json","r+") as fp:
-            data: list[int] = json.load(fp)
+            data: dict = json.load(fp)
             if inter.channel.id in data["channels"]:
                 data["channels"].remove(inter.channel.id)
                 await inter.response.send_message("**Disabled** auto uwufier for channel " + inter.channel.mention)
