@@ -22,12 +22,13 @@ class UwuCommand(commands.Cog, name="uwu"):
             hook = await inter.channel.create_webhook(name="DPH")
         uwu = Uwuifier()
         await hook.send(uwu.uwuify_sentence(text.lower()),wait=False,username=inter.author.display_name,avatar_url=inter.author.display_avatar.url,allowed_mentions=disnake.AllowedMentions.none())
+        await inter.response.send_message("yes done")
     
     @uwu.sub_command("auto","Enable the auto uwufier")
     async def auto(self, inter: disnake.ApplicationCommandInteraction):
         with open("uwufied.json","r+") as fp:
             data: list[int] = json.load(fp)
-            if inter.author.id in data:
+            if inter.author.id in data["users"]:
                 data["users"].remove(inter.author.id)
                 await inter.response.send_message("**Disabled** auto uwufier for user " + inter.author.mention)
             else:
