@@ -4,7 +4,7 @@ import variables
 from utils.uwufier import Uwuifier
 import json
 import utils.log as Log
-
+import os
 
 class FunListeners(commands.Cog):
     def __init__(self, bot):
@@ -12,6 +12,7 @@ class FunListeners(commands.Cog):
         
     @commands.Cog.listener()
     async def on_message(self, message: disnake.Message):
+        Log.debug(os.getcwd())
         if variables.uwu_trigger in message.content.lower() and not message.author.bot:
             # Create/get hook
             hooks = await message.channel.webhooks()
