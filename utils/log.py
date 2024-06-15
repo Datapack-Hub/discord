@@ -44,7 +44,7 @@ def info(message: str):
     print(f"{Colour.text.BLUE}INFO{Colour.RESET}  | " + message)
     
 def debug(message: str):
-    print(f"{Colour.text.BLACK}DEBUG{Colour.RESET} | " + message)
+    print(f"{Colour.text.bright.BLACK}DEBUG{Colour.RESET} | " + message)
     
 def warn(message: str):
     print(f"{Colour.text.YELLOW}WARN{Colour.RESET}  | " + message)

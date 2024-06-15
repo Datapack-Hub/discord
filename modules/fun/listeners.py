@@ -12,7 +12,6 @@ class FunListeners(commands.Cog):
         
     @commands.Cog.listener()
     async def on_message(self, message: disnake.Message):
-        Log.debug(os.getcwd())
         if variables.uwu_trigger in message.content.lower() and not message.author.bot:
             # Create/get hook
             hooks = await message.channel.webhooks()
