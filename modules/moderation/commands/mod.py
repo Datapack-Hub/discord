@@ -146,7 +146,7 @@ class ModCommand(commands.Cog):
         except disnake.errors.Forbidden:
             await inter.response.send_message(f"Failed to mute user {user.mention}: I don't have permission to do this.",ephemeral=True)
         except Exception as e:
-            await inter.response.send_message(f"Failed to mute user {user.mention}: `{' '.join(e.args)}`",ephemeral=True)
+            await inter.response.send_message(f"Failed to mute user {user.mention}: `{e}`",ephemeral=True)
         else:
             await inter.response.send_message(f"Muted user {user.mention} for reason:```\n{reason}```",ephemeral=True)
             await user.send(
@@ -199,7 +199,7 @@ class ModCommand(commands.Cog):
             )
         except Exception as e:
             await inter.response.send_message(
-                f"Failed to ban user {user.mention}: `{' '.join(e.args)}`",
+                f"Failed to ban user {user.mention}: `{e}`",
                 ephemeral=True,
             )
         else:
@@ -243,7 +243,7 @@ class ModCommand(commands.Cog):
             )
         except Exception as e:
             await inter.response.send_message(
-                f"Failed to warn user {user.mention}: `{' '.join(e.args)}`",
+                f"Failed to warn user {user.mention}: `{e}`",
                 ephemeral=True,
             )
         else:

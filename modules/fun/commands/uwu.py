@@ -47,7 +47,7 @@ class UwuCommand(commands.Cog, name="uwu"):
                     fp.close()
                 fp.close()
         except Exception as e:
-            Log.error(f"Could not toggle uwufier for user {inter.author.name}: {' '.join(e.args)}")
+            Log.error(f"Could not toggle uwufier for user {inter.author.name}: {e}")
     
     @uwu.sub_command("channel","Enable the auto uwufier for the current channel")
     async def channel(self, inter: disnake.ApplicationCommandInteraction):
@@ -68,7 +68,7 @@ class UwuCommand(commands.Cog, name="uwu"):
                     fp.close()
                 fp.close()
         except Exception as e:
-            Log.error(f"Could not toggle uwufier for channel #{inter.channel.name}: {' '.join(e.args)}")
+            Log.error(f"Could not toggle uwufier for channel #{inter.channel.name}: {e}")
             
         
     @uwu.sub_command("user","Enable the auto uwufier for another user")
@@ -92,4 +92,4 @@ class UwuCommand(commands.Cog, name="uwu"):
                     fp.close()
                 fp.close()
         except Exception as e:
-            Log.error(f"Could not toggle uwufier for user {user.name}: {' '.join(e.args)}")
+            Log.error(f"Could not toggle uwufier for user {user.name}: {e}")

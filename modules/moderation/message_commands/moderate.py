@@ -116,7 +116,7 @@ class WarnModal(disnake.ui.Modal):
             )
         except Exception as e:
             await inter.response.send_message(
-                f"Failed to warn user {self.member.mention}: `{' '.join(e.args)}`",
+                f"Failed to warn user {self.member.mention}: `{e}`",
                 ephemeral=True,
             )
         else:
@@ -177,7 +177,7 @@ class MuteModal(disnake.ui.Modal):
         except disnake.errors.Forbidden:
             await inter.response.send_message(f"Failed to mute user {self.member.mention}: I don't have permission to do this.",ephemeral=True)
         except Exception as e:
-            await inter.response.send_message(f"Failed to mute user {self.member.mention}: `{' '.join(e.args)}`",ephemeral=True)
+            await inter.response.send_message(f"Failed to mute user {self.member.mention}: `{e}`",ephemeral=True)
         else:
             conf = disnake.Embed(
                 title="User Muted",
@@ -263,7 +263,7 @@ class BanModal(disnake.ui.Modal):
         except disnake.errors.Forbidden:
             await inter.response.send_message(f"Failed to ban user {self.member.mention}: I don't have permission to do this.",ephemeral=True)
         except Exception as e:
-            await inter.response.send_message(f"Failed to ban user {self.member.mention}: `{' '.join(e.args)}`",ephemeral=True)
+            await inter.response.send_message(f"Failed to ban user {self.member.mention}: `{e}`",ephemeral=True)
         else:
             conf = disnake.Embed(
                 title="User Banned",

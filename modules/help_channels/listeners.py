@@ -2,6 +2,7 @@ import disnake
 from disnake.ext import commands
 import variables
 import asyncio
+import utils.log as Log
 
 
 class HelpChannelListeners(commands.Cog):
@@ -19,36 +20,33 @@ class HelpChannelListeners(commands.Cog):
                     "💬 While you wait, take this time to provide more context and details.\n\n🙇 After a while, hit the Summon Helpers button to ping the helper team. They'll be happy to help you\n\n✅ Once your question has been resolved (or you no longer need it), please click Resolve Question or run /resolve"
                 ),
             )
-            summon_helpers_button = disnake.ui.Button(
-                label="Summon Helpers",
-                custom_id="summon_helpers_button",
-                style=disnake.ButtonStyle.blurple,
-                emoji="🙇",
-            )
-            resolve_question_button = disnake.ui.Button(
-                label="Resolve Question",
-                custom_id="resolve_question_button",
-                style=disnake.ButtonStyle.green,
-                emoji="✅",
-            )
-
-            messages = await thread.history(oldest_first=True, limit=1).flatten()
-            await messages[0].pin()
-
-            await thread.send(
-                f"<@&{variables.comm_helper_C!s}>",
-                embed=embed,
-                components=[
-                    summon_helpers_button,
-                    resolve_question_button,
-                ],
-                allowed_mentions=disnake.AllowedMentions(roles=True),
-            )
-
-            parent = thread.parent
+            summon_helpers_button = disnake.ui.Button(label="Summon Helpers",custom_id="summon_helpers_button",style=disnake.ButtonStyle.blurple,emoji="🙇",)
+            resolve_question_button = disnake.ui.Button(label="Resolve Question",custom_id="resolve_question_button",style=disnake.ButtonStyle.green,emoji="✅",)
             
-            if parent is None:
-                return
+            # Pin first message
+            try:
+                messages = await thread.history(oldest_first=True, limit=1).flatten()
+                await messages[0].pin()
+            except Exception as e:
+                Log.warn("Could not pin the starting message to the help thread: " + " ".join(e.args))
+
+            # Send message
+            try:
+                await thread.send(
+                    f"<@&{variables.comm_helper_C!s}>",
+                    embed=embed,
+                    components=[
+                        summon_helpers_button,
+                        resolve_question_button,
+                    ],
+                    allowed_mentions=disnake.AllowedMentions(roles=True),
+                )
+            except Exception as e:
+                Log.error("Could not send the opening help channel message: " + " ".join(e.args))
+
+            # Find other questions
+            parent = thread.parent
+            if parent is None: return
             
             for t in parent.threads:
                 if (
@@ -75,9 +73,9 @@ class HelpChannelListeners(commands.Cog):
             in message.channel.applied_tags
             and not (message.author.id == self.bot.user.id)
         ):
-            await message.channel.remove_tags(
-                message.channel.parent.get_tag_by_name("RESOLVED")
-            )
+            try: await message.channel.remove_tags(message.channel.parent.get_tag_by_name("RESOLVED"))
+            except Exception as e: Log.warn("Could not remove the Resolved tag: " + " ".join(e.args))
+            
             await message.reply(
                 "**Re-opened the channel.** Make sure to close it again once you're done.",
                 components=[
@@ -86,3 +84,5 @@ class HelpChannelListeners(commands.Cog):
                     )
                 ],
             )
+            
+            Log.info("Re-opened the help thread #" + message.channel.name)

@@ -1,6 +1,7 @@
 import disnake
 from disnake.ext import commands
 import variables
+import utils.log as Log
 
 
 class SummonCommand(commands.Cog, name="summon"):
@@ -13,3 +14,4 @@ class SummonCommand(commands.Cog, name="summon"):
             f"Psst, <@&{variables.helper}>!",
             allowed_mentions=disnake.AllowedMentions(roles=True),
         )
+        Log.info(f"User {inter.author.name} summoned helpers with a slash command")

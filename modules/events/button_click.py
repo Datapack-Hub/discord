@@ -2,6 +2,7 @@ import disnake
 from disnake.ext import commands
 import variables
 import datetime
+import utils.log as Log
 
 
 def format_duration_between(date_time_start, date_time_end):
@@ -79,15 +80,7 @@ class OnButtonClick(commands.Cog):
                 # Archive channel
                 await inter.channel.edit(archived=True)
 
-                # Logging
-                channel = self.bot.get_channel(variables.logs)
-                await channel.send(
-                    embed=disnake.Embed(
-                        colour=disnake.Colour.orange(),
-                        title=("**`Resolve Help Channel` Button**"),
-                        description=(str(inter.user.name) + " resolved a help channel"),
-                    )
-                )
+                Log.info(f"{inter.author.name} closed a help channel using a button.")
             else:
                 await inter.response.send_message(
                     embed=disnake.Embed(
@@ -97,6 +90,8 @@ class OnButtonClick(commands.Cog):
                     ),
                     ephemeral=True,
                 )
+                
+                Log.info(f"{inter.author.name} tried to close a help thread, but did not have permissions.")
 
         if inter.component.custom_id == "summon_helpers_button":
             # Get time
@@ -150,14 +145,7 @@ class OnButtonClick(commands.Cog):
                         embed=embed, components=[resolve_question_button]
                     )
 
-                    # Logging
-                    embed = disnake.Embed(
-                        colour=disnake.Colour.orange(),
-                        title=("**`Summon Helpers` Button**"),
-                        description=(str(inter.user.name) + " summoned helper"),
-                    )
-                    channel = self.bot.get_channel(variables.logs)
-                    await channel.send(embed=embed)
+                    Log.info(f"{inter.author.name} summoned helpers")
 
                 else:
                     embed = disnake.Embed(
@@ -170,16 +158,8 @@ class OnButtonClick(commands.Cog):
                         ),
                     )
                     await inter.response.send_message(embed=embed, ephemeral=True)
-                    # Logging
-                    embed = disnake.Embed(
-                        colour=disnake.Colour.orange(),
-                        title=("**`Summon Helpers` Button**"),
-                        description=(
-                            str(inter.user.name) + " failed summoning Helpers"
-                        ),
-                    )
-                    channel = self.bot.get_channel(variables.logs)
-                    await channel.send(embed=embed)
+                    
+                    Log.info(f"{inter.author.name} tried to summon helpers, but still has {str(30 - int(time_difference_minutes))} minutes left.")
             else:
                 embed = disnake.Embed(
                     colour=disnake.Colour.red(),
@@ -207,3 +187,5 @@ class OnButtonClick(commands.Cog):
             await inter.message.edit(embed=embed,components=[],content="")
             
             await inter.response.send_message("Closed the report",ephemeral=True)
+            
+            Log.info(f"A message report was closed by {inter.author.name}")

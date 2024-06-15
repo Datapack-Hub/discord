@@ -3,6 +3,7 @@ from disnake.ext import commands
 import variables
 from utils.uwufier import Uwuifier
 import json
+import utils.log as Log
 
 
 class FunListeners(commands.Cog):
@@ -25,7 +26,8 @@ class FunListeners(commands.Cog):
             
             # The important bit
             uwu = Uwuifier()
-            await hook.send(uwu.uwuify_sentence(message.content.lower()),wait=False,username=message.author.display_name,avatar_url=message.author.display_avatar.url,allowed_mentions=disnake.AllowedMentions.none())
+            try: await hook.send(uwu.uwuify_sentence(message.content.lower()),wait=False,username=message.author.display_name,avatar_url=message.author.display_avatar.url,allowed_mentions=disnake.AllowedMentions.none())
+            except Exception as e: Log.error(f"Could not uwufy message from {message.author.name}: {e}")
         with open("uwufied.json","r") as fp:
             data = json.load(fp)
             if ((message.author.id in data["users"]) or (message.channel.id in data["channels"])) and message.channel.type == disnake.ChannelType.text and not message.author.bot:
