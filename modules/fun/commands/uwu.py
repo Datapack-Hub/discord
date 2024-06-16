@@ -4,7 +4,7 @@ import utils.log as Log
 import disnake
 from disnake.ext import commands
 
-uwu_data = {"users": [], "channels": [], "banned": []}
+uwu_data = {"users": [], "channels": [], "banned": [], "enabled": True}
 
 class UwuCommand(commands.Cog, name="uwu"):
     def __init__(self, bot):
@@ -70,7 +70,7 @@ class UwuCommand(commands.Cog, name="uwu"):
                 await inter.response.send_message(f"**Banned** user {user.mention} from the uwufier.", allowed_mentions=disnake.AllowedMentions.none())
                 Log.info(f"Banned {user.name} from the uwufier.")
         except Exception as e:
-            Log.error(f"Could not toggle uwufier for channel #{user.name}: {e}")
+            Log.error(f"Could not ban user {user.name} from the uwufier: {e}")
         
     @uwu.sub_command("user","Enable the auto uwufier for another user")
     async def auto(self, inter: disnake.ApplicationCommandInteraction, user: disnake.Member):
@@ -87,3 +87,17 @@ class UwuCommand(commands.Cog, name="uwu"):
             uwu_data["users"] = users
         except Exception as e:
             Log.error(f"Could not toggle uwufier for user {user.name}: {e}")
+            
+    @uwu.sub_command("disable","Disable all uwu features")
+    async def disabled(self, inter: disnake.ApplicationCommandInteraction, user: disnake.Member):
+        try:
+            if uwu_data["enabled"]:
+                uwu_data["enabled"] = False
+                await inter.response.send_message("**Disabled** all uwufier features")
+                Log.info(f"Globally disabled the uwufier")
+            else:
+                uwu_data["enabled"] = True
+                await inter.response.send_message("**Enabled** all uwufier features")
+                Log.info(f"Globally enabled the uwufier")
+        except Exception as e:
+            Log.error(f"Could not toggle uwufier: {e}")
