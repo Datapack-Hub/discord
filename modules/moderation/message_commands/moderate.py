@@ -31,7 +31,7 @@ class ModerateCommand(commands.Cog):
             title="Moderate this message",
             description="Select a moderation option below. The message will be deleted when you select an option.",
             colour=disnake.Colour.orange()
-        ).add_field("Message Content",f"`{message.content}`",inline=False).add_field("Message Author",f"{message.author.global_name} ({message.author.id})",inline=False)
+        ).add_field("Message Author",f"{message.author.global_name} ({message.author.id})",inline=False)
         await inter.response.send_message(embed=prompt,view=ModActions(message),ephemeral=True)
         
 # Defines a simple view of row buttons.
