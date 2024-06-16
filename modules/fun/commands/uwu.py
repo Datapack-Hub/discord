@@ -88,8 +88,8 @@ class UwuCommand(commands.Cog, name="uwu"):
         except Exception as e:
             Log.error(f"Could not toggle uwufier for user {user.name}: {e}")
             
-    @uwu.sub_command("disable","Disable all uwu features")
-    async def disabled(self, inter: disnake.ApplicationCommandInteraction, user: disnake.Member):
+    @uwu.sub_command("override","Toggle all uwu features")
+    async def override(self, inter: disnake.ApplicationCommandInteraction):
         try:
             if uwu_data["enabled"]:
                 uwu_data["enabled"] = False
