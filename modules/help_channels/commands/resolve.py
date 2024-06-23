@@ -70,7 +70,9 @@ class ResolveCommand(commands.Cog, name="resolve"):
 
             # Mark as closed
             await inter.channel.edit(archived=True)
+            
+            Log.info(f"{inter.author.name} resolved the thread #{inter.channel.name}")
         
         else:
             await inter.response.send_message("You aren't allowed to do this here.", ephemeral=True)
-            Log.info("")
+            Log.info(f"{inter.author.name} tried to resolve a thread which wasn't theirs")

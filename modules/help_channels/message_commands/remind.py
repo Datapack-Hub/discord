@@ -1,5 +1,6 @@
 import disnake
 from disnake.ext import commands
+import utils.log as Log
 
 
 class RemindCommand(commands.Cog):
@@ -34,3 +35,5 @@ class RemindCommand(commands.Cog):
         
         # Send confirmation message
         await inter.response.send_message("Done! :D", ephemeral=True)
+        
+        Log.info(f"{inter.author.name} reminded OP to resolve the channel #{inter.channel.name}")

@@ -1,5 +1,6 @@
 import disnake
 from disnake.ext import commands
+import utils.log as Log
 
 MESSAGE = """
 **If you've got a question, please head to the help channels**
@@ -27,3 +28,5 @@ class RedirectCommand(commands.Cog):
         )
         await inter.target.reply(embed=embed)
         await inter.response.send_message("Sent message", ephemeral=True)
+        
+        Log.info(f"{inter.author.name} redirected the user {inter.target.author.name} to help channels in #{inter.channel.name}")

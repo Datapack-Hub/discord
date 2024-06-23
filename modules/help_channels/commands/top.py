@@ -1,5 +1,6 @@
 import disnake
 from disnake.ext import commands
+import utils.log as Log
 
 
 class TopCommand(commands.Cog, name="top"):
@@ -14,3 +15,5 @@ class TopCommand(commands.Cog, name="top"):
             components=[disnake.ui.Button(label="Jump to top", url=message[0].jump_url)],
             ephemeral=True
         )
+
+        Log.info(f"{inter.author.name} jumped to the top of channel #{inter.channel.name}")

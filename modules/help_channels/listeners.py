@@ -4,7 +4,6 @@ import variables
 import asyncio
 import utils.log as Log
 
-
 class HelpChannelListeners(commands.Cog):
     def __init__(self, bot):
         self.bot = bot

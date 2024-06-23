@@ -55,6 +55,7 @@ from modules.utilities.commands.help import HelpCommand
 bot.add_cog(HelpCommand(bot))
 from modules.utilities.message_commands.view import ViewFileCommand
 bot.add_cog(ViewFileCommand(bot))
+
 # Fun
 from modules.fun.listeners import FunListeners
 bot.add_cog(FunListeners(bot))

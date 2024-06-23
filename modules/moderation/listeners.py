@@ -5,6 +5,7 @@ from utils.uwufier import Uwuifier
 import re
 import automod
 import json
+import utils.log as Log
 
 
 class ModerationListeners(commands.Cog):
@@ -88,3 +89,5 @@ class ModerationListeners(commands.Cog):
                 title="Message Censored",
                 colour=disnake.Colour.orange()
             ).add_field("Content",f"{message.content}",inline=False).add_field("Channel",message.channel.jump_url,inline=False).add_field("Attachments",f"{message.attachments.__len__()!s} attachments",inline=False).set_author(name=message.author.global_name,icon_url=message.author.avatar.url))
+            
+            Log.info(f"Censored a message by {message.author.name}")
