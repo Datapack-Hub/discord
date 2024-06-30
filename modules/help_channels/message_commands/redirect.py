@@ -4,7 +4,7 @@ import utils.log as Log
 
 MESSAGE = """
 **If you've got a question, please head to the help channels**
-- <#1051225367807000706> for questions about datapacks
+- <#1051225367807000706> for questions about datapacks and commands
 - <#1051227454980755546> for questions about resource packs
 - <#1143095605577654392> for anything else
 More info about the help channels can be found in <#935570290317086841>.
