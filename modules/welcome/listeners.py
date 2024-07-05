@@ -26,7 +26,7 @@ async def get_member_join_card(user, self):
     else:
         name = user.name
 
-    guild = self.bot.get_guild(935560260725379143)
+    guild = self.bot.get_guild(variables.guild)
     member_count = guild.member_count
 
     blur_radius = 0

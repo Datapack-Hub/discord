@@ -53,7 +53,7 @@ class ModActions(disnake.ui.View):
             )
             await inter.response.send_message(embed=conf,ephemeral=True)
         else:
-            await inter.response.send_message("This has already been responded to before.",ephemeral=True)
+            await inter.response.send_message("This has already been responded to before. To moderate, please use the `/mod` command.",ephemeral=True)
     
     @disnake.ui.button(label="Warn", style=disnake.ButtonStyle.gray)
     async def warn(self, button: disnake.ui.Button, inter: disnake.MessageInteraction):
@@ -62,7 +62,7 @@ class ModActions(disnake.ui.View):
             await self.message.delete()
             await inter.response.send_modal(WarnModal(self.message))
         else:
-            await inter.response.send_message("This has already been responded to before.",ephemeral=True)
+            await inter.response.send_message("This has already been responded to before. To moderate, please use the `/mod` command.",ephemeral=True)
     
     @disnake.ui.button(label="Mute", style=disnake.ButtonStyle.gray)
     async def mute(self, button: disnake.ui.Button, inter: disnake.MessageInteraction):
@@ -71,7 +71,7 @@ class ModActions(disnake.ui.View):
             await self.message.delete()
             await inter.response.send_modal(MuteModal(self.message))
         else:
-            await inter.response.send_message("This has already been responded to before.",ephemeral=True)
+            await inter.response.send_message("This has already been responded to before. To moderate, please use the `/mod` command.",ephemeral=True)
     
     @disnake.ui.button(label="Ban", style=disnake.ButtonStyle.gray)
     async def ban(self, button: disnake.ui.Button, inter: disnake.MessageInteraction):
@@ -80,7 +80,7 @@ class ModActions(disnake.ui.View):
             await self.message.delete()
             await inter.response.send_modal(BanModal(self.message))
         else:
-            await inter.response.send_message("This has already been responded to before.",ephemeral=True)
+            await inter.response.send_message("This has already been responded to before. To moderate, please use the `/mod` command.",ephemeral=True)
     
 class WarnModal(disnake.ui.Modal):
     def __init__(self, message: disnake.Message) -> None:
@@ -101,13 +101,13 @@ class WarnModal(disnake.ui.Modal):
         try:
             await self.member.send(
                 embed=disnake.Embed(
-                    title="You have been warned.",
+                    title="You recieved a warning",
                     colour=disnake.Colour.orange(),
-                    description="You have recieved a warning in Datapack Hub.",
+                    description="You have been given a warning in Datapack Hub by a moderator.",
                     timestamp=datetime.now(),
                 )
-                .add_field("Warn Message",reason,inline=False)
-                .add_field("Infringing Message",f"`{self.message.clean_content}`",inline=False)
+                .add_field("Warning",f"```\n{reason}```",inline=False)
+                .add_field("Your Message",f"```\n{self.message.clean_content}```",inline=False)
             )
         except disnake.errors.Forbidden:
             await inter.response.send_message(
@@ -134,8 +134,8 @@ class WarnModal(disnake.ui.Modal):
                     colour=disnake.Colour.red(),
                 )
                 .set_author(name=inter.author.global_name, icon_url=inter.author.avatar.url)
-                .add_field("Warn Message", reason, inline=False)
-                .add_field("Infringing Message", f"`{self.message.clean_content}`", inline=False)
+                .add_field("Warning",f"```\n{reason}```",inline=False)
+                .add_field("Your Message",f"```\n{self.message.clean_content}```",inline=False)
             )
             
             modlogs.log({
@@ -148,8 +148,8 @@ class WarnModal(disnake.ui.Modal):
         await interaction.response.send_message("Oops, something went wrong.", ephemeral=True)
         
 class MuteModal(disnake.ui.Modal):
-    def __init__(self, message: disnake.Message) -> None:
-        self.member = message.author
+    async def __init__(self, message: disnake.Message) -> None:
+        self.member = await message.guild.getch_member(message.author.id)
         self.message = message
         components = [
             disnake.ui.TextInput(
@@ -188,14 +188,14 @@ class MuteModal(disnake.ui.Modal):
             
             await self.member.send(
                 embed=disnake.Embed(
-                    title=f"You were muted in Datapack Hub for {length}.",
+                    title=f"You were muted",
                     colour=disnake.Colour.red(),
-                    description="You were banned in Datapack Hub.",
+                    description=f"You were muted in Datapack Hub by a moderator for {length}.",
                     timestamp=datetime.now(),
                 )
-                .add_field("Reason",reason,inline=False)
-                .add_field("You'll be unmuted:",generate_discord_relative_timestamp(seconds),inline=False)
-                .add_field("Infringing Message",f"`{self.message.clean_content}`",inline=False)
+                .add_field("Reason",f"```\n{reason}```",inline=False)
+                .add_field("Your message",f"```\n{self.message.clean_content}```",inline=False)
+                .add_field("Expires",generate_discord_relative_timestamp(seconds),inline=False)
             )
             
             await inter.guild.get_channel(variables.modlogs).send(embed=disnake.Embed(
@@ -244,18 +244,18 @@ class BanModal(disnake.ui.Modal):
         reason = uwu.uwuify_sentence(inter.text_values["message"]) if self.member.id == 711944262173982822 else inter.text_values["message"]
         delete = not bool(inter.text_values["message"].strip())
         
-        await self.member.send(
-            embed=disnake.Embed(
-                title="You were banned",
-                colour=disnake.Colour.red(),
-                description="You were banned in Datapack Hub.",
-                timestamp=datetime.now(),
-            )
-            .add_field("Reason",reason,inline=False)
-            .add_field("Infringing Message",f"`{self.message.clean_content}`",inline=False)
-        )
-        
         try:
+            await self.member.send(
+                embed=disnake.Embed(
+                    title="You were banned",
+                    colour=disnake.Colour.red(),
+                    description=f"You were banned from Datapack Hub by a moderator.",
+                    timestamp=datetime.now(),
+                )
+                .add_field("Reason",f"```\n{reason}```",inline=False)
+                .add_field("Your message",f"```\n{self.message.clean_content}```")
+            )
+            
             if delete:
                 await self.member.ban()
             else:
@@ -278,8 +278,8 @@ class BanModal(disnake.ui.Modal):
                 colour=disnake.Colour.red(),
             )
             .set_author(name=inter.author.global_name, icon_url=inter.author.avatar.url)
-            .add_field("Reason", reason, inline=False)
-            .add_field("Infringing Message", f"`{self.message.clean_content}`", inline=False)
+            .add_field("Reason",f"```\n{reason}```",inline=False)
+            .add_field("Their message",f"```\n{self.message.clean_content}```")
             )
             
             modlogs.log({
