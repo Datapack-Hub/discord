@@ -148,8 +148,8 @@ class WarnModal(disnake.ui.Modal):
         await interaction.response.send_message("Oops, something went wrong.", ephemeral=True)
         
 class MuteModal(disnake.ui.Modal):
-    async def __init__(self, message: disnake.Message) -> None:
-        self.member = await message.guild.getch_member(message.author.id)
+    def __init__(self, message: disnake.Message) -> None:
+        self.member = message.guild.get_member(message.author.id)
         self.message = message
         components = [
             disnake.ui.TextInput(
