@@ -1,0 +1,11 @@
+name: Check requirements.txt
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Check requirements.txt
+        uses: ekvanox/pipreqs-action@master
+        with:
+          COMMIT_MESSAGE: "✨ Updated dependencies.txt"
