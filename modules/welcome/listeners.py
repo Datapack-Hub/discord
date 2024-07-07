@@ -116,5 +116,23 @@ class WelcomeListeners(commands.Cog):
         
     @commands.Cog.listener()
     async def on_message(self, message: disnake.Message):
-        if message.channel.id == variables.intro:
+        if message.channel.id == variables.intro and not message.author.bot:
+            # Add reaction
             await message.add_reaction("👋")
+            
+            # Delete past bot message
+            def is_user(m: disnake.Message):
+                if m.author.id != self.bot.user.id:
+                    return False
+                return True
+
+            await message.channel.purge(limit=10, check=is_user)
+            
+            # Post new bot message
+            embed = disnake.Embed(
+                title="👋 Introduce yourself to the community!",
+                description="This is your chance to make yourself known. Tell us a bit about yourself:\n- your past experiences with datapacks\n- how you found Datapack Hub\n- some facts about yourself\nThen, come say hi in our general chat!",
+                color=disnake.Colour.orange()
+            )
+            
+            await message.channel.send(embed=embed)
