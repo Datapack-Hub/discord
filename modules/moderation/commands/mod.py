@@ -188,16 +188,19 @@ class ModCommand(commands.Cog):
             await inter.response.send_message(f"Failed to mute user {user.mention}: `{e}`",ephemeral=True)
         else:
             await inter.response.send_message(f"Muted user {user.mention} for reason:```\n{reason}```",ephemeral=True)
-            await user.send(
-                embed=disnake.Embed(
-                    title=f"You were muted",
-                    colour=disnake.Colour.red(),
-                    description=f"You were muted in Datapack Hub by a moderator for {length}.",
-                    timestamp=datetime.now(),
+            try:
+                await user.send(
+                    embed=disnake.Embed(
+                        title=f"You were muted",
+                        colour=disnake.Colour.red(),
+                        description=f"You were muted in Datapack Hub by a moderator for {length}.",
+                        timestamp=datetime.now(),
+                    )
+                    .add_field("Reason",f"```\n{reason}```",inline=False)
+                    .add_field("Expires",generate_discord_relative_timestamp(seconds),inline=False)
                 )
-                .add_field("Reason",f"```\n{reason}```",inline=False)
-                .add_field("Expires",generate_discord_relative_timestamp(seconds),inline=False)
-            )
+            except:
+                pass
             
             await inter.guild.get_channel(variables.modlogs).send(embed=disnake.Embed(
                 title="User Muted",
