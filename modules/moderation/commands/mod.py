@@ -141,7 +141,6 @@ class ModCommand(commands.Cog):
                     timestamp=datetime.now(),
                 )
                 .add_field("Warning",f"```\n{message}```",inline=False)
-                .add_field("Your Message",f"```\n{self.message.clean_content}```",inline=False)
             )
         except disnake.errors.Forbidden:
             await inter.response.send_message(
@@ -167,7 +166,6 @@ class ModCommand(commands.Cog):
                 )
                 .set_author(name=inter.author.global_name, icon_url=inter.author.avatar.url)
                 .add_field("Warning",f"```\n{message}```",inline=False)
-                .add_field("Your Message",f"```\n{self.message.clean_content}```",inline=False)
             )
             
             modlogs.log({
