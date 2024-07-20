@@ -263,7 +263,7 @@ class ModCommand(commands.Cog):
             })
     
     @mod.sub_command("helpers","Show active helpers in the last few threads",)
-    async def helpers(self, inter: disnake.ApplicationCommandInteraction):
+    async def helpers(self, inter: disnake.ApplicationCommandInteraction, graph: bool = False):
         await inter.response.defer()
         
         max = 15
@@ -330,17 +330,25 @@ class ModCommand(commands.Cog):
         
         if len(helper_data) > max:
             body += f"\n{len(helper_data) - max!s} users were hidden from this list for having low message counts."
-            
-        # Generate graph
-        plt.pie(np.array([h["count"] for h in helper_data[:8]]), labels=[h["username"] for h in helper_data[:8]])
-        plt.savefig("out.png")
-        plt.close()
-                        
-        await inter.edit_original_message(embed=disnake.Embed(
-            title="List of active helpers",
-            description=body,
-            colour=disnake.Colour.orange(),
-        ).add_field("Total messages queried",total),file=disnake.File(open("out.png","rb")))
+        
+        if graph:
+            # Generate graph
+            plt.pie(np.array([h["count"] for h in helper_data[:8]]), labels=[h["username"] + f" ({h['count']})" for h in helper_data[:8]])
+            plt.savefig("out.png")
+            plt.close()
+                            
+            await inter.edit_original_message(embed=disnake.Embed(
+                title="List of active helpers",
+                description=body,
+                colour=disnake.Colour.orange(),
+            ).add_field("Total messages queried",total))
+            await inter.response.send_message(file=disnake.File(open("out.png","rb")))
+        else:
+            await inter.edit_original_message(embed=disnake.Embed(
+                title="List of active helpers",
+                description=body,
+                colour=disnake.Colour.orange(),
+            ).add_field("Total messages queried",total))
         
     @mod.sub_command("user","Get moderation history of a user",)
     async def history(self, inter: disnake.ApplicationCommandInteraction, user: disnake.User):
