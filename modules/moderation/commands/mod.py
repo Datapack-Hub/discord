@@ -277,12 +277,12 @@ class ModCommand(commands.Cog):
                     return
             try:
                 if role in user.roles:
-                    helper_data.append({"username": user.name, "count": 1, "helper":True})
+                    helper_data.append({"username": user.name, "id": user.id, "count": 1, "helper":True})
                 else:
-                    helper_data.append({"username": user.name, "count": 1, "helper":False})
+                    helper_data.append({"username": user.name, "id": user.id, "count": 1, "helper":False})
             # ???
             except:
-                helper_data.append({"username": user.name, "count": 1, "helper":False})
+                helper_data.append({"username": user.name, "id": user.id, "count": 1, "helper":False})
 
         def escape_name(name: str) -> str:
             pattern: re.Pattern[str] = re.compile("[_~*|#`>-]")
@@ -333,7 +333,18 @@ class ModCommand(commands.Cog):
         
         if graph:
             # Generate graph
-            plt.pie(np.array([h["count"] for h in helper_data[:8]]), labels=[h["username"] + f" ({h['count']})" for h in helper_data[:8]])
+            graph_data = []
+            for u in helper_data[:8]:
+                user: disnake.User = await self.bot.fetch_user(u["id"])
+                graph_data.append({
+                    "username": user.name,
+                    "count": u["count"],
+                    "colour": "#" + '{0:06X}'.format(user.accent_color.value)
+                })
+            plt.pie(
+                np.array([h["count"] for h in graph_data]), 
+                labels=[h["username"] + f" ({h['count']})" for h in graph_data],
+                colors = [h["colour"] for h in graph_data])
             plt.savefig("out.png")
             plt.close()
                             
