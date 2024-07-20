@@ -7,6 +7,8 @@ import io
 import re
 from utils.uwufier import Uwuifier
 import utils.modlogs as modlogs
+import matplotlib.pyplot as plt
+import numpy as np
 
 REASONS = [
     {
@@ -328,12 +330,17 @@ class ModCommand(commands.Cog):
         
         if len(helper_data) > max:
             body += f"\n{len(helper_data) - max!s} users were hidden from this list for having low message counts."
+            
+        # Generate graph
+        plt.pie(np.array([h["count"] for h in helper_data[:8]]), labels=[h["username"] for h in helper_data[:8]])
+        plt.savefig("out.png")
+        plt.close()
                         
         await inter.edit_original_message(embed=disnake.Embed(
             title="List of active helpers",
             description=body,
-            colour=disnake.Colour.orange()
-        ).add_field("Total messages queried",total))
+            colour=disnake.Colour.orange(),
+        ).add_field("Total messages queried",total),file=disnake.File(open("out.png","rb")))
         
     @mod.sub_command("user","Get moderation history of a user",)
     async def history(self, inter: disnake.ApplicationCommandInteraction, user: disnake.User):
