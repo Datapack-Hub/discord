@@ -111,17 +111,6 @@ async def day():
                     )
                     await thread.edit(archived=True)
 
-                    # Logging
-                    embed = disnake.Embed(
-                        colour=disnake.Colour.orange(),
-                        title=("Recycled Thread"),
-                        description=(
-                            f"[{thread.name}]({thread.jump_url}) was archived for 2+ day inactivity."
-                        ),
-                    )
-                    channel = bot.get_channel(variables.logs)
-                    await channel.send(embed=embed)
-
 
 @bot.event
 async def on_ready():

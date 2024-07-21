@@ -112,7 +112,7 @@ class OnButtonClick(commands.Cog):
                         f"<@&{variables.helper!s}> <@&{variables.comm_helper_B!s}>",
                         embed=disnake.Embed(
                             colour=disnake.Colour.blue(),
-                            title=("**🙇 Helpers Arise!**"),
+                            title=("🙇 Helpers Arise!"),
                             description=(
                                 "Please note that you still might not immediately get a response since all helpers are human beings and volunteers (and also might be sleeping right now)"
                             ),
@@ -125,14 +125,8 @@ class OnButtonClick(commands.Cog):
 
                     embed = disnake.Embed(
                         colour=disnake.Colour.orange(),
-                        title=("Someone will come and help soon!"),
-                        description=(
-                            """💬 While you wait, take this time to provide more context and details.\n\n
-                            
-                            🙇 After a while, hit the Summon Helpers button to ping the helper team. They'll be happy to help you\n\n
-                            
-                            ✅ Once your question has been resolved (or you no longer need it), please click Resolve Question or run /resolve"""
-                        ),
+                        title="Someone will come and help soon!",
+                        description="💬 While you wait, take this time to provide more context and details.\n\n✅ Once your question has been resolved (or you no longer need it), please click Resolve Question or run `/resolve`"
                     )
                     resolve_question_button = disnake.ui.Button(
                         label="Resolve Question",
@@ -150,11 +144,9 @@ class OnButtonClick(commands.Cog):
                 else:
                     embed = disnake.Embed(
                         colour=disnake.Colour.red(),
-                        title=("**🕑 Be patient!**"),
+                        title="🕑 Be patient!",
                         description=(
-                            "All helpers are volunteers and thus can't always respond instantly. We'd therefore advise you to give them some time! If you still haven't gotten an answer in `"
-                            + str(30 - int(time_difference_minutes))
-                            + " minutes` feel free to use this again to ping all helpers :D"
+                            f"Typically, you should get a response within 10 minutes, but our helpers are volunteers. We therefore need you to wait until <t:{int((datetime.datetime.now() + datetime.timedelta(minutes=30 - time_difference_minutes)).timestamp())}:t> before you use this button.\n\nIf nobody has helped you yet, try rephrasing your question, giving more details, or just being patient."
                         ),
                     )
                     await inter.response.send_message(embed=embed, ephemeral=True)
@@ -168,14 +160,6 @@ class OnButtonClick(commands.Cog):
                 )
                 await inter.response.send_message(embed=embed, ephemeral=True)
 
-                # Logging
-                embed = disnake.Embed(
-                    colour=disnake.Colour.orange(),
-                    title=("**`Summon Helpers` Button**"),
-                    description=(str(inter.user.name) + " failed summoning Helpers"),
-                )
-                channel = self.bot.get_channel(variables.logs)
-                await channel.send(embed=embed)
         if inter.component.custom_id == "del_this_button":
             await inter.message.delete()
         if inter.component.custom_id == "close_report":

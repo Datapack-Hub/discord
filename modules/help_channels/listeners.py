@@ -3,6 +3,8 @@ from disnake.ext import commands
 import variables
 import asyncio
 import utils.log as Log
+from datetime import datetime, timedelta
+
 
 class HelpChannelListeners(commands.Cog):
     def __init__(self, bot):
@@ -12,11 +14,13 @@ class HelpChannelListeners(commands.Cog):
     async def on_thread_create(self, thread: disnake.Thread):
         await asyncio.sleep(1)
         if thread.parent_id in variables.help_channels:
+            ts30 = datetime.now() + timedelta(minutes=30)
+            
             embed = disnake.Embed(
                 colour=disnake.Colour.orange(),
                 title=("Someone will come and help soon!"),
                 description=(
-                    "💬 While you wait, take this time to provide more context and details.\n\n🙇 After a while, hit the Summon Helpers button to ping the helper team. They'll be happy to help you\n\n✅ Once your question has been resolved (or you no longer need it), please click Resolve Question or run /resolve"
+                    f"💬 While you wait, take this time to provide more context and details.\n\n🙇 If nobody has answered you by <t:{int(ts30.timestamp())}:t>, feel free to use the `Summon Helpers` button to ping our helper team.\n\n✅ Once your question has been resolved (or you no longer need it), please click Resolve Question or run `/resolve`"
                 ),
             )
             summon_helpers_button = disnake.ui.Button(label="Summon Helpers",custom_id="summon_helpers_button",style=disnake.ButtonStyle.blurple,emoji="🙇",)

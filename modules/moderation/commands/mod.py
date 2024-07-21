@@ -106,7 +106,7 @@ class ModCommand(commands.Cog):
         # Logs the purge action
         log_embed = disnake.Embed(
             colour=disnake.Colour.orange(),
-            title="**`/purge` Command**",
+            title="`/purge` Command",
             description=f"{inter.user.name} purged {len(deleted_messages)} messages in {inter.channel.mention}.",
         )
 
