@@ -163,7 +163,7 @@ class ModCommand(commands.Cog):
             await inter.guild.get_channel(variables.modlogs).send(
                 embed=disnake.Embed(
                     title="User Warned",
-                    description=f"{self.member.name} (UID {self.member.id}) was warned.",
+                    description=f"{user.name} (UID {user.id}) was warned.",
                     colour=disnake.Colour.red(),
                 )
                 .set_author(name=inter.author.global_name, icon_url=inter.author.avatar.url)
@@ -206,7 +206,7 @@ class ModCommand(commands.Cog):
             
             await inter.guild.get_channel(variables.modlogs).send(embed=disnake.Embed(
                 title="User Muted",
-                description=f"{self.member.name} (UID {self.member.id}) was muted.",
+                description=f"{user.name} (UID {user.id}) was muted.",
                 colour=disnake.Colour.red(),
             )
             .set_author(name=inter.author.global_name, icon_url=inter.author.avatar.url)
@@ -230,7 +230,7 @@ class ModCommand(commands.Cog):
             uwu = Uwuifier()
             reason = uwu.uwuify_sentence(reason)
         try:
-            await self.member.send(
+            await user.send(
                 embed=disnake.Embed(
                     title="You were banned",
                     colour=disnake.Colour.red(),
@@ -249,7 +249,7 @@ class ModCommand(commands.Cog):
             
             await inter.guild.get_channel(variables.modlogs).send(embed=disnake.Embed(
                 title="User Banned",
-                description=f"{self.member.name} (UID {self.member.id}) was banned.",
+                description=f"{user.name} (UID {user.id}) was banned.",
                 colour=disnake.Colour.red(),
             )
             .set_author(name=inter.author.global_name, icon_url=inter.author.avatar.url)
