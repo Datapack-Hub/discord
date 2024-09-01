@@ -3,6 +3,7 @@ from disnake.ext import commands
 import variables
 import datetime
 import utils.log as Log
+from utils.update import update
 
 
 def format_duration_between(date_time_start, date_time_end):
@@ -72,6 +73,8 @@ class ResolveCommand(commands.Cog, name="resolve"):
             await inter.channel.edit(archived=True)
             
             Log.info(f"{inter.author.name} resolved the thread #{inter.channel.name}")
+            
+            await update(inter.channel)
         
         else:
             await inter.response.send_message("You aren't allowed to do this here.", ephemeral=True)

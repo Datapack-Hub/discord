@@ -3,6 +3,7 @@ from disnake.ext import commands
 import variables
 import datetime
 import utils.log as Log
+from utils.update import update
 
 
 def format_duration_between(date_time_start, date_time_end):
@@ -81,6 +82,8 @@ class OnButtonClick(commands.Cog):
                 await inter.channel.edit(archived=True)
 
                 Log.info(f"{inter.author.name} closed a help channel using a button.")
+                
+                await update(inter.channel)
             else:
                 await inter.response.send_message(
                     embed=disnake.Embed(

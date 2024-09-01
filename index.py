@@ -47,8 +47,6 @@ from modules.help_channels.message_commands.remind import RemindCommand
 bot.add_cog(RemindCommand(bot))
 
 # Utilities
-from modules.utilities.commands.stats import StatsCommand
-bot.add_cog(StatsCommand(bot))
 from modules.utilities.commands.members import MembersCommand
 bot.add_cog(MembersCommand(bot))
 from modules.utilities.commands.help import HelpCommand
@@ -71,6 +69,10 @@ bot.add_cog(WelcomeListeners(bot))
 # Events
 from modules.events.button_click import OnButtonClick
 bot.add_cog(OnButtonClick(bot))
+
+# Events
+from modules.stats.commands.stats import StatsCommand
+bot.add_cog(StatsCommand(bot))
 
 # Loops
 @tasks.loop(minutes=10)

@@ -4,6 +4,7 @@ import variables
 import asyncio
 import utils.log as Log
 from datetime import datetime, timedelta
+from utils.update import remove
 
 
 class HelpChannelListeners(commands.Cog):
@@ -89,3 +90,5 @@ class HelpChannelListeners(commands.Cog):
             )
             
             Log.info("Re-opened the help thread #" + message.channel.name)
+            
+            await remove(message.channel.id)
