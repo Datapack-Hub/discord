@@ -5,13 +5,13 @@ import json
 import variables
 from datetime import datetime, date, time, timedelta
 
-def format_duration_between(date_time_start, date_time_end):
+def format_duration_between(date_time_start, date_time_end, include_seconds=False):
     time_difference = date_time_end - date_time_start
 
-    # Calculate days, hours, and minutes
+    # Calculate days, hours, minutes, and seconds
     days = time_difference.days
     hours, remainder = divmod(time_difference.seconds, 3600)
-    minutes, _ = divmod(remainder, 60)
+    minutes, seconds = divmod(remainder, 60)
 
     # Build the human-readable string
     formatted_duration = ""
@@ -21,6 +21,12 @@ def format_duration_between(date_time_start, date_time_end):
         formatted_duration += f"{hours}h"
     if minutes > 0:
         formatted_duration += f"{minutes}m"
+
+    if include_seconds:
+        if minutes == 0 and hours == 0 and days == 0:
+            formatted_duration += f"{seconds}s"
+        elif seconds > 0:
+            formatted_duration += f"{seconds}s"
 
     return formatted_duration if formatted_duration else "0m"
 
@@ -36,7 +42,8 @@ LEADERBOARD_OPTIONS = [
     "Top Helpers (threads)",
     "Top Askers",
     "Longest Questions",
-    "Shortest Questions"
+    "Shortest Questions",
+    "Quickest Responses"
 ]
 
 def parse_timeframe(option: str):
@@ -190,6 +197,23 @@ class StatsCommand(commands.Cog, name="stats"):
             for thread in lb[:20]:
                 i += 1
                 out += f'{i!s}. **{thread["name"]}** asked by {thread["asker"]["name"]}: `{thread["total_messages"]}` total messages\n'
+        elif leaderboard.lower() == "quickest responses":
+            new_threads = []
+            
+            for thread in threads:
+                if not thread["first_answer"]["author"]["id"] == thread["asker"]["id"]:
+                    thread["time"] = thread["first_answer"]["when"]["timestamp"] - thread["created_at"]["timestamp"]
+                    print(thread["time"])
+                    new_threads.append(thread)
+                
+            # Sort leaderboard
+            lb = sorted(new_threads, key=lambda d: d["time"], reverse=True if leaderboard.lower() == "longest questions" else False)
+            
+            # Generate leaderboard
+            i = 0
+            for thread in lb[:20]:
+                i += 1
+                out += f'{i!s}. **{format_duration_between(thread["created_at"]["timestamp"], thread["first_answer"]["when"]["timestamp"],include_seconds=True)}** in the question `{thread["name"]}` (answered by {thread["first_answer"]["author"]["name"]})\n'
                 
         else:
             return await inter.response.edit_message(f"{leaderboard.lower()} is an invalid leaderboard type.")
@@ -292,6 +316,82 @@ class StatsCommand(commands.Cog, name="stats"):
         json.dump(sorted(data, key=lambda d: d["total_messages"], reverse=True), open("data/questions.json","w"), indent=3)
         
         return await inter.edit_original_message(f"Force-updated {i} of the past 50 questions.")
+    
+    @statsadm.sub_command(name="regen",description="Regenerate all stats (DO NOT RUN UNLESS YOU KNOW WHAT YOU ARE DOING)")
+    async def cmd_regen(self, inter: disnake.ApplicationCommandInteraction):
+        await inter.response.defer()
+        
+        channel = self.bot.get_channel(variables.help_channels[0])
+        
+        data = []
+        i = 0
+        
+        async for thread in channel.archived_threads(limit=None):
+            i += 1
+            try:
+                messages = await thread.history(limit=None, oldest_first=True).flatten()
+                
+                if messages.__len__() == 0:
+                    print("what the fuck")
+                    pass
+                
+                first_answer = next((message for message in messages if message.author.id != 1121129295868334220 and message.author.id != (thread.owner_id if thread.owner_id else 000)), messages[0])
+                
+                this = {
+                    "name":thread.name,
+                    "id":thread.id,
+                    "first_answer":{
+                        "when":{
+                            "friendly":first_answer.created_at.strftime("%H:%M | %d/%m/%Y"),
+                            "timestamp":first_answer.created_at.timestamp()
+                        },
+                        "author":{
+                            "id":first_answer.author.id,
+                            "name":first_answer.author.global_name
+                        }
+                    },
+                    "asker":{
+                        "id":thread.owner_id if thread.owner_id else 000,
+                        "name":thread.owner.name if thread.owner else "unnamed"
+                    },
+                    "duration":{
+                        "friendly":format_duration_between(thread.create_timestamp,thread.archive_timestamp),
+                        "seconds":abs((thread.create_timestamp - thread.archive_timestamp).total_seconds()),
+                        "minutes":abs((thread.create_timestamp - thread.archive_timestamp).total_seconds() / 60)
+                    },
+                    "created_at":{
+                        "friendly":thread.created_at.strftime("%H:%M | %d/%m/%Y"),
+                        "timestamp":thread.created_at.timestamp()
+                    },
+                    "archived_at":{
+                        "friendly":thread.archive_timestamp.strftime("%H:%M | %d/%m/%Y"),
+                        "timestamp":thread.archive_timestamp.timestamp()
+                    },
+                    "total_messages":messages.__len__()
+                }
+                
+                participants = []
+                
+                def update_p_count(user: disnake.Member):
+                    for member in participants:
+                        if member["id"] == user.id:
+                            member["count"] += 1
+                            return
+                    
+                    participants.append({"username": user.name, "id":user.id, "count": 1})
+                
+                for message in messages:
+                    update_p_count(message.author)
+                
+                this["participants"] = participants
+                
+                data.append(this)
+            except Exception as e:
+                print(">> [[SOMETHING WENT WRONG]] << | " + " ".join(e.args))
+        
+        json.dump(sorted(data, key=lambda d: d["total_messages"], reverse=True), open("data/questions.json","w"), indent=3)
+        
+        return await inter.edit_original_message(f"Regenerated {i} questions. It took a while.")
     
     @statsadm.sub_command(name="remove-duplicates",description="Remove any duplicate questions in the data")
     async def cmd_remove_dupes(self, inter: disnake.ApplicationCommandInteraction):
