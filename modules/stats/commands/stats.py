@@ -4,7 +4,15 @@ import utils.log as Log
 import json
 import variables
 from datetime import datetime, date, time, timedelta
+from def import ROOT_DIR
 
+def open_stats(flags: str = "r"):
+    os.chdir(ROOT_DIR)
+    directory = os.getcwd()
+    data_path = os.path.join(directory, "data", "questions.json")
+    
+    return open(data_path, flats)
+    
 def format_duration_between(date_time_start, date_time_end, include_seconds=False):
     time_difference = date_time_end - date_time_start
 
@@ -123,7 +131,7 @@ class StatsCommand(commands.Cog, name="stats"):
         await inter.response.defer()
         
         # Load Question Data
-        qn_data = json.load(open("data/questions.json","r"))
+        qn_data = json.load(open_stats())
         
         # Get all threads made within the timeframe
         timeframe = timeframe.lower()
@@ -245,7 +253,7 @@ class StatsCommand(commands.Cog, name="stats"):
         
         await inter.response.defer()
         
-        data = json.load(open("data/questions.json","r"))
+        data = json.load(open_stats())
         i = 0
         async for thread in channel.archived_threads(limit=50):
             # Exclude threads which have already been processed
@@ -313,7 +321,7 @@ class StatsCommand(commands.Cog, name="stats"):
             except Exception as e:
                 print(">> [[SOMETHING WENT WRONG]] << | " + " ".join(e.args))
         
-        json.dump(sorted(data, key=lambda d: d["total_messages"], reverse=True), open("data/questions.json","w"), indent=3)
+        json.dump(sorted(data, key=lambda d: d["total_messages"], reverse=True), open_stats("w"), indent=3)
         
         return await inter.edit_original_message(f"Force-updated {i} of the past 50 questions.")
     
@@ -389,7 +397,7 @@ class StatsCommand(commands.Cog, name="stats"):
             except Exception as e:
                 print(">> [[SOMETHING WENT WRONG]] << | " + " ".join(e.args))
         
-        json.dump(sorted(data, key=lambda d: d["total_messages"], reverse=True), open("data/questions.json","w"), indent=3)
+        json.dump(sorted(data, key=lambda d: d["total_messages"], reverse=True), open_stats("w"), indent=3)
         
         return await inter.edit_original_message(f"Regenerated {i} questions. It took a while.")
     
@@ -398,7 +406,7 @@ class StatsCommand(commands.Cog, name="stats"):
         await inter.response.defer()
         channel = self.bot.get_channel(variables.help_channels[0])
         
-        data = json.load(open("data/questions.json","r"))
+        data = json.load(open_stats("r"))
         
         i = 0
         
@@ -414,6 +422,6 @@ class StatsCommand(commands.Cog, name="stats"):
 
         data = unique_data
         
-        json.dump(sorted(data, key=lambda d: d["total_messages"], reverse=True), open("data/questions.json","w"), indent=3)
+        json.dump(sorted(data, key=lambda d: d["total_messages"], reverse=True), open_stats("w"), indent=3)
         
         return await inter.edit_original_message(f"Removed {i} duplicate entries from the data.")
