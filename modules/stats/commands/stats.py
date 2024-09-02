@@ -14,7 +14,9 @@ def open_stats(flags: str = "r"):
     
     return open(data_path, flags)
     
-def format_duration_between(date_time_start, date_time_end, include_seconds=False):
+def format_duration_between(timestamp_start, timestamp_end, include_seconds=False):
+    date_time_start = datetime.fromtimestamp(timestamp_start)
+    date_time_end = datetime.fromtimestamp(timestamp_end)
     time_difference = date_time_end - date_time_start
 
     # Calculate days, hours, minutes, and seconds
@@ -71,12 +73,12 @@ def parse_date_range(date_range: str):
         if date_range.startswith("since "):
             start_str = date_range.replace("since ", "")
             start_date = datetime.strptime(start_str, date_format)
-            end_date = datetime.now()  # Set the end date as the current date and time
+            end_date = datetime.now()  
         
         # Check for "before dd/mm/yyyy" format
         elif date_range.startswith("before "):
             end_str = date_range.replace("before ", "")
-            start_date = datetime(1970, 1, 1)  # Set the start date as the Unix epoch (Jan 1, 1970)
+            start_date = datetime(2020, 1, 1)  
             end_date = datetime.strptime(end_str, date_format)
         
         # Check for "dd/mm/yyyy to dd/mm/yyyy" format
@@ -89,13 +91,12 @@ def parse_date_range(date_range: str):
         elif date_range.startswith("last "):
             days_str = date_range.replace("last ", "").strip().split()[0]
             days = int(days_str)
-            end_date = datetime.now()  # Set the end date as the current date and time
-            start_date = end_date - timedelta(days=days)  # Calculate the start date by subtracting x days
+            end_date = datetime.now()  
+            start_date = end_date - timedelta(days=days)  
         
         else:
             raise ValueError("Invalid format. Expected 'since', 'before', 'last', or 'dd/mm/yyyy to dd/mm/yyyy'.")
 
-        # Ensure that the start date is always earlier than the end date
         if start_date > end_date:
             start_date, end_date = end_date, start_date
         
