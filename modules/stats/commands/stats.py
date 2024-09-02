@@ -6,6 +6,7 @@ import variables
 from datetime import datetime, date, time, timedelta
 from defs import ROOT_DIR
 import os
+import numpy as np
 
 def open_stats(flags: str = "r"):
     os.chdir(ROOT_DIR)
@@ -57,6 +58,20 @@ LEADERBOARD_OPTIONS = [
     "Shortest Questions",
     "Quickest Responses"
 ]
+
+DATA_OPTIONS = [
+    "Time before response",
+    "Total messages",
+    "Amount of helpers",
+    "Time question was asked"
+]
+
+async def autocomplete_timeframe(inter: disnake.ApplicationCommandInteraction, string: str):
+    string = string.lower()
+    opts = [i["friendly"] for i in TIMEFRAME_OPTIONS]
+    out = [opt for opt in opts if string in opt.lower()]
+    if len(out) == 0: return [string]
+    else: return out
 
 def parse_timeframe(option: str):
     for opt in TIMEFRAME_OPTIONS:
@@ -127,7 +142,8 @@ class StatsCommand(commands.Cog, name="stats"):
         inter: disnake.ApplicationCommandInteraction, 
         timeframe: str = commands.Param(
             description="Accepts: 'last _ days', 'since/before dd/mm/yyyy', 'dd/mm/yyyy to dd/mm/yyyy'",
-            default="last 7 days"
+            default="last 7 days",
+            autocomplete=autocomplete_timeframe
         ),
         leaderboard: str = commands.Param(
             description="The leaderboard to show, based on #datapack-help data.",
@@ -241,13 +257,86 @@ class StatsCommand(commands.Cog, name="stats"):
         )
         
         await inter.edit_original_message(embed=out_embed)
-        
-    @cmd_leaderboard.autocomplete("timeframe")
-    async def autocomplete_timeframe(inter: disnake.ApplicationCommandInteraction, string: str):
-        string = string.lower()
-        opts = [i["friendly"] for i in TIMEFRAME_OPTIONS]
-        return [opt for opt in opts if string in opt.lower()]
     
+    @stats.sub_command(
+        name="average",
+        description="Shows averages of various data from help channels"
+    )
+    async def cmd_averages(
+        inter: disnake.ApplicationCommandInteraction, 
+        stat: str = commands.Param(
+            description="The statistic to average",
+            choices=DATA_OPTIONS
+        ),
+        timeframe: str = commands.Param(
+            description="Accepts: 'last _ days', 'since/before dd/mm/yyyy', 'dd/mm/yyyy to dd/mm/yyyy'",
+            default="last 7 days",
+            autocomplete=autocomplete_timeframe
+        )
+    ):
+        # Defer the response in case it takes forever
+        await inter.response.defer()
+        
+        # Load Question Data
+        qn_data = json.load(open_stats())
+        
+        # Get all threads made within the timeframe
+        timeframe = timeframe.lower()
+        daterange = parse_date_range(timeframe)
+        if daterange:
+            dates = parse_date_range(timeframe)
+            threads = [thread for thread in qn_data if (thread["created_at"]["timestamp"] > dates[0].timestamp() and thread["created_at"]["timestamp"] < dates[1].timestamp())]
+        else:
+            return await inter.edit_original_message("Invalid dateframe")
+        
+        stat = stat.lower()
+        
+        if stat == "time before response":
+            avg = []
+
+            for question in threads:
+                avg.append(question["first_answer"]["when"]["timestamp"] - question["created_at"]["timestamp"])
+                
+            out = format_duration_between(0, sum(avg) / len(avg), True)
+        elif stat == "total messages":
+            avg = []
+
+            for question in threads:
+                avg.append(question["total_messages"])
+                
+            out = int(sum(avg) / len(avg))
+        elif stat == "amount of helpers":
+            avg = []
+
+            for question in threads:
+                avg.append(len([helper for helper in question["participants"] if helper["id"] != question["asker"]["id"]]))
+                
+            out = int(sum(avg) / len(avg))
+        elif stat == "time question was asked":
+            # TODO: make this return as a discord timestamp of today
+            avg = []
+
+            timestamps = [qn["created_at"]["timestamp"] for qn in threads]
+            times_of_day = [datetime.fromtimestamp(ts).time() for ts in timestamps]
+            times_in_seconds = [time.hour * 3600 + time.minute * 60 + time.second for time in times_of_day]
+            avg_seconds = np.mean(times_in_seconds)
+            avg_time_of_day = timedelta(seconds=avg_seconds)
+            today = datetime.today()
+            average_timestamp_today = datetime.combine(today, (datetime.min + avg_time_of_day).time())
+            average_posix_timestamp = int(average_timestamp_today.timestamp())
+                
+            out = f"<t:{average_posix_timestamp}:t>"
+        else:
+            await inter.edit_original_message("Invalid statistic")
+            
+        out_embed = disnake.Embed(
+            description=f"The average for `{stat}` during the timeframe `{timeframe}` is **{out}**.\n\n-# Updates in real-time. Only includes data from closed and archived threads in #datapack-help. Excludes bots.",
+            color=disnake.Colour.orange()
+        )
+        
+        await inter.edit_original_message(embed=out_embed)
+        
+        
     ## STATS ADMIN BELOW ONLY
     
     @commands.has_permissions(administrator=True)
