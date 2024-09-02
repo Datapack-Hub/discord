@@ -89,7 +89,7 @@ def parse_date_range(date_range: str):
             end_date = datetime.strptime(end_str, date_format)
         
         # Check for "last x days" format
-        elif date_range.startswith("last "):
+        elif date_range.startswith("last ") or date_range == "all time":
             days_str = date_range.replace("last ", "").strip().split()[0]
             days = int(days_str)
             end_date = datetime.now()  
