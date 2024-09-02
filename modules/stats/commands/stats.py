@@ -12,7 +12,7 @@ def open_stats(flags: str = "r"):
     directory = os.getcwd()
     data_path = os.path.join(directory, "data", "questions.json")
     
-    return open(data_path, flats)
+    return open(data_path, flags)
     
 def format_duration_between(date_time_start, date_time_end, include_seconds=False):
     time_difference = date_time_end - date_time_start
