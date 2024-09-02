@@ -45,7 +45,8 @@ TIMEFRAME_OPTIONS = [
     {"friendly": "Last 7 days", "days": 7},
     {"friendly": "Last 30 days", "days": 30},
     {"friendly": "Last 90 days", "days": 90},
-    {"friendly": "Last 365 days", "days": 365}
+    {"friendly": "Last 365 days", "days": 365},
+    {"friendly": "All Time", "days": 10000}
 ]
 
 LEADERBOARD_OPTIONS = [
