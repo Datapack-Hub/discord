@@ -2,6 +2,7 @@ import disnake
 import variables
 import json
 import utils.log as log
+from def import ROOT_DIR
 
 def format_duration_between(date_time_start, date_time_end):
     time_difference = date_time_end - date_time_start
@@ -24,8 +25,12 @@ def format_duration_between(date_time_start, date_time_end):
 
 async def update(thread: disnake.Thread):
     if thread.parent.id == variables.help_channels[0]: return True
+        
+    os.chdir(ROOT_DIR)
+    directory = os.getcwd()
+    data_path = os.path.join(directory, "data", "questions.json")
     
-    fp = open("data/questions.json","r")
+    fp = open(data_path,"r")
     data = json.load(fp)
     fp.close()
     
@@ -88,7 +93,7 @@ async def update(thread: disnake.Thread):
         
         data.append(this)
         
-        wfp = open("data/questions.json","w")
+        wfp = open(data_path,"w")
         json.dump(data,wfp)
         wfp.close()
     except Exception as e:
@@ -96,13 +101,17 @@ async def update(thread: disnake.Thread):
         
 async def remove(id: int):
     try:
-        fp = open("data/questions.json","r")
+        os.chdir(ROOT_DIR)
+        directory = os.getcwd()
+        data_path = os.path.join(directory, "data", "questions.json")
+        
+        fp = open(data_path,"r")
         data = json.load(fp)
         fp.close()
         
         data = [d for d in data if d["id"] != id]
 
-        wfp = open("data/questions.json","w")
+        wfp = open(data_path,"w")
         json.dump(data,wfp)
         wfp.close()
     except Exception as e:
