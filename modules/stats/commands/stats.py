@@ -89,12 +89,17 @@ def parse_date_range(date_range: str):
             end_date = datetime.strptime(end_str, date_format)
         
         # Check for "last x days" format
-        elif date_range.startswith("last ") or date_range == "all time":
+        elif date_range.startswith("last "):
             days_str = date_range.replace("last ", "").strip().split()[0]
             days = int(days_str)
             end_date = datetime.now()  
             start_date = end_date - timedelta(days=days)  
         
+        # Check for "all time" format
+        elif date_range == "all time":
+            start_date = datetime(2020, 1, 1)  
+            end_date = datetime.now()
+            
         else:
             raise ValueError("Invalid format. Expected 'since', 'before', 'last', or 'dd/mm/yyyy to dd/mm/yyyy'.")
 
