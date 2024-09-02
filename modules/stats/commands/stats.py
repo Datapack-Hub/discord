@@ -145,7 +145,7 @@ class StatsCommand(commands.Cog, name="stats"):
         
         out = ""
         
-        if leaderboard.lower() == "top helpers (messages)" or leaderboard.lower() ==  "top helpers (askers)":
+        if leaderboard.lower() == "top helpers (messages)" or leaderboard.lower() ==  "top helpers (threads)":
             users = []
             
             def update_u_count(user: dict):
