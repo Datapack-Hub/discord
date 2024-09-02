@@ -2,7 +2,7 @@ import disnake
 import variables
 import json
 import utils.log as log
-from def import ROOT_DIR
+from defs import ROOT_DIR
 
 def format_duration_between(date_time_start, date_time_end):
     time_difference = date_time_end - date_time_start
