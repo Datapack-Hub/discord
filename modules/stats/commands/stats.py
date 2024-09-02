@@ -4,7 +4,7 @@ import utils.log as Log
 import json
 import variables
 from datetime import datetime, date, time, timedelta
-from def import ROOT_DIR
+from defs import ROOT_DIR
 
 def open_stats(flags: str = "r"):
     os.chdir(ROOT_DIR)
