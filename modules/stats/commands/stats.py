@@ -5,6 +5,7 @@ import json
 import variables
 from datetime import datetime, date, time, timedelta
 from defs import ROOT_DIR
+import os
 
 def open_stats(flags: str = "r"):
     os.chdir(ROOT_DIR)
