@@ -492,7 +492,7 @@ class StatsCommand(commands.Cog, name="stats"):
                 
                 data.append(this)
             except Exception as e:
-                print(">> [[SOMETHING WENT WRONG]] << | " + " ".join(e.args))
+                raise Exception(e)
         
         json.dump(sorted(data, key=lambda d: d["total_messages"], reverse=True), open_stats("w"), indent=3)
         
