@@ -351,20 +351,24 @@ class StatsCommand(commands.Cog, name="stats"):
         inter: disnake.ApplicationCommandInteraction, 
         stat: str = commands.Param(
             description="The statistic to generate a graph from",
-            choices=GRAPH_OPTIONS
+            choices=DATA_OPTIONS
         ),
         timeframe: str = commands.Param(
             description="Accepts: 'last _ days', 'since/before dd/mm/yyyy', 'dd/mm/yyyy to dd/mm/yyyy'",
             default="last 7 days",
             autocomplete=autocomplete_timeframe
+        ),
+        round_first: bool = commands.Param(
+            description="Round the first week/month/year to the start of that week/month/year (default true)",
+            default=True
         )
     ):
-        # Defer the response in case it takes time
+        # Defer the response in case it takes forever
         await inter.response.defer()
-
+        
         # Load Question Data
         qn_data = json.load(open_stats())
-
+        
         # Get timeframe
         timeframe = timeframe.lower()
         daterange = parse_date_range(timeframe)
@@ -373,61 +377,53 @@ class StatsCommand(commands.Cog, name="stats"):
             start_timestamp = int(start_timestamp.timestamp())
             end_timestamp = int(end_timestamp.timestamp())
         else:
-            return await inter.edit_original_message("Invalid date range")
-
-        # Filter questions within the specified date range
+            return await inter.edit_original_message("Invalid dateframe")
+        
         filtered_questions = [q for q in qn_data if start_timestamp <= q['created_at']['timestamp'] <= end_timestamp]
 
-        # Calculate the total number of days in the date range
         date_range_days = (end_timestamp - start_timestamp) // (24 * 60 * 60)
 
-        # Function to round down timestamp to the start of the day
+        # Round timestamp
         def round_to_day(timestamp):
             return datetime.fromtimestamp(timestamp).replace(hour=0, minute=0, second=0, microsecond=0)
 
-        # Include the current time period in the graph
-        now = round_to_day(int(datetime.now().timestamp()))  # Rounded to the start of the current day
+        # Adjust start date to the beginning of the week/month/year
+        def adjust_start_date(start_timestamp, frequency):
+            start_date = round_to_day(start_timestamp)
+            if frequency == 'W':
+                start_date = start_date - timedelta(days=start_date.weekday())
+            elif frequency == 'M':
+                start_date = start_date.replace(day=1)
+            elif frequency == 'Y':
+                start_date = start_date.replace(month=1, day=1)
+            return start_date
 
-        if date_range_days <= 14:
-            dates = [round_to_day(q['created_at']['timestamp']).strftime('%Y-%m-%d') for q in filtered_questions]
-            date_labels = [(round_to_day(start_timestamp) + timedelta(days=i)).strftime('%Y-%m-%d') for i in range(date_range_days + 1)]
+        if date_range_days <= 29:
+            frequency = 'D'
+            start_date = adjust_start_date(start_timestamp, frequency)
+            dates = [round_to_day(q['created_at']['timestamp']).strftime('%b %d') for q in filtered_questions]
+            date_labels = [(start_date + timedelta(days=i)).strftime('%b %d') for i in range(date_range_days + 1)]
 
-            # Add today's date if missing from date_labels
-            if now.strftime('%Y-%m-%d') not in date_labels:
-                date_labels.append(now.strftime('%Y-%m-%d'))
-
-        elif date_range_days <= 90:
-            dates = [round_to_day(q['created_at']['timestamp']).strftime('%Y-%W') for q in filtered_questions]
-            week_start_dates = list(rrule.rrule(rrule.WEEKLY, dtstart=round_to_day(start_timestamp), until=round_to_day(end_timestamp)))
-            date_labels = [d.strftime('%Y-%m-%d') for d in week_start_dates]
-
-            # Add the start of the current week if not included
-            current_week_start = (now - timedelta(days=now.weekday())).strftime('%Y-%m-%d')
-            if current_week_start not in date_labels:
-                date_labels.append(current_week_start)
+        elif date_range_days <= 120:
+            frequency = 'W'
+            start_date = adjust_start_date(start_timestamp, frequency)
+            dates = [round_to_day(q['created_at']['timestamp']).strftime('W%W %Y') for q in filtered_questions]
+            week_start_dates = list(rrule.rrule(rrule.WEEKLY, dtstart=start_date, until=round_to_day(end_timestamp)))
+            date_labels = [d.strftime('W%W %Y') for d in week_start_dates]
 
         elif date_range_days <= 600:
+            frequency = 'M'
+            start_date = adjust_start_date(start_timestamp, frequency)
             dates = [round_to_day(q['created_at']['timestamp']).strftime('%b %y') for q in filtered_questions]
-            month_start_dates = list(rrule.rrule(rrule.MONTHLY, dtstart=round_to_day(start_timestamp), until=round_to_day(end_timestamp)))
+            month_start_dates = list(rrule.rrule(rrule.MONTHLY, dtstart=start_date, until=round_to_day(end_timestamp)))
             date_labels = [d.strftime('%b %y') for d in month_start_dates]
 
-            # Add the start of the current month if not included
-            current_month_start = now.replace(day=1).strftime('%b %y')
-            if current_month_start not in date_labels:
-                date_labels.append(current_month_start)
-
         else:
+            frequency = 'Y'
+            start_date = adjust_start_date(start_timestamp, frequency)
             dates = [round_to_day(q['created_at']['timestamp']).strftime('%Y') for q in filtered_questions]
-            year_start_dates = list(rrule.rrule(rrule.YEARLY, dtstart=round_to_day(start_timestamp), until=round_to_day(end_timestamp)))
+            year_start_dates = list(rrule.rrule(rrule.YEARLY, dtstart=start_date, until=round_to_day(end_timestamp)))
             date_labels = [d.strftime('%Y') for d in year_start_dates]
-
-            # Add the current year if not included
-            current_year = now.strftime('%Y')
-            if current_year not in date_labels:
-                date_labels.append(current_year)
-
-        # Sort the labels to maintain order
-        date_labels.sort()
 
         # Count how many questions were asked in each period
         question_counts = Counter(dates)
