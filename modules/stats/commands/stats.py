@@ -384,7 +384,7 @@ class StatsCommand(commands.Cog, name="stats"):
                         "name":thread.owner.name if thread.owner else "unnamed"
                     },
                     "duration":{
-                        "friendly":format_duration_between(thread.create_timestamp,thread.archive_timestamp),
+                        "friendly":format_duration_between(thread.create_timestamp.timestamp(),thread.archive_timestamp.timestamp()),
                         "seconds":abs((thread.create_timestamp - thread.archive_timestamp).total_seconds()),
                         "minutes":abs((thread.create_timestamp - thread.archive_timestamp).total_seconds() / 60)
                     },
@@ -460,7 +460,7 @@ class StatsCommand(commands.Cog, name="stats"):
                         "name":thread.owner.name if thread.owner else "unnamed"
                     },
                     "duration":{
-                        "friendly":format_duration_between(thread.created_timestamp.timestamp(),thread.archive_timestamp.timestamp()),
+                        "friendly":format_duration_between(thread.create_timestamp.timestamp(),thread.archive_timestamp.timestamp()),
                         "seconds":abs((thread.create_timestamp - thread.archive_timestamp).total_seconds()),
                         "minutes":abs((thread.create_timestamp - thread.archive_timestamp).total_seconds() / 60)
                     },
