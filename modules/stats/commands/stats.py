@@ -1,12 +1,15 @@
 import disnake
 from disnake.ext import commands
-import utils.log as Log
 import json
-import variables
-from datetime import datetime, date, time, timedelta
+from datetime import datetime, timedelta, time
 from defs import ROOT_DIR
 import os
 import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.patches as patches
+import matplotlib.font_manager as fm
+from collections import Counter
+from dateutil import rrule
 
 def open_stats(flags: str = "r"):
     os.chdir(ROOT_DIR)
@@ -66,6 +69,10 @@ DATA_OPTIONS = [
     "Time question was asked"
 ]
 
+GRAPH_OPTIONS = [
+    "Questions Asked"
+]
+
 async def autocomplete_timeframe(inter: disnake.ApplicationCommandInteraction, string: str):
     string = string.lower()
     opts = [i["friendly"] for i in TIMEFRAME_OPTIONS]
@@ -94,7 +101,7 @@ def parse_date_range(date_range: str):
         # Check for "before dd/mm/yyyy" format
         elif date_range.startswith("before "):
             end_str = date_range.replace("before ", "")
-            start_date = datetime(2020, 1, 1)  
+            start_date = datetime(2022, 12, 11)  
             end_date = datetime.strptime(end_str, date_format)
         
         # Check for "dd/mm/yyyy to dd/mm/yyyy" format
@@ -112,7 +119,7 @@ def parse_date_range(date_range: str):
         
         # Check for "all time" format
         elif date_range == "all time":
-            start_date = datetime(2020, 1, 1)  
+            start_date = datetime(2022, 12, 11) 
             end_date = datetime.now()
             
         else:
@@ -335,3 +342,137 @@ class StatsCommand(commands.Cog, name="stats"):
         )
         
         await inter.edit_original_message(embed=out_embed)
+        
+    @stats.sub_command(
+        name="graph",
+        description="Shows a graph of various data from help channels"
+    )
+    async def cmd_graph(
+        inter: disnake.ApplicationCommandInteraction, 
+        stat: str = commands.Param(
+            description="The statistic to generate a graph from",
+            choices=GRAPH_OPTIONS
+        ),
+        timeframe: str = commands.Param(
+            description="Accepts: 'last _ days', 'since/before dd/mm/yyyy', 'dd/mm/yyyy to dd/mm/yyyy'",
+            default="last 7 days",
+            autocomplete=autocomplete_timeframe
+        )
+    ):
+        # Defer the response in case it takes time
+        await inter.response.defer()
+
+        # Load Question Data
+        qn_data = json.load(open_stats())
+
+        # Get timeframe
+        timeframe = timeframe.lower()
+        daterange = parse_date_range(timeframe)
+        if daterange:
+            start_timestamp, end_timestamp = parse_date_range(timeframe)
+            start_timestamp = int(start_timestamp.timestamp())
+            end_timestamp = int(end_timestamp.timestamp())
+        else:
+            return await inter.edit_original_message("Invalid date range")
+
+        # Filter questions within the specified date range
+        filtered_questions = [q for q in qn_data if start_timestamp <= q['created_at']['timestamp'] <= end_timestamp]
+
+        # Calculate the total number of days in the date range
+        date_range_days = (end_timestamp - start_timestamp) // (24 * 60 * 60)
+
+        # Function to round down timestamp to the start of the day
+        def round_to_day(timestamp):
+            return datetime.fromtimestamp(timestamp).replace(hour=0, minute=0, second=0, microsecond=0)
+
+        # Include the current time period in the graph
+        now = round_to_day(int(datetime.now().timestamp()))  # Rounded to the start of the current day
+
+        if date_range_days <= 14:
+            dates = [round_to_day(q['created_at']['timestamp']).strftime('%Y-%m-%d') for q in filtered_questions]
+            date_labels = [(round_to_day(start_timestamp) + timedelta(days=i)).strftime('%Y-%m-%d') for i in range(date_range_days + 1)]
+
+            # Add today's date if missing from date_labels
+            if now.strftime('%Y-%m-%d') not in date_labels:
+                date_labels.append(now.strftime('%Y-%m-%d'))
+
+        elif date_range_days <= 90:
+            dates = [round_to_day(q['created_at']['timestamp']).strftime('%Y-%W') for q in filtered_questions]
+            week_start_dates = list(rrule.rrule(rrule.WEEKLY, dtstart=round_to_day(start_timestamp), until=round_to_day(end_timestamp)))
+            date_labels = [d.strftime('%Y-%m-%d') for d in week_start_dates]
+
+            # Add the start of the current week if not included
+            current_week_start = (now - timedelta(days=now.weekday())).strftime('%Y-%m-%d')
+            if current_week_start not in date_labels:
+                date_labels.append(current_week_start)
+
+        elif date_range_days <= 600:
+            dates = [round_to_day(q['created_at']['timestamp']).strftime('%b %y') for q in filtered_questions]
+            month_start_dates = list(rrule.rrule(rrule.MONTHLY, dtstart=round_to_day(start_timestamp), until=round_to_day(end_timestamp)))
+            date_labels = [d.strftime('%b %y') for d in month_start_dates]
+
+            # Add the start of the current month if not included
+            current_month_start = now.replace(day=1).strftime('%b %y')
+            if current_month_start not in date_labels:
+                date_labels.append(current_month_start)
+
+        else:
+            dates = [round_to_day(q['created_at']['timestamp']).strftime('%Y') for q in filtered_questions]
+            year_start_dates = list(rrule.rrule(rrule.YEARLY, dtstart=round_to_day(start_timestamp), until=round_to_day(end_timestamp)))
+            date_labels = [d.strftime('%Y') for d in year_start_dates]
+
+            # Add the current year if not included
+            current_year = now.strftime('%Y')
+            if current_year not in date_labels:
+                date_labels.append(current_year)
+
+        # Sort the labels to maintain order
+        date_labels.sort()
+
+        # Count how many questions were asked in each period
+        question_counts = Counter(dates)
+
+        # Prepare data for plotting (if the date isn't in the counter, assume count is 0)
+        counts = [question_counts.get(label, 0) for label in date_labels]
+        
+        # Graph prep
+        font_prop = fm.FontProperties(fname=os.path.join(ROOT_DIR,"static","fonts","Lexend.ttf"))
+        bold_font_prop = fm.FontProperties(fname=os.path.join(ROOT_DIR,"static","fonts","Lexend-Bold.ttf"))
+
+        # Plotting the graph
+        plt.figure(figsize=(10, 5), facecolor='#202020')
+        ax = plt.gca()
+        ax.set_facecolor('#202020')
+        
+        ax.spines['top'].set_edgecolor("#444444")
+        ax.spines['left'].set_edgecolor("#444444")
+        ax.spines['right'].set_edgecolor("#444444")
+        ax.spines['bottom'].set_edgecolor("#444444")
+        
+        plt.tick_params(axis='x', colors='#444444')
+        plt.tick_params(axis='y', colors='#444444')
+        
+        bars = plt.bar(date_labels, counts, color='#FF0081')
+        
+        for bar in bars:
+            height = bar.get_height()
+            ax.text(
+                bar.get_x() + bar.get_width() / 2,
+                height,
+                f'{height}',
+                ha='center',
+                va='bottom',
+                fontsize=10,
+                color='white'
+            )
+        
+        plt.xlabel('Date', fontproperties=font_prop, color="#BBBBBB")
+        plt.ylabel('Number of Questions', fontproperties=font_prop, color="#BBBBBB")
+        plt.title('Number of Questions Asked Over Time', fontproperties=bold_font_prop, color="#FFFFFF")
+        plt.xticks(rotation=45, fontproperties=font_prop, color="#AAAAAA")
+        plt.yticks(fontproperties=font_prop, color="#AAAAAA")
+        plt.tight_layout()
+        
+        plt.savefig(os.path.join(ROOT_DIR,"out.png"))
+        
+        await inter.edit_original_message(file=disnake.File(os.path.join(ROOT_DIR,"out.png")))
