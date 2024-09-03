@@ -49,7 +49,7 @@ async def update(thread: disnake.Thread):
             "first_answer":{
                 "when":{
                     "friendly":first_answer.created_at.strftime("%H:%M | %d/%m/%Y"),
-                    "timestamp":thread.created_at.timestamp()
+                    "timestamp":first_answer.created_at.timestamp()
                 },
                 "author":{
                     "id":first_answer.author.id,
@@ -96,7 +96,7 @@ async def update(thread: disnake.Thread):
         wfp = open(data_path,"w")
         json.dump(data,wfp)
         wfp.close()
-    except Exception as e:
+    except ValueError as e:
         log.error(">> [[SOMETHING WENT WRONG]] << | " + " ".join(e.args))
         
 async def remove(id: int):
