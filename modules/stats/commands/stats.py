@@ -372,7 +372,7 @@ class StatsCommand(commands.Cog, name="stats"):
                     "first_answer":{
                         "when":{
                             "friendly":first_answer.created_at.strftime("%H:%M | %d/%m/%Y"),
-                            "timestamp":thread.created_at.timestamp()
+                            "timestamp":first_answer.created_at.timestamp()
                         },
                         "author":{
                             "id":first_answer.author.id,
