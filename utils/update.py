@@ -97,7 +97,9 @@ async def update(thread: disnake.Thread):
         wfp = open(data_path,"w")
         json.dump(data,wfp)
         wfp.close()
-    except ValueError as e:
+        
+        log.info("Logged help thread " + thread.name)
+    except Exceptiom as e:
         log.error(">> [[SOMETHING WENT WRONG]] << | " + " ".join(e.args))
         
 async def remove(id: int):
