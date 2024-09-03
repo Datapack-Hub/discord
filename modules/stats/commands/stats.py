@@ -438,7 +438,7 @@ class StatsCommand(commands.Cog, name="stats"):
                 
                 if messages.__len__() == 0:
                     print("what the fuck")
-                    pass
+                    continue
                 
                 first_answer = next((message for message in messages if message.author.id != 1121129295868334220 and message.author.id != (thread.owner_id if thread.owner_id else 000)), messages[0])
                 
