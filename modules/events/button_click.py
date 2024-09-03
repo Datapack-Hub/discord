@@ -3,7 +3,7 @@ from disnake.ext import commands
 import variables
 import datetime
 import utils.log as Log
-from utils.update import update
+from utils.stats import update
 
 
 def format_duration_between(date_time_start, date_time_end):

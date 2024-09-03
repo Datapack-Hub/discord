@@ -4,7 +4,7 @@ import variables
 import asyncio
 import utils.log as Log
 from datetime import datetime, timedelta
-from utils.update import remove
+from utils.stats import remove
 
 
 class HelpChannelListeners(commands.Cog):
@@ -14,7 +14,7 @@ class HelpChannelListeners(commands.Cog):
     @commands.Cog.listener()
     async def on_thread_create(self, thread: disnake.Thread):
         await asyncio.sleep(1)
-        if thread.parent_id in variables.help_channels:
+        if thread.parent_id in variables.help_channels and not thread.name.startswith("!n"):
             ts30 = datetime.now() + timedelta(minutes=30)
             
             embed = disnake.Embed(

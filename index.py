@@ -70,9 +70,11 @@ bot.add_cog(WelcomeListeners(bot))
 from modules.events.button_click import OnButtonClick
 bot.add_cog(OnButtonClick(bot))
 
-# Events
+# Stats
 from modules.stats.commands.stats import StatsCommand
 bot.add_cog(StatsCommand(bot))
+from modules.stats.commands.stats_admin import StatsAdminCommand
+bot.add_cog(StatsAdminCommand(bot))
 
 # Loops
 @tasks.loop(minutes=10)
