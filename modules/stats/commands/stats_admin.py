@@ -66,7 +66,7 @@ class StatsAdminCommand(commands.Cog, name="stats-admin"):
             i += 1
             
             try:
-                this = gen_json(thread)
+                this = await gen_json(thread)
             except Exception as e:
                 Log.error(f"Error generating json for thread {thread}: {' '.join(e.args)}")
                 continue
