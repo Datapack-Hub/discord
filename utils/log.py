@@ -1,3 +1,6 @@
+import disnake
+import variables
+
 class Colour:
     class text:
         BLACK = '\033[30m'
@@ -40,17 +43,25 @@ class Colour:
     # Reset code
     RESET = '\033[0m'
     
+def _discord(message: str):
+    wh = disnake.SyncWebhook.from_url("https://discord.com/api/webhooks/1280943139561013419/uOBxWfApyCitRmcvnqzZjTafAIJAwspT7ndB9-sIMc2I7mVEOxfFv8sWyU13zRXny_tl")
+    wh.send(message)
+
 def info(message: str):
     print(f"{Colour.text.BLUE}INFO{Colour.RESET}  | " + message)
+    _discord("**INFO** | " + message)
     
 def debug(message: str):
     print(f"{Colour.text.bright.BLACK}DEBUG{Colour.RESET} | " + message)
     
 def warn(message: str):
     print(f"{Colour.text.YELLOW}WARN{Colour.RESET}  | " + message)
+    _discord("**WARN** | " + message)
 
 def error(message: str):
     print(f"{Colour.text.RED}ERROR{Colour.RESET} | " + message)
+    _discord("**ERROR** | " + message + " <@543741360478355456>")
     
 def fatal(message: str):
     print(f"{Colour.bg.RED}FATAL{Colour.RESET} | " + message)
+    _discord("**FATAL** | " + message + " <@543741360478355456>")

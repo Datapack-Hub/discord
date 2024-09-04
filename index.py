@@ -5,6 +5,7 @@ from bottoken import TOKEN
 import variables
 import time
 from datetime import datetime, timedelta, timezone
+import defs
 
 # Setup bot
 bot = commands.Bot(
@@ -118,10 +119,7 @@ async def day():
 
 @bot.event
 async def on_ready():
-    logging.basicConfig()
-    logging.info("Bot has started!")
-    day.start()
-    ten.start()
+    print("Bot has started")
 
 # Run bot
 bot.run(TOKEN)

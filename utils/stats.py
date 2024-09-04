@@ -84,7 +84,7 @@ async def gen_json(thread: disnake.Thread):
     return this
 
 async def update(thread: disnake.Thread):
-    if thread.parent.id == variables.help_channels[0]: return True
+    if thread.parent.id != variables.help_channels[0]: return True
         
     os.chdir(ROOT_DIR)
     directory = os.getcwd()
