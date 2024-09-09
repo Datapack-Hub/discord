@@ -203,7 +203,6 @@ class StatsCommand(commands.Cog, name="stats"):
             for user in lb[:20]:
                 i += 1
                 out += f'{i!s}. **{user["username"]}**: `{user["data"]["messages"]}` messages across `{user["data"]["threads"]}` threads\n'
-                
         elif leaderboard.lower() == "top askers":
             users = []
             
@@ -225,8 +224,7 @@ class StatsCommand(commands.Cog, name="stats"):
             i = 0
             for user in lb[:20]:
                 i += 1
-                out += f'{i!s}. **{user["username"]}**: `{user["data"]["threads"]}` questions asked\n'
-                
+                out += f'{i!s}. **{user["username"]}**: `{user["data"]["threads"]}` questions asked\n'    
         elif leaderboard.lower() == "longest questions" or leaderboard.lower() == "shortest questions":
             # Sort data
             lb = sorted(threads, key=lambda d: d["total_messages"], reverse=True if leaderboard.lower() == "longest questions" else False)
@@ -252,8 +250,7 @@ class StatsCommand(commands.Cog, name="stats"):
             i = 0
             for thread in lb[:20]:
                 i += 1
-                out += f'{i!s}. **{format_duration_between(thread["created_at"]["timestamp"], thread["first_answer"]["when"]["timestamp"],include_seconds=True)}** in the question `{thread["name"]}` (answered by {thread["first_answer"]["author"]["name"]})\n'
-                
+                out += f'{i!s}. **{format_duration_between(thread["created_at"]["timestamp"], thread["first_answer"]["when"]["timestamp"],include_seconds=True)}** in the question `{thread["name"]}` (answered by {thread["first_answer"]["author"]["name"]})\n'       
         else:
             return await inter.response.edit_message(f"{leaderboard.lower()} is an invalid leaderboard type.")
             
@@ -349,18 +346,10 @@ class StatsCommand(commands.Cog, name="stats"):
     )
     async def cmd_graph(
         inter: disnake.ApplicationCommandInteraction, 
-        stat: str = commands.Param(
-            description="The statistic to generate a graph from",
-            choices=DATA_OPTIONS
-        ),
         timeframe: str = commands.Param(
             description="Accepts: 'last _ days', 'since/before dd/mm/yyyy', 'dd/mm/yyyy to dd/mm/yyyy'",
             default="last 7 days",
             autocomplete=autocomplete_timeframe
-        ),
-        round_first: bool = commands.Param(
-            description="Round the first week/month/year to the start of that week/month/year (default true)",
-            default=True
         )
     ):
         # Defer the response in case it takes forever
@@ -472,3 +461,51 @@ class StatsCommand(commands.Cog, name="stats"):
         plt.savefig(os.path.join(ROOT_DIR,"out.png"))
         
         await inter.edit_original_message(file=disnake.File(os.path.join(ROOT_DIR,"out.png")))
+        
+    @stats.sub_command_group(name="user")
+    async def user(self, inter):
+        pass
+    
+    @user.sub_command(name="breakdown")
+    async def cmd_breakdown(
+        inter: disnake.ApplicationCommandInteraction,
+        user: disnake.Member = commands.Param(
+            description="The user to view stats for"
+        ),
+        timeframe: str = commands.Param(
+            description="Accepts: 'last _ days', 'since/before dd/mm/yyyy', 'dd/mm/yyyy to dd/mm/yyyy', 'all time'",
+            default="all time",
+            autocomplete=autocomplete_timeframe
+        )
+    ):
+        # Defer the response in case it takes forever
+        await inter.response.defer()
+        
+        # Load Question Data
+        qn_data = json.load(open_stats())
+        
+        # Get all threads made within the timeframe
+        timeframe = timeframe.lower()
+        daterange = parse_date_range(timeframe)
+        if daterange:
+            dates = parse_date_range(timeframe)
+            threads = [thread for thread in qn_data if (thread["created_at"]["timestamp"] > dates[0].timestamp() and thread["created_at"]["timestamp"] < dates[1].timestamp())]
+        else:
+            return await inter.edit_original_message("Invalid dateframe")
+        
+        out_embed = disnake.Embed(
+            color=disnake.Colour.orange(),
+            title=f"Stats breakdown for {user.global_name}",
+            description=f"This is the breakdown of stats for the user `{user.global_name}` during the timeframe `{timeframe}`, only including data from archived threads in #datapack-help."
+        )
+        
+        out_embed.add_field("Threads helped in",sum(1 for obj in threads if any(p['id'] == user.id for p in obj['participants']) and obj["asker"]["id"] != user.id))
+        out_embed.add_field("Help messages sent",sum(
+            p["count"]
+            for obj in threads
+            for p in obj['participants']
+            if p['id'] == user.id and obj["asker"]["id"] != user.id
+        ))
+        out_embed.add_field("Questions asked",sum(1 for obj in threads if obj["asker"]["id"] == user.id))
+        
+        await inter.edit_original_response(embed=out_embed)
