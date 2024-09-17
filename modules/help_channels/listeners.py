@@ -5,6 +5,7 @@ import asyncio
 import utils.log as Log
 from datetime import datetime, timedelta
 from utils.stats import remove
+from utils.res_thread import resolve_thread
 
 
 class HelpChannelListeners(commands.Cog):
@@ -69,18 +70,19 @@ class HelpChannelListeners(commands.Cog):
                     )
     
     @commands.Cog.listener()
-    async def on_message(self, message: disnake.Message):
-        if (
-            type(message.channel) is disnake.Thread
-            and message.channel.parent.id in variables.help_channels
-            and message.channel.parent.get_tag_by_name("RESOLVED")
-            in message.channel.applied_tags
-            and not (message.author.id == self.bot.user.id)
+    async def on_thread_update(self, before: disnake.Thread, after: disnake.Thread):
+        if before.archived == False and after.archived == True and not (after.parent.get_tag_by_name("RESOLVED") in after.applied_tags):
+            await resolve_thread(thread=after,closer=self.bot.user)
+        elif (
+            before.archived == True and 
+            after.archived == False 
+            and (after.parent.get_tag_by_name("RESOLVED") in after.applied_tags)
+            and after.parent.id in variables.help_channels
         ):
-            try: await message.channel.remove_tags(message.channel.parent.get_tag_by_name("RESOLVED"))
+            try: await after.remove_tags(after.parent.get_tag_by_name("RESOLVED"))
             except Exception as e: Log.warn("Could not remove the Resolved tag: " + " ".join(e.args))
             
-            await message.reply(
+            await after.send(
                 "**Re-opened the channel.** Make sure to close it again once you're done.",
                 components=[
                     disnake.ui.Button(
@@ -89,6 +91,6 @@ class HelpChannelListeners(commands.Cog):
                 ],
             )
             
-            Log.info("Re-opened the help thread #" + message.channel.name)
+            Log.info("Re-opened the help thread #" + after.name)
             
-            await remove(message.channel.id)
+            await remove(after.id)
