@@ -8,13 +8,7 @@ from datetime import datetime, timedelta, timezone
 import defs
 
 # Setup bot
-bot = commands.Bot(
-    command_prefix="nerds",
-    activity=disnake.Activity(
-        name="Datapack Jam",
-        url="https://datapackhub.net",
-        type=disnake.ActivityType.competing,
-    ),
+bot = commands.InteractionBot(
     test_guilds=[variables.guild],
     intents=disnake.Intents.all(),
 )
