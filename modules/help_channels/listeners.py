@@ -71,7 +71,7 @@ class HelpChannelListeners(commands.Cog):
     
     @commands.Cog.listener()
     async def on_thread_update(self, before: disnake.Thread, after: disnake.Thread):
-        if before.archived == False and after.archived == True and not (after.parent.get_tag_by_name("RESOLVED") in after.applied_tags):
+        if before.archived == False and after.archived == True and not (after.parent.get_tag_by_name("RESOLVED") in after.applied_tags) and after.parent.id in variables.help_channels:
             await resolve_thread(thread=after,closer=self.bot.user)
         elif (
             before.archived == True and 
