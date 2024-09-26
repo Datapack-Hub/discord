@@ -18,28 +18,32 @@ async def schedule_qotd(bot: InteractionBot):
 
         # Find QOTD template to post
         input_channel = bot.get_channel(qotd_input_channel) #! replace with actual QOTD input channel
-        template_message = None
+        question_short, question_long, question_author = None, None, None
         async for message in input_channel.history(limit=200):
             if '✅' in message.reactions or type(message.content) != str:
                 continue
-            template_message = message
+            content = str(message.content).split('\n')
+            if len(content) != 2:
+                continue
+            question_short, question_long = content[0], content[1]
+            question_author = message.author
             await message.add_reaction('✅')
             break
-
-        template_text = str(template_message.content).split('\n')
-        qotd_short, qotd_full = template_text[0], template_text[1]
+        if question_short is None or question_long is None or question_author is None:
+            input_channel.send("Help, I couldn't post a QOTD today! @everyone")
+            continue
 
         # Create QOTD thread including embed and ping
         channel: ForumChannel = bot.get_channel(qotd_channel) #! QOTD Channel -> put into variables.py?
         qotd_day = int(channel.last_thread.name.split('.')[0]) + 1
         channel.create_thread(
-            name=f'{qotd_day}. {qotd_short}',
+            name=f'{qotd_day}. {question_short}',
             embed=Embed(
                 colour=Colour.orange(),
-                title=qotd_full,
+                title=question_long,
                 description=f'<@&{qotd_role}>', #! replace with QOTD ping role id
             ).set_footer(
-                text=("Suggested by " + template_message.author.name),
-                icon_url=template_message.author.avatar.url,
+                text=("Suggested by " + question_author.name),
+                icon_url=question_author.avatar.url,
             )
         )
