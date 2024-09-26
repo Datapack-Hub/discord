@@ -20,7 +20,7 @@ async def schedule_qotd(bot: InteractionBot):
         input_channel = bot.get_channel(qotd_input_channel)
         question_short, question_long, question_author = None, None, None
         async for message in input_channel.history(limit=200):
-            if '✅' in message.reactions or type(message.content) != str:
+            if '✅' in message.reactions or type(message.content) != str or message.author.bot:
                 continue
             content = str(message.content).split('\n')
             if len(content) != 2:
