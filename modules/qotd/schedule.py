@@ -17,7 +17,7 @@ async def schedule_qotd(bot: InteractionBot):
         # Everything past here will only be execute once a day at 18:00 (I don't know the timezone though)
 
         # Find QOTD template to post
-        input_channel = bot.get_channel(qotd_input_channel) #! replace with actual QOTD input channel
+        input_channel = bot.get_channel(qotd_input_channel)
         question_short, question_long, question_author = None, None, None
         async for message in input_channel.history(limit=200):
             if '✅' in message.reactions or type(message.content) != str:
@@ -34,14 +34,14 @@ async def schedule_qotd(bot: InteractionBot):
             continue
 
         # Create QOTD thread including embed and ping
-        channel: ForumChannel = bot.get_channel(qotd_channel) #! QOTD Channel -> put into variables.py?
+        channel: ForumChannel = bot.get_channel(qotd_channel)
         qotd_day = int(channel.last_thread.name.split('.')[0]) + 1
         channel.create_thread(
             name=f'{qotd_day}. {question_short}',
             embed=Embed(
                 colour=Colour.orange(),
                 title=question_long,
-                description=f'<@&{qotd_role}>', #! replace with QOTD ping role id
+                description=f'<@&{qotd_role}>',
             ).set_footer(
                 text=("Suggested by " + question_author.name),
                 icon_url=question_author.avatar.url,
