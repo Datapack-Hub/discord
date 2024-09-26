@@ -65,4 +65,13 @@ guild = 12345
 
 # uwu_trigger: the word which triggers the uwufier
 uwu_trigger = "abcde"
+
+# qotd_channel: forum channel where qotds get posted
+qotd_channel = 12345
+
+# qotd_input_channel: regular channel where each message acts as a qotd template
+qotd_input_channel = 12345
+
+# qotd_role: the role to be pinged once a qotd gets posted
+qotd_role = 12345
 ```
