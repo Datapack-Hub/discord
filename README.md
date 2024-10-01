@@ -2,9 +2,13 @@
 This Discord bot is made to power the moderation, help systems, and more within the Datapack Hub server. Although the invite link is private, the code for this bot is completely open source.
 
 ## Setup
-1. Install the packages. You're just gonna have to guess which, because dependencies.txt hasnt been created yet.
+1. Install the packages. Just run `pip install -r requirements.txt`.
+   > _(You may also use `pip3 install -r requirements.txt` depending on os and Python installation)_
 2. Create a `variables.py`. This file will have all of your guild-specific data.
-3. Create a `bot_token.py`, with your bot's token in the TOKEN variable.
+3. Create a `bottoken.py`, with your bot's token in the `TOKEN` variable.
+4. Create a `automod.py`, with a `terms` string list.
+5. Start the bot using `python index.py`.
+   > _(You may also use `py index.py` or `python3 index.py` depending on os and Python installation)_
 
 ## Variables
 `variables.py` should follow this structure:
@@ -61,4 +65,13 @@ guild = 12345
 
 # uwu_trigger: the word which triggers the uwufier
 uwu_trigger = "abcde"
+
+# qotd_channel: forum channel where qotds get posted
+qotd_channel = 12345
+
+# qotd_input_channel: regular channel where each message acts as a qotd template
+qotd_input_channel = 12345
+
+# qotd_role: the role to be pinged once a qotd gets posted
+qotd_role = 12345
 ```
