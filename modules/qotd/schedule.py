@@ -46,7 +46,7 @@ async def schedule_qotd(bot: InteractionBot):
         # Create QOTD thread including embed and ping
         channel: ForumChannel = bot.get_channel(qotd_channel)
         qotd_day = int(channel.last_thread.name.split('.')[0]) + 1
-        channel.create_thread(
+        await channel.create_thread(
             name=f'{qotd_day}. {question_short}',
             embed=Embed(
                 colour=Colour.orange(),
