@@ -13,8 +13,8 @@ def _seconds_until_oclock(hour: int):
 
 async def schedule_qotd(bot: InteractionBot):
     while True:
-        await asyncio.sleep(_seconds_until_oclock(18))
-        # Everything past here will only be executed once a day at 18:00 (In the server's timezone)
+        await asyncio.sleep(_seconds_until_oclock(12))
+        # Everything past here will only be executed once a day at 12:00 (In the server's timezone)
 
         # Find QOTD template to post
         input_channel = bot.get_channel(qotd_input_channel)
