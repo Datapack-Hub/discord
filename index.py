@@ -73,7 +73,6 @@ bot.add_cog(StatsAdminCommand(bot))
 
 # QOTD
 from modules.qotd.schedule import schedule_qotd
-schedule_qotd(bot)
 
 # Loops
 @tasks.loop(minutes=10)
@@ -118,6 +117,8 @@ async def day():
 @bot.event
 async def on_ready():
     print("Bot has started")
+    
+    await schedule_qotd(bot)
 
 # Run bot
 bot.run(TOKEN)
