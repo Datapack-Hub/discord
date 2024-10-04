@@ -13,8 +13,7 @@ def _seconds_until_oclock(hour: int):
 
 async def schedule_qotd(bot: InteractionBot):
     while True:
-        await asyncio.sleep(_seconds_until_oclock(18))
-        # Everything past here will only be executed once a day at 18:00 (In the server's timezone)
+        await asyncio.sleep(_seconds_until_oclock(13))
 
         # Find QOTD template to post
         input_channel = bot.get_channel(qotd_input_channel)
@@ -40,13 +39,13 @@ async def schedule_qotd(bot: InteractionBot):
             # End here
             break
         if question_short is None or question_long is None or question_author is None:
-            input_channel.send("Help, I couldn't post a QOTD today! @everyone")
+            await input_channel.send("Help, I couldn't post a QOTD today! @everyone")
             continue
 
         # Create QOTD thread including embed and ping
         channel: ForumChannel = bot.get_channel(qotd_channel)
         qotd_day = int(channel.last_thread.name.split('.')[0]) + 1
-        channel.create_thread(
+        await channel.create_thread(
             name=f'{qotd_day}. {question_short}',
             embed=Embed(
                 colour=Colour.orange(),
