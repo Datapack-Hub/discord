@@ -24,7 +24,7 @@ async def schedule_qotd(bot: InteractionBot):
         
         async for message in input_channel.history(limit=200):
             # If already posted, skip
-            if '✅' in message.reactions or message.content is str or message.author.bot:
+            if '✅' in message.reactions or message.content is not str or message.author.bot:
                 continue
             
             # Check it follows the correct format
