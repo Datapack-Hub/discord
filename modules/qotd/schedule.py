@@ -1,8 +1,11 @@
-import datetime
 import asyncio
+import datetime
+
+from disnake import ForumChannel, ModalInteraction, TextInputStyle
+from disnake.ui import Button, Modal, TextInput
 from disnake.ext.commands.bot import InteractionBot
-from disnake import ForumChannel, Embed, Colour
 from variables import qotd_channel, qotd_input_channel, qotd_role
+
 
 def _seconds_until_oclock(hour: int):
     now = datetime.datetime.now()
@@ -21,7 +24,7 @@ async def schedule_qotd(bot: InteractionBot):
         
         async for message in input_channel.history(limit=200):
             # If already posted, skip
-            if '✅' in message.reactions or type(message.content) != str or message.author.bot:
+            if '✅' in message.reactions or message.content is str or message.author.bot:
                 continue
             
             # Check it follows the correct format
@@ -47,12 +50,25 @@ async def schedule_qotd(bot: InteractionBot):
         qotd_day = int(channel.last_thread.name.split('.')[0]) + 1
         await channel.create_thread(
             name=f'{qotd_day}. {question_short}',
-            embed=Embed(
-                colour=Colour.orange(),
-                title=question_long
-            ).set_footer(
-                text=("Suggested by " + question_author.name),
-                icon_url=question_author.avatar.url,
-            ),
-            content=f"<@&{qotd_role}>"
+            content=f"{question_long}\n<@&{qotd_role}>\n\n-# Suggested by {question_author.name}",
+            components=[
+                Button(label="Edit Message", custom_id="edit_qotd_msg")
+            ]
         )
+
+class EditQOTDModal(Modal):
+    def __init__(self):
+        # The details of the modal, and its components
+        components = [
+            TextInput(
+                label="Message",
+                placeholder="Who smells the worst?",
+                custom_id="msg",
+                style=TextInputStyle.paragraph,
+            ),
+        ]
+        super().__init__(title="Create Tag", components=components)
+
+    # The callback received when the user input is completed.
+    async def callback(self, inter: ModalInteraction):
+        await inter.message.edit(content=inter.text_values.get("msg") or "Error! Contact Sila!")

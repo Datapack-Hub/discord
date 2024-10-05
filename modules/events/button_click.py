@@ -1,9 +1,11 @@
+import datetime
+
 import disnake
 from disnake.ext import commands
-import variables
-import datetime
+
 import utils.log as Log
-from utils.stats import update
+import variables
+from modules.qotd.schedule import EditQOTDModal
 from utils.res_thread import resolve_thread
 
 
@@ -111,3 +113,9 @@ class OnButtonClick(commands.Cog):
             await inter.response.send_message("Closed the report",ephemeral=True)
             
             Log.info(f"A message report was closed by {inter.author.name}")
+        if inter.component.custom_id == "edit_qotd_msg":
+            # admin or mods
+            if "935560587113541633" in inter.user.roles or "935629680520855552" in inter.user.roles:
+                await inter.response.send_modal(EditQOTDModal())
+            else:
+                await inter.response.send_message("No permission", ephemeral=True)
