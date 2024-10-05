@@ -115,7 +115,7 @@ class OnButtonClick(commands.Cog):
             Log.info(f"A message report was closed by {inter.author.name}")
         if inter.component.custom_id == "edit_qotd_msg":
             # admin or mods
-            if "935560587113541633" in inter.user.roles or "935629680520855552" in inter.user.roles:
+            if "935560587113541633" in inter.author.roles or "935629680520855552" in inter.author.roles:
                 await inter.response.send_modal(EditQOTDModal())
             else:
                 await inter.response.send_message("No permission", ephemeral=True)
