@@ -1,7 +1,7 @@
 import datetime
 import asyncio
 from disnake.ext.commands.bot import InteractionBot
-from disnake import ForumChannel, Embed, Colour
+from disnake import ForumChannel
 from variables import qotd_channel, qotd_input_channel, qotd_role
 
 def _seconds_until_oclock(hour: int):
@@ -47,12 +47,5 @@ async def schedule_qotd(bot: InteractionBot):
         qotd_day = int(channel.last_thread.name.split('.')[0]) + 1
         await channel.create_thread(
             name=f'{qotd_day}. {question_short}',
-            embed=Embed(
-                colour=Colour.orange(),
-                title=question_long
-            ).set_footer(
-                text=("Suggested by " + question_author.name),
-                icon_url=question_author.avatar.url,
-            ),
-            content=f"<@&{qotd_role}>"
+            content=f"{question_long}\n<@&{qotd_role}>\n\n-# Suggested by {question_author.name}"
         )
