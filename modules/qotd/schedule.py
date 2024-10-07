@@ -1,7 +1,7 @@
 import datetime
 import asyncio
 from disnake.ext.commands.bot import InteractionBot
-from disnake import ForumChannel
+from disnake import ForumChannel, AllowedMentions
 from variables import qotd_channel, qotd_input_channel, qotd_role
 
 def _seconds_until_oclock(hour: int):
@@ -21,12 +21,18 @@ async def schedule_qotd(bot: InteractionBot):
         
         async for message in input_channel.history(limit=200):
             # If already posted, skip
-            if '✅' in message.reactions or type(message.content) != str or message.author.bot:
+            if (
+                any(reaction.emoji == '✅' for reaction in message.reactions) or 
+                any(reaction.emoji == '⛔' for reaction in message.reactions) or 
+                type(message.content) != str 
+                or message.author.bot
+            ):
                 continue
             
             # Check it follows the correct format
             content = str(message.content).split('\n')
             if len(content) != 2:
+                await message.add_reaction("❌")
                 continue
             
             # Store in variables
@@ -47,5 +53,6 @@ async def schedule_qotd(bot: InteractionBot):
         qotd_day = int(channel.last_thread.name.split('.')[0]) + 1
         await channel.create_thread(
             name=f'{qotd_day}. {question_short}',
-            content=f"{question_long}\n<@&{qotd_role}>\n\n-# Suggested by {question_author.name}"
+            content=f"##{question_long}\n<@&{qotd_role}>\n-# Suggested by {question_author.name}",
+            allowed_mentions=AllowedMentions(everyone=False,roles=True,users=False)
         )
