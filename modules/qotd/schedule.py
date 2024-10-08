@@ -53,6 +53,6 @@ async def schedule_qotd(bot: InteractionBot):
         qotd_day = int(channel.last_thread.name.split('.')[0]) + 1
         await channel.create_thread(
             name=f'{qotd_day}. {question_short}',
-            content=f"##{question_long}\n<@&{qotd_role}>\n-# Suggested by {question_author.name}",
+            content=f"## {question_long}\n<@&{qotd_role}>\n-# Suggested by {question_author.name}",
             allowed_mentions=AllowedMentions(everyone=False,roles=True,users=False)
         )
