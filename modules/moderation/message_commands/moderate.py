@@ -41,20 +41,6 @@ class ModActions(disnake.ui.View):
         self.responded = False
         self.message = message
         super().__init__(timeout=None)
-
-    @disnake.ui.button(label="Delete (automatic)", style=disnake.ButtonStyle.green)
-    async def delete(self, button: disnake.ui.Button, inter: disnake.MessageInteraction):
-        if not self.responded:
-            self.responded = True
-            await self.message.delete()
-            conf = disnake.Embed(
-                title="Message deleted",
-                description=f"The message from {self.message.author.mention} was deleted. No further moderation actions have taken place. ",
-                colour= disnake.Colour.red()
-            )
-            await inter.response.send_message(embed=conf,ephemeral=True)
-        else:
-            await inter.response.send_message("This has already been responded to before. To moderate, please use the `/mod` command.",ephemeral=True)
     
     @disnake.ui.button(label="Warn", style=disnake.ButtonStyle.gray)
     async def warn(self, button: disnake.ui.Button, inter: disnake.MessageInteraction):
@@ -80,6 +66,21 @@ class ModActions(disnake.ui.View):
             self.responded = True
             await self.message.delete()
             await inter.response.send_modal(BanModal(self.message))
+        else:
+            await inter.response.send_message("This has already been responded to before. To moderate, please use the `/mod` command.",ephemeral=True)
+    
+    @disnake.ui.button(label="Purge following messages", style=disnake.ButtonStyle.red)
+    async def purge(self, button: disnake.ui.Button, inter: disnake.MessageInteraction):
+        if not self.responded:
+            begin = self.message.created_at
+            msgs = await inter.channel.purge(after=begin)
+            
+            conf = disnake.Embed(
+                title=f"Purged {len(msgs)!s} messages",
+                description=f"Removed {len(msgs)!s} messages following the selected message.",
+                colour= disnake.Colour.red()
+            )
+            await inter.response.send_message(embed=conf,ephemeral=True)
         else:
             await inter.response.send_message("This has already been responded to before. To moderate, please use the `/mod` command.",ephemeral=True)
     
