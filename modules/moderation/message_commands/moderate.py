@@ -74,13 +74,27 @@ class ModActions(disnake.ui.View):
         if not self.responded:
             begin = self.message.created_at
             msgs = await inter.channel.purge(after=begin)
+            await self.message.delete()
             
             conf = disnake.Embed(
-                title=f"Purged {len(msgs)!s} messages",
-                description=f"Removed {len(msgs)!s} messages following the selected message.",
+                title=f"Purged {len(msgs + 1)!s} messages",
+                description=f"Removed {len(msgs + 1)!s} messages following the selected message.",
                 colour= disnake.Colour.red()
             )
+            
             await inter.response.send_message(embed=conf,ephemeral=True)
+            
+            await inter.guild.get_channel(variables.modlogs).send(
+                embed=disnake.Embed(
+                    title="Messages Purged",
+                    description=f"{len(msgs + 1)!s} messages were purged in the channel {inter.channel.mention}",
+                    colour=disnake.Colour.orange(),
+                )
+                .add_field(name="Start Message",value=f"<t:{int(self.message.created_at.timestamp())!s}:f> ({self.message.author.name}): ```\n{self.message.content}```")
+                .add_field(name="End Message",value=f"<t:{int(msgs[-1].created_at.timestamp())!s}:f> ({msgs[-1].author.name}): ```\n{msgs[-1].content}```")
+                .set_author(name=inter.author.global_name, icon_url=inter.author.avatar.url)
+            )
+            
         else:
             await inter.response.send_message("This has already been responded to before. To moderate, please use the `/mod` command.",ephemeral=True)
     
@@ -139,7 +153,6 @@ class WarnModal(disnake.ui.Modal):
                 .set_author(name=inter.author.global_name, icon_url=inter.author.avatar.url)
                 .add_field("Warning",f"```\n{reason}```",inline=False)
                 .add_field("Quoted message",f"```\n{self.message.clean_content}```in channel {self.message.channel.mention}",inline=False)
-                .set_footer(text="If you think this was done incorrectly, please contact a staff member.")
             )
             
             modlogs.log({
