@@ -84,7 +84,12 @@ class ModCommand(commands.Cog):
             
         
     @mod.sub_command("purge", "Bulk delete some messages")
-    async def purge(self, inter: disnake.ApplicationCommandInteraction, limit: int = commands.Param(description="How many messages to remove"), user: disnake.User = commands.Param(description="User to delete messages from",default=None)):
+    async def purge(
+        self, 
+        inter: disnake.ApplicationCommandInteraction, 
+        limit: int = commands.Param(description="How many messages to remove"), 
+        user: disnake.User = commands.Param(description="User to delete messages from",default=None)
+    ):
         # Stops the purge if the purge amount is over the API's limit
         if limit > 100:
             await inter.response.send_message(
@@ -143,6 +148,7 @@ class ModCommand(commands.Cog):
                     timestamp=datetime.now(),
                 )
                 .add_field("Warning",f"```\n{message}```",inline=False)
+                .set_footer(text="If you think this was done incorrectly, please contact a staff member.")
             )
         except disnake.errors.Forbidden:
             await inter.response.send_message(
@@ -200,6 +206,7 @@ class ModCommand(commands.Cog):
                     )
                     .add_field("Reason",f"```\n{reason}```",inline=False)
                     .add_field("Expires",generate_discord_relative_timestamp(seconds),inline=False)
+                    .set_footer(text="If you think this was done incorrectly, please contact a staff member.")
                 )
             except:
                 pass
@@ -238,7 +245,9 @@ class ModCommand(commands.Cog):
                     timestamp=datetime.now(),
                 )
                 .add_field("Reason",f"```\n{reason}```",inline=False)
+                .set_footer(text="If you think this was done incorrectly, please contact a staff member.")
             )
+            
             await user.ban(reason=reason)
         except disnake.errors.Forbidden:
             await inter.response.send_message(f"Failed to ban user {user.mention}: I don't have permission to do this.",ephemeral=True)
@@ -261,26 +270,6 @@ class ModCommand(commands.Cog):
                 "user":user.id,
                 "reason":reason
             })
-        
-    @mod.sub_command("user","Get moderation history of a user",)
-    async def history(self, inter: disnake.ApplicationCommandInteraction, user: disnake.User):
-        logs = modlogs.get_logs(user.id)
-        details = ""
-        for i in logs:
-            if i["action"] == "mute":
-                details += f"**Mute** | {disnake.utils.format_dt(i['time'],'R')} for `{i['length']}` | *{i['reason']}*\n"
-            elif i["action"] == "warn":
-                details += f"**Warn** | {disnake.utils.format_dt(i['time'],'R')} | *{i['reason']}*\n"
-            elif i["action"] == "ban":
-                details += f"**Ban** | {disnake.utils.format_dt(i['time'],'R')} | *{i['reason']}*\n"
-        
-        emb = disnake.Embed(
-            title=f"Moderation history for `{user.name}`",
-            description=f"`{user.name}` has been moderated {len(logs)} times.\n\n**Most recent 10 logs**:\n{details}",
-            colour=disnake.Colour.orange()
-        ).set_thumbnail(user.avatar.url)
-        await inter.response.send_message(embed=emb, ephemeral=True)
-
     
     @mod.sub_command("banall","Ban literally everyone",)
     async def banall(self, inter: disnake.ApplicationCommandInteraction):
