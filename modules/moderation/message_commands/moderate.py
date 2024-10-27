@@ -87,7 +87,7 @@ class ModActions(disnake.ui.View):
             await inter.guild.get_channel(variables.modlogs).send(
                 embed=disnake.Embed(
                     title="Messages Purged",
-                    description=f"{len(msgs + 1)!s} messages were purged in the channel {inter.channel.mention}",
+                    description=f"{len(msgs) + 1!s} messages were purged in the channel {inter.channel.mention}",
                     colour=disnake.Colour.orange(),
                 )
                 .add_field(name="Start Message",value=f"<t:{int(self.message.created_at.timestamp())!s}:f> ({self.message.author.name}): ```\n{self.message.content}```")
