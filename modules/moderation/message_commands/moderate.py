@@ -77,8 +77,8 @@ class ModActions(disnake.ui.View):
             await self.message.delete()
             
             conf = disnake.Embed(
-                title=f"Purged {len(msgs + 1)!s} messages",
-                description=f"Removed {len(msgs + 1)!s} messages following the selected message.",
+                title=f"Purged {len(msgs) + 1!s} messages",
+                description=f"Removed {len(msgs) + 1!s} messages following the selected message.",
                 colour= disnake.Colour.red()
             )
             
