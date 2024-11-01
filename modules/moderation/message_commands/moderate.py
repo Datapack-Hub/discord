@@ -27,6 +27,9 @@ class ModerateCommand(commands.Cog):
         # Store message
         message = inter.target
         
+        if message.author.id == self.bot.user.id:
+            return await inter.response.send_modal(EditBotMessageModal(message))
+        
         # Send initial response message
         prompt = disnake.Embed(
             title="Moderate this message",
@@ -306,6 +309,28 @@ class BanModal(disnake.ui.Modal):
                 "user":self.member.id,
                 "reason":reason
             })
+
+    async def on_error(self, error, interaction: disnake.ModalInteraction) -> None:
+        await interaction.response.send_message("Oops, something went wrong.", ephemeral=True)
+        
+class EditBotMessageModal(disnake.ui.Modal):
+    def __init__(self, message: disnake.Message) -> None:
+        self.message = message
+        components = [
+            disnake.ui.TextInput(
+                label="Message Content",
+                placeholder="This can't be blank!",
+                custom_id="message",
+                style=disnake.TextInputStyle.long,
+                value=message.content
+            )
+        ]
+        super().__init__(title="Edit Bot Message", custom_id="edit", components=components)
+
+    async def callback(self, inter: disnake.ModalInteraction) -> None:
+        await self.message.edit(inter.text_values["message"])
+        
+        await inter.response.send_message("Done!",ephemeral=True)
 
     async def on_error(self, error, interaction: disnake.ModalInteraction) -> None:
         await interaction.response.send_message("Oops, something went wrong.", ephemeral=True)
