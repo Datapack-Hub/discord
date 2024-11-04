@@ -121,6 +121,7 @@ async def autoclose_loop():
                             ).set_footer(text="Any further messages or reactions will re-open this thread.")
                         )
                         await thread.edit(archived=True)
+                        Log.info(f"Autoclosed thread {thread.name}")
                         
                         try:
                             await update(thread)
