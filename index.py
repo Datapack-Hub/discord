@@ -1,4 +1,4 @@
-import logging
+import utils.log as Log
 import disnake
 from disnake.ext import commands, tasks
 from bottoken import TOKEN
@@ -6,6 +6,8 @@ import variables
 import time
 from datetime import datetime, timedelta, timezone
 import defs
+from utils.stats import update
+
 
 # Setup bot
 bot = commands.InteractionBot(
@@ -94,8 +96,8 @@ async def ten():
 
     await channel_asked.edit(name=f"Questions Asked: {total_threads}")
 
-@tasks.loop(hours=12)
-async def day():
+@tasks.loop(hours=1)
+async def autoclose_loop():
     for i in variables.help_channels:
         forum_channel: disnake.ForumChannel = bot.get_channel(i)
         for thread in forum_channel.threads:
@@ -103,21 +105,34 @@ async def day():
             last = last[0]
             if last:
                 diff = datetime.now(timezone.utc) - last.created_at
-                if diff > timedelta(days=2):
-                    await thread.send(
-                        embed=disnake.Embed(
-                            title="🗑️ Recycling Thread",
-                            description="This thread has been inactive for some time, so I'm going to archive it.\n\nIf you're still using the thread, just send a message and it'll pop back on the thread list.",
-                            colour=disnake.Colour.dark_gray(),
+                if diff > timedelta(days=3):
+                    try:
+                        resolved_tag = thread.parent.get_tag_by_name("Resolved")
+                        await thread.add_tags(resolved_tag)
+                    except Exception as e:
+                        Log.error("Could not add or find the resolved tag: " + " ".join(e.args))
+                        await thread.send("-# Error resolving this thread.")
+                    else:
+                        await thread.send(
+                            embed=disnake.Embed(
+                                title="Closed for inactivity",
+                                description="This question has been inactive for some time, so it's going to be closed for inactivity. If you still need it, please disregard this message.",
+                                colour=disnake.Colour.dark_gray(),
+                            ).set_footer(text="Any further messages or reactions will re-open this thread.")
                         )
-                    )
-                    await thread.edit(archived=True)
+                        await thread.edit(archived=True)
+                        
+                        try:
+                            await update(thread)
+                        except Exception as e:
+                            Log.error("Could not log thread to stats data: " + ' '.join(e.args))
 
 
 @bot.event
 async def on_ready():
-    print("Bot has started")
+    Log.info("Bot has started!")
     
+    await autoclose_loop.start()
     await schedule_qotd(bot)
 
 # Run bot

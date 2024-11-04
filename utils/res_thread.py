@@ -26,7 +26,7 @@ async def resolve_thread(thread: disnake.Thread, closer: disnake.User):
     if thread.archived: await thread.edit(archived=False)
     
     try:
-        resolved_tag = thread.parent.get_tag_by_name("RESOLVED")
+        resolved_tag = thread.parent.get_tag_by_name("Resolved")
         await thread.add_tags(resolved_tag)
     except Exception as e:
         Log.error("Could not add or find the resolved tag: " + " ".join(e.args))

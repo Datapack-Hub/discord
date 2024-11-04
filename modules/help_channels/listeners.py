@@ -58,7 +58,7 @@ class HelpChannelListeners(commands.Cog):
                     t.owner_id == thread.owner_id
                     and not t.archived
                     and thread.parent is not None
-                    and thread.parent.get_tag_by_name("RESOLVED") not in t.applied_tags
+                    and thread.parent.get_tag_by_name("Resolved") not in t.applied_tags
                     and not t.id == thread.id
                 ):
                     await thread.send(
@@ -71,15 +71,15 @@ class HelpChannelListeners(commands.Cog):
     
     @commands.Cog.listener()
     async def on_thread_update(self, before: disnake.Thread, after: disnake.Thread):
-        if before.archived == False and after.archived == True and not (after.parent.get_tag_by_name("RESOLVED") in after.applied_tags) and after.parent.id in variables.help_channels:
+        if before.archived == False and after.archived == True and not (after.parent.get_tag_by_name("Resolved") in after.applied_tags) and after.parent.id in variables.help_channels:
             await resolve_thread(thread=after,closer=self.bot.user)
         elif (
             before.archived == True and 
             after.archived == False 
-            and (after.parent.get_tag_by_name("RESOLVED") in after.applied_tags)
+            and (after.parent.get_tag_by_name("Resolved") in after.applied_tags)
             and after.parent.id in variables.help_channels
         ):
-            try: await after.remove_tags(after.parent.get_tag_by_name("RESOLVED"))
+            try: await after.remove_tags(after.parent.get_tag_by_name("Resolved"))
             except Exception as e: Log.warn("Could not remove the Resolved tag: " + " ".join(e.args))
             
             await after.send(
