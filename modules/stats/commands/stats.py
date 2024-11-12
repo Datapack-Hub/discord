@@ -10,6 +10,7 @@ import matplotlib.patches as patches
 import matplotlib.font_manager as fm
 from collections import Counter
 from dateutil import rrule
+import re
 
 def open_stats(flags: str = "r"):
     os.chdir(ROOT_DIR)
@@ -72,6 +73,16 @@ DATA_OPTIONS = [
 GRAPH_OPTIONS = [
     "Questions Asked"
 ]
+
+async def escape_name(name: str) -> str:
+    pattern: re.Pattern[str] = re.compile("[_~*|#`>-]")
+    new_name: str = ""
+    for char in name:
+        if (re.match(pattern, char)):
+            new_name += f"\{char}"
+        else:
+            new_name += char
+    return new_name
 
 async def autocomplete_timeframe(inter: disnake.ApplicationCommandInteraction, string: str):
     string = string.lower()
@@ -185,7 +196,7 @@ class StatsCommand(commands.Cog, name="stats"):
                         member["data"]["threads"] += 1
                         return
                 
-                users.append({"username": user["username"], "id":user["id"], "data":{"messages":user["count"],"threads":1}})
+                users.append({"username": escape_name(user["username"]), "id":user["id"], "data":{"messages":user["count"],"threads":1}})
                 
             for object in threads:
                 for p in object["participants"]:
@@ -202,7 +213,7 @@ class StatsCommand(commands.Cog, name="stats"):
             i = 0
             for user in lb[:20]:
                 i += 1
-                out += f'{i!s}. **{user["username"]}**: `{user["data"]["messages"]}` messages across `{user["data"]["threads"]}` threads\n'
+                out += f'{i!s}. **{escape_name(escape_name(user["username"]))}**: `{user["data"]["messages"]}` messages across `{user["data"]["threads"]}` threads\n'
         elif leaderboard.lower() == "top askers":
             users = []
             
@@ -224,7 +235,7 @@ class StatsCommand(commands.Cog, name="stats"):
             i = 0
             for user in lb[:20]:
                 i += 1
-                out += f'{i!s}. **{user["username"]}**: `{user["data"]["threads"]}` questions asked\n'    
+                out += f'{i!s}. **{escape_name(user["username"])}**: `{user["data"]["threads"]}` questions asked\n'    
         elif leaderboard.lower() == "longest questions" or leaderboard.lower() == "shortest questions":
             # Sort data
             lb = sorted(threads, key=lambda d: d["total_messages"], reverse=True if leaderboard.lower() == "longest questions" else False)
