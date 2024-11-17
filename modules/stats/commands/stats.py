@@ -74,7 +74,7 @@ GRAPH_OPTIONS = [
     "Questions Asked"
 ]
 
-async def escape_name(name: str) -> str:
+def escape_name(name: str) -> str:
     pattern: re.Pattern[str] = re.compile("[_~*|#`>-]")
     new_name: str = ""
     for char in name:
@@ -196,7 +196,7 @@ class StatsCommand(commands.Cog, name="stats"):
                         member["data"]["threads"] += 1
                         return
                 
-                users.append({"username": await escape_name(user["username"]), "id":user["id"], "data":{"messages":user["count"],"threads":1}})
+                users.append({"username": escape_name(user["username"]), "id":user["id"], "data":{"messages":user["count"],"threads":1}})
                 
             for object in threads:
                 for p in object["participants"]:
@@ -213,7 +213,7 @@ class StatsCommand(commands.Cog, name="stats"):
             i = 0
             for user in lb[:20]:
                 i += 1
-                out += f'{i!s}. **{await escape_name(user["username"])}**: `{user["data"]["messages"]}` messages across `{user["data"]["threads"]}` threads\n'
+                out += f'{i!s}. **{escape_name(user["username"])}**: `{user["data"]["messages"]}` messages across `{user["data"]["threads"]}` threads\n'
         elif leaderboard.lower() == "top askers":
             users = []
             
@@ -235,7 +235,7 @@ class StatsCommand(commands.Cog, name="stats"):
             i = 0
             for user in lb[:20]:
                 i += 1
-                out += f'{i!s}. **{await escape_name(user["username"])}**: `{user["data"]["threads"]}` questions asked\n'    
+                out += f'{i!s}. **{escape_name(user["username"])}**: `{user["data"]["threads"]}` questions asked\n'    
         elif leaderboard.lower() == "longest questions" or leaderboard.lower() == "shortest questions":
             # Sort data
             lb = sorted(threads, key=lambda d: d["total_messages"], reverse=True if leaderboard.lower() == "longest questions" else False)
