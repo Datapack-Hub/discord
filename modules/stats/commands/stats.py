@@ -48,6 +48,7 @@ def format_duration_between(timestamp_start, timestamp_end, include_seconds=Fals
 
 TIMEFRAME_OPTIONS = [
     {"friendly": "Last 7 days", "days": 7},
+    {"friendly": "Last 14 days", "days": 14},
     {"friendly": "Last 30 days", "days": 30},
     {"friendly": "Last 90 days", "days": 90},
     {"friendly": "Last 365 days", "days": 365},
@@ -149,7 +150,7 @@ class StatsCommand(commands.Cog, name="stats"):
         inter: disnake.ApplicationCommandInteraction, 
         timeframe: str = commands.Param(
             description="Accepts: 'last _ days', 'since/before dd/mm/yyyy', 'dd/mm/yyyy to dd/mm/yyyy'",
-            default="last 7 days",
+            default="last 14 days",
             autocomplete=autocomplete_timeframe
         ),
         leaderboard: str = commands.Param(
@@ -274,7 +275,7 @@ class StatsCommand(commands.Cog, name="stats"):
         ),
         timeframe: str = commands.Param(
             description="Accepts: 'last _ days', 'since/before dd/mm/yyyy', 'dd/mm/yyyy to dd/mm/yyyy'",
-            default="last 7 days",
+            default="last 14 days",
             autocomplete=autocomplete_timeframe
         )
     ):
@@ -348,7 +349,7 @@ class StatsCommand(commands.Cog, name="stats"):
         inter: disnake.ApplicationCommandInteraction, 
         timeframe: str = commands.Param(
             description="Accepts: 'last _ days', 'since/before dd/mm/yyyy', 'dd/mm/yyyy to dd/mm/yyyy'",
-            default="last 7 days",
+            default="last 14 days",
             autocomplete=autocomplete_timeframe
         )
     ):
