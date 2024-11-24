@@ -28,8 +28,8 @@ async def gen_json(thread: disnake.Thread):
     messages = await thread.history(limit=None, oldest_first=True).flatten()
     
     if messages.__len__() == 0:
-        print("what the fuck")
-        pass
+        print("Thread has 0 messages, skipping.")
+        return
     
     first_answer = next((message for message in messages if message.author.id != 1121129295868334220 and message.author.id != (thread.owner_id if thread.owner_id else 000)), messages[0])
     
@@ -97,8 +97,8 @@ async def update(thread: disnake.Thread):
     messages = await thread.history(limit=None, oldest_first=True).flatten()
     
     if messages.__len__() == 0:
-        print("what the fuck")
-        pass
+        print("Thread has 0 messages, skipping.")
+        return
     
     first_answer = next((message for message in messages if message.author.id != 1121129295868334220 and message.author.id != (thread.owner_id if thread.owner_id else 000)), messages[0])
     
