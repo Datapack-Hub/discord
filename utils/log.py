@@ -44,8 +44,9 @@ class Colour:
     RESET = '\033[0m'
     
 def _discord(message: str):
-    wh = disnake.SyncWebhook.from_url("https://discord.com/api/webhooks/1280943139561013419/uOBxWfApyCitRmcvnqzZjTafAIJAwspT7ndB9-sIMc2I7mVEOxfFv8sWyU13zRXny_tl")
-    wh.send(message)
+    # wh = disnake.SyncWebhook.from_url("https://discord.com/api/webhooks/1280943139561013419/uOBxWfApyCitRmcvnqzZjTafAIJAwspT7ndB9-sIMc2I7mVEOxfFv8sWyU13zRXny_tl")
+    # wh.send(message)
+    pass
 
 def info(message: str):
     print(f"{Colour.text.BLUE}INFO{Colour.RESET}  | " + message)
