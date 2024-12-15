@@ -48,6 +48,7 @@ def format_duration_between(timestamp_start, timestamp_end, include_seconds=Fals
 
 TIMEFRAME_OPTIONS = [
     {"friendly": "Last 7 days", "days": 7},
+    {"friendly": "Last 14 days", "days": 14},
     {"friendly": "Last 30 days", "days": 30},
     {"friendly": "Last 90 days", "days": 90},
     {"friendly": "Last 365 days", "days": 365},
@@ -73,17 +74,6 @@ DATA_OPTIONS = [
 GRAPH_OPTIONS = [
     "Questions Asked"
 ]
-
-def escape_name(name: str) -> str:
-    pattern: re.Pattern[str] = re.compile("[_~*|#`>-]")
-    new_name: str = ""
-    for char in name:
-        if (re.match(pattern, char)):
-            new_name += f"\{char}"
-        else:
-            new_name += char
-    return new_name
-
 async def autocomplete_timeframe(inter: disnake.ApplicationCommandInteraction, string: str):
     string = string.lower()
     opts = [i["friendly"] for i in TIMEFRAME_OPTIONS]
@@ -160,7 +150,7 @@ class StatsCommand(commands.Cog, name="stats"):
         inter: disnake.ApplicationCommandInteraction, 
         timeframe: str = commands.Param(
             description="Accepts: 'last _ days', 'since/before dd/mm/yyyy', 'dd/mm/yyyy to dd/mm/yyyy'",
-            default="last 7 days",
+            default="last 14 days",
             autocomplete=autocomplete_timeframe
         ),
         leaderboard: str = commands.Param(
@@ -196,7 +186,7 @@ class StatsCommand(commands.Cog, name="stats"):
                         member["data"]["threads"] += 1
                         return
                 
-                users.append({"username": escape_name(user["username"]), "id":user["id"], "data":{"messages":user["count"],"threads":1}})
+                users.append({"username": user["username"], "id":user["id"], "data":{"messages":user["count"],"threads":1}})
                 
             for object in threads:
                 for p in object["participants"]:
@@ -213,7 +203,7 @@ class StatsCommand(commands.Cog, name="stats"):
             i = 0
             for user in lb[:20]:
                 i += 1
-                out += f'{i!s}. **{escape_name(user["username"])}**: `{user["data"]["messages"]}` messages across `{user["data"]["threads"]}` threads\n'
+                out += f'{i!s}. **{user["username"]}**: `{user["data"]["messages"]}` messages across `{user["data"]["threads"]}` threads\n'
         elif leaderboard.lower() == "top askers":
             users = []
             
@@ -235,7 +225,7 @@ class StatsCommand(commands.Cog, name="stats"):
             i = 0
             for user in lb[:20]:
                 i += 1
-                out += f'{i!s}. **{escape_name(user["username"])}**: `{user["data"]["threads"]}` questions asked\n'    
+                out += f'{i!s}. **{user["username"]}**: `{user["data"]["threads"]}` questions asked\n'    
         elif leaderboard.lower() == "longest questions" or leaderboard.lower() == "shortest questions":
             # Sort data
             lb = sorted(threads, key=lambda d: d["total_messages"], reverse=True if leaderboard.lower() == "longest questions" else False)
@@ -285,7 +275,7 @@ class StatsCommand(commands.Cog, name="stats"):
         ),
         timeframe: str = commands.Param(
             description="Accepts: 'last _ days', 'since/before dd/mm/yyyy', 'dd/mm/yyyy to dd/mm/yyyy'",
-            default="last 7 days",
+            default="last 14 days",
             autocomplete=autocomplete_timeframe
         )
     ):
@@ -359,7 +349,7 @@ class StatsCommand(commands.Cog, name="stats"):
         inter: disnake.ApplicationCommandInteraction, 
         timeframe: str = commands.Param(
             description="Accepts: 'last _ days', 'since/before dd/mm/yyyy', 'dd/mm/yyyy to dd/mm/yyyy'",
-            default="last 7 days",
+            default="last 14 days",
             autocomplete=autocomplete_timeframe
         )
     ):

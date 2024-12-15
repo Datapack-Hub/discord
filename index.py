@@ -120,6 +120,7 @@ async def autoclose_loop():
                                 colour=disnake.Colour.dark_gray(),
                             ).set_footer(text="Any further messages or reactions will re-open this thread.")
                         )
+                        
                         await thread.edit(archived=True)
                         Log.info(f"Autoclosed thread {thread.name}")
                         
