@@ -79,6 +79,9 @@ class HelpChannelListeners(commands.Cog):
             and (after.parent.get_tag_by_name("Resolved") in after.applied_tags)
             and after.parent.id in variables.help_channels
         ):
+            if len(after.applied_tags.count) == 5:
+                return await after.send("This post has too many tags and the resolved tag cannot be applied. Please remove a tag.")
+                    
             try: await after.remove_tags(after.parent.get_tag_by_name("Resolved"))
             except Exception as e: Log.warn("Could not remove the Resolved tag: " + " ".join(e.args))
             
