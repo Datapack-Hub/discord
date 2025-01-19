@@ -9,6 +9,7 @@ import defs
 from utils.stats import update
 
 
+
 # Setup bot
 bot = commands.InteractionBot(
     test_guilds=[variables.guild],
@@ -48,6 +49,8 @@ from modules.utilities.commands.members import MembersCommand
 bot.add_cog(MembersCommand(bot))
 from modules.utilities.commands.help import HelpCommand
 bot.add_cog(HelpCommand(bot))
+from modules.utilities.commands.icon import IconCommand
+bot.add_cog(IconCommand(bot))
 from modules.utilities.message_commands.view import ViewFileCommand
 bot.add_cog(ViewFileCommand(bot))
 

@@ -16,12 +16,7 @@ class OnButtonClick(commands.Cog):
         if inter.component.custom_id == "resolve_question_button":
             role = inter.guild.get_role(variables.helper)
             if (inter.channel.owner_id == inter.user.id) or (role in inter.user.roles):
-                if len(inter.channel.applied_tags) == 5:
-                    await inter.response.send_message("This post has too many tags and the resolved tag cannot be applied. Please remove the least important one to properly resolve it.")
-                else:
-                    await inter.response.send_message("Done.")
-                    await inter.delete_original_message()   
-                    await resolve_thread(inter.channel,inter.author)
+                await resolve_thread(inter.channel, inter.response, inter.author)
             else:
                 await inter.response.send_message(
                     embed=disnake.Embed(

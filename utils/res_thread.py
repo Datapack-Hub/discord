@@ -22,7 +22,11 @@ def format_duration_between(date_time_start, date_time_end):
 
     return formatted_duration if formatted_duration else "0m"
 
-async def resolve_thread(thread: disnake.Thread, closer: disnake.User):
+async def resolve_thread(thread: disnake.Thread, response: disnake.InteractionResponse, closer: disnake.User):
+    if len(thread.applied_tags) == 5:
+        await thread.response.send_message("This post has too many tags and the resolved tag cannot be applied. Please remove the least important one to properly resolve it.")
+        return
+
     if thread.archived: await thread.edit(archived=False)
     
     try:
