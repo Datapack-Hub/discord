@@ -32,9 +32,10 @@ async def resolve_thread(thread: disnake.Thread, response: disnake.InteractionRe
     try:
         resolved_tag = thread.parent.get_tag_by_name("Resolved")
         await thread.add_tags(resolved_tag)
+        await response.send_message("Done",ephemeral=True)
     except Exception as e:
         Log.error("Could not add or find the resolved tag: " + " ".join(e.args))
-        await thread.send("-# Error resolving this thread.")
+        await response.send_message("Invalid",ephemeral=True)
     else:
 
         # Feedback
