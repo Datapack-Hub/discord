@@ -21,12 +21,7 @@ class ResolveCommand(commands.Cog, name="resolve"):
             return False
         
         if (inter.channel.owner_id == inter.author.id) or (role in inter.author.roles) and channel in variables.help_channels:
-            if len(inter.channel.applied_tags) == 5:
-                await inter.response.send_message("This post has too many tags and the resolved tag cannot be applied. Please remove the least important one to properly resolve it.")
-            else:
-                await inter.response.send_message("Done.")
-                await inter.delete_original_message()
-                await resolve_thread(inter.channel,inter.author)
+            await resolve_thread(inter.channel, inter.response, inter.author)
         else:
             await inter.response.send_message("You aren't allowed to do this here.", ephemeral=True)
             Log.info(f"{inter.author.name} tried to resolve a thread which wasn't theirs")
