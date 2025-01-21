@@ -24,8 +24,7 @@ def format_duration_between(date_time_start, date_time_end):
 
 async def resolve_thread(thread: disnake.Thread, response: disnake.InteractionResponse, closer: disnake.User):
     if len(thread.applied_tags) == 5:
-        await thread.response.send_message("This post has too many tags and the resolved tag cannot be applied. Please remove the least important one to properly resolve it.")
-        return
+        return await response.send_message("This post has 5 tags, which is the maximum. **Please remove one tag** and then try again.")
 
     if thread.archived: await thread.edit(archived=False)
     
@@ -35,7 +34,7 @@ async def resolve_thread(thread: disnake.Thread, response: disnake.InteractionRe
         await response.send_message("Done",ephemeral=True)
     except Exception as e:
         Log.error("Could not add or find the resolved tag: " + " ".join(e.args))
-        await response.send_message("Invalid",ephemeral=True)
+        await response.send_message("There was an issue! Please try again - contact Silabear if the issue persists.",ephemeral=True)
     else:
 
         # Feedback
@@ -49,7 +48,6 @@ async def resolve_thread(thread: disnake.Thread, response: disnake.InteractionRe
             colour=disnake.Colour.green()
         ).add_field("Original Message", messages[0].jump_url, inline=False).add_field("Duration open",format_duration_between(messages[0].created_at,datetime.datetime.now(messages[0].created_at.tzinfo))).set_footer(text="Any further messages or reactions will re-open this thread.")
         
-
         await thread.send(
             embed=emb,
             components=[
