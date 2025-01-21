@@ -24,5 +24,5 @@ class IconCommand(commands.Cog):
             await inter.guild.edit(icon=icon_data)
             await inter.send("Guild icon updated.", ephemeral=True)
         except Exception as e:
-            await inter.send(f"Updating guild icon failed: {e}", ephemeral=True)
+            await inter.send(f"Updating guild icon failed: {''.join(e.args)}", ephemeral=True)
         
