@@ -26,7 +26,7 @@ class RedirectCommand(commands.Cog):
 
     @commands.message_command(name="Redirect to help channel")
     async def redirect(self, inter: disnake.MessageCommandInteraction):
-        if inter.target.channel.id == 1143095605577654392:
+        if inter.target.channel.parent.id == 1143095605577654392:
             embed = disnake.Embed(
                 title="This is the wrong channel.",
                 description=WRONG_CHANNEL_MESSAGE,
