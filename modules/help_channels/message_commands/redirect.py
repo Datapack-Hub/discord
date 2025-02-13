@@ -7,10 +7,18 @@ MESSAGE = """
 - <#1051225367807000706> for questions about datapacks and commands
 - <#1051227454980755546> for questions about resource packs
 - <#1143095605577654392> for anything else
-More info about the help channels can be found in <#935570290317086841>.
 
 *If you can't see the above channels, make sure you have `Show All Channels` enabled in the server menu.*
 """
+
+WRONG_CHANNEL_MESSAGE = """
+Please ask this question again in the correct channel. This channel is **not** for help with datapacks, resource packs, or commands.
+- <#1051225367807000706> for questions about datapacks and commands
+- <#1051227454980755546> for questions about resource packs
+
+*If you can't see the above channels, make sure you have `Show All Channels` enabled in the server menu.*
+"""
+
 
 class RedirectCommand(commands.Cog):
     def __init__(self, bot):
@@ -18,11 +26,20 @@ class RedirectCommand(commands.Cog):
 
     @commands.message_command(name="Redirect to help channel")
     async def redirect(self, inter: disnake.MessageCommandInteraction):
-        embed = disnake.Embed(
-            title="Please ask this in the help channels!",
-            description=MESSAGE,
-            colour=disnake.Colour.orange(),
-        ).set_footer(
+        if inter.target.channel.id == 1143095605577654392:
+            embed = disnake.Embed(
+                title="This is the wrong channel.",
+                description=WRONG_CHANNEL_MESSAGE,
+                color=disnake.Color.red()
+            )
+        else: 
+            embed = disnake.Embed(
+                title="Please ask this in the help channels!",
+                description=MESSAGE,
+                colour=disnake.Colour.orange(),
+            )
+            
+        embed.set_footer(
             text="Requested by " + inter.author.display_name,
             icon_url=inter.author.display_avatar.url,
         )
