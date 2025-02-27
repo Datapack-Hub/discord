@@ -67,7 +67,7 @@ class ViewFileCommand(commands.Cog):
                 description=f"```{formatting}\n{file.decode()}```",
                 colour=disnake.Colour.orange(),
             )
-            await inter.response.send_message(embed=emb)
+            await inter.response.send_message(embed=emb, ephemeral=True)
         else:
             await inter.response.send_message(
                 f"Mimetype {file.content_type} is not supported!"
