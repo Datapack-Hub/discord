@@ -62,9 +62,12 @@ class ViewFileCommand(commands.Cog):
             if file.filename.endswith("mcfunction"):
                 formatting = "hs"
             file = await file.read()
+            cont = file.decode()
+            if len(cont) > 3050:
+                cont = cont[0:3050] + "\n... this file is too long and has been truncated."
             emb = disnake.Embed(
                 title="Quick Look",
-                description=f"```{formatting}\n{file.decode()}```",
+                description=f"```{formatting}\n{cont}```",
                 colour=disnake.Colour.orange(),
             )
             await inter.response.send_message(embed=emb, ephemeral=True)
@@ -108,6 +111,9 @@ class SelectModal(disnake.ui.Modal):
                 formatting = "json"
                 if i["path"].endswith("mcfunction"):
                     formatting = "hs"
+                
+                if len(i["content"]) > 3050:
+                    i["content"] = i["content"][0:3050] + "\n... this file is too long and has been truncated."
                 emb = disnake.Embed(
                     title="Quick Look",
                     description=f"`{i['path']}`:\n```{formatting}\n{i['content']}```",
