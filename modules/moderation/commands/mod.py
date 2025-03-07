@@ -4,7 +4,6 @@ from pytimeparse.timeparse import timeparse
 from datetime import datetime, timedelta
 import variables
 import io
-import re
 from utils.uwufier import Uwuifier
 import utils.modlogs as modlogs
 import matplotlib.pyplot as plt
@@ -32,7 +31,6 @@ REASONS = [
         "description": "Homophobia is strictly not tolerated in Datapack Hub.",
     },
 ]
-
 
 def generate_discord_relative_timestamp(seconds):
     # Calculate the future Unix timestamp
@@ -280,3 +278,46 @@ class ModCommand(commands.Cog):
             colour=disnake.Colour.dark_red()
         )
         await inter.response.send_message(embed=emb,components=[disnake.ui.Button(style=disnake.ButtonStyle.red,label="CONFIRM")])
+
+    async def role_autocomplete(self, inter: disnake.ApplicationCommandInteraction, string: str):
+        # Filter the roles to only those whose ID is in the whitelist
+        filtered_roles = [
+            role for role in inter.guild.roles 
+            if role.id in variables.mod_edit_roles and string.lower() in role.name.lower()
+        ]
+        
+        # Return the filtered roles as options for autocomplete
+        return [disnake.OptionChoice(name=role.name, value=role.id) for role in filtered_roles]
+
+    def role_list(self):
+        return [disnake.OptionChoice(name=role.name,value=role.id) for role in self.bot.guild.roles if role.id in variables.mod_edit_roles]
+
+    @mod.sub_command("role","grants or removes a (non-vital) role")
+    async def role(
+        self,
+        inter: disnake.ApplicationCommandInteraction,
+        user: disnake.Member,
+        modification: str = commands.Param(
+            default = "add",
+            choices = ["add", "remove"]
+        ),
+        role: disnake.Role = commands.Param()
+    ):
+        if (not role.id in variables.mod_edit_roles):
+            await inter.response.send_message(f"Role {role.name} is not allowed in this command", ephemeral=True)
+            return
+
+        try:
+            if (modification == "add"):
+                if (role in user.roles):
+                    await inter.response.send_message(f"User {user.name} already has the role {role}.", ephemeral=True)
+                else:
+                    await user.add_roles(role)
+            else:
+                if (role in user.roles):
+                    await user.remove_roles(role)
+                else:
+                    await inter.response.send_message(f"User {user.name} doesn't have the role {role}.", ephemeral=True)
+        except:
+            await inter.response.send_message(f"Failed to {modification} role {role.name}, to user {user.name}", ephemeral=True)
+        await inter.response.send_message(f"Role {modification + ('ed' if modification == 'add' else 'd')}", ephemeral=True)
