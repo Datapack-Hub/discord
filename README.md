@@ -58,6 +58,9 @@ comm_helper_B = 12345
 # report_ping: the id of the role to ping when a report is created
 report_ping = 12345
 
+# roles that moderators can grant and remove
+mod_edit_roles = [1234567890, 9876543210]
+
 #! Misc
 
 # guild: the id of the active guild
