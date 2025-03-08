@@ -9,6 +9,7 @@ member_data.json
 mute_lengths.json
 modlogs.json
 data/
+member_names.txt
 
 *.vscode/
 *.vscode/*
