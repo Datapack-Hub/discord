@@ -279,20 +279,10 @@ class ModCommand(commands.Cog):
         )
         await inter.response.send_message(embed=emb,components=[disnake.ui.Button(style=disnake.ButtonStyle.red,label="CONFIRM")])
 
-    async def role_autocomplete(self, inter: disnake.ApplicationCommandInteraction, string: str):
-        # Filter the roles to only those whose ID is in the whitelist
-        filtered_roles = [
-            role for role in inter.guild.roles 
-            if role.id in variables.mod_edit_roles and string.lower() in role.name.lower()
-        ]
-        
-        # Return the filtered roles as options for autocomplete
-        return [disnake.OptionChoice(name=role.name, value=role.id) for role in filtered_roles]
-
     def role_list(self):
         return [disnake.OptionChoice(name=role.name,value=role.id) for role in self.bot.guild.roles if role.id in variables.mod_edit_roles]
 
-    @mod.sub_command("role","grants or removes a (non-vital) role")
+    @mod.sub_command("role","Grants or removes a (non-vital) role")
     async def role(
         self,
         inter: disnake.ApplicationCommandInteraction,
@@ -303,18 +293,18 @@ class ModCommand(commands.Cog):
         ),
         role: disnake.Role = commands.Param()
     ):
-        if (not role.id in variables.mod_edit_roles):
-            await inter.response.send_message(f"Role {role.name} is not allowed in this command", ephemeral=True)
+        if not role.id in variables.mod_edit_roles:
+            await inter.response.send_message(f"Role `{role.name}` is not allowed in this command", ephemeral=True)
             return
 
         try:
-            if (modification == "add"):
-                if (role in user.roles):
+            if modification == "add":
+                if role in user.roles:
                     await inter.response.send_message(f"User {user.name} already has the role {role}.", ephemeral=True)
                 else:
                     await user.add_roles(role)
             else:
-                if (role in user.roles):
+                if role in user.roles:
                     await user.remove_roles(role)
                 else:
                     await inter.response.send_message(f"User {user.name} doesn't have the role {role}.", ephemeral=True)
