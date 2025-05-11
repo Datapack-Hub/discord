@@ -147,6 +147,7 @@ class StatsCommand(commands.Cog, name="stats"):
         description="Shows leaderboards from help channels (default: past 7 days of helpers)"
     )
     async def cmd_leaderboard(
+        self,
         inter: disnake.ApplicationCommandInteraction, 
         timeframe: str = commands.Param(
             description="Accepts: 'last _ days', 'since/before dd/mm/yyyy', 'dd/mm/yyyy to dd/mm/yyyy'",
