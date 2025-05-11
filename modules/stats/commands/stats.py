@@ -1,5 +1,5 @@
-import disnake
-from disnake.ext import commands
+import discord
+from discord.ext import commands
 import json
 from datetime import datetime, timedelta, time
 from defs import ROOT_DIR
@@ -74,7 +74,7 @@ DATA_OPTIONS = [
 GRAPH_OPTIONS = [
     "Questions Asked"
 ]
-async def autocomplete_timeframe(inter: disnake.ApplicationCommandInteraction, string: str):
+async def autocomplete_timeframe(inter: discord.ApplicationContext, string: str):
     string = string.lower()
     opts = [i["friendly"] for i in TIMEFRAME_OPTIONS]
     out = [opt for opt in opts if string in opt.lower()]
@@ -138,30 +138,28 @@ class StatsCommand(commands.Cog, name="stats"):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.slash_command(name="stats")
-    async def stats(self, inter: disnake.ApplicationCommandInteraction):
-        return
-    
-    @stats.sub_command(
+    stats = discord.SlashCommandGroup(name="stats")
+
+    @stats.command(
         name="leaderboard",
         description="Shows leaderboards from help channels (default: past 7 days of helpers)"
     )
     async def cmd_leaderboard(
         self,
-        inter: disnake.ApplicationCommandInteraction, 
-        timeframe: str = commands.Param(
+        inter: discord.ApplicationContext, 
+        timeframe: str = discord.Option(
             description="Accepts: 'last _ days', 'since/before dd/mm/yyyy', 'dd/mm/yyyy to dd/mm/yyyy'",
             default="last 14 days",
             autocomplete=autocomplete_timeframe
         ),
-        leaderboard: str = commands.Param(
+        leaderboard: str = discord.Option(
             description="The leaderboard to show, based on #datapack-help data.",
             default="top helpers (messages)",
             choices=LEADERBOARD_OPTIONS
         )
     ):
         # Defer the response in case it takes forever
-        await inter.response.defer()
+        await inter.defer()
         
         # Load Question Data
         qn_data = json.load(open_stats())
@@ -173,7 +171,7 @@ class StatsCommand(commands.Cog, name="stats"):
             dates = parse_date_range(timeframe)
             threads = [thread for thread in qn_data if (thread["created_at"]["timestamp"] > dates[0].timestamp() and thread["created_at"]["timestamp"] < dates[1].timestamp())]
         else:
-            return await inter.edit_original_message("Invalid dateframe")
+            return await inter.send_followup("Invalid dateframe")
         
         out = ""
         
@@ -256,32 +254,32 @@ class StatsCommand(commands.Cog, name="stats"):
         else:
             return await inter.response.edit_message(f"{leaderboard.lower()} is an invalid leaderboard type.")
             
-        out_embed = disnake.Embed(
+        out_embed = discord.Embed(
             title=f"Leaderboard for {leaderboard.lower()}",
             description=f"Timeframe: `{timeframe.lower()}`\n" + out + "-# Updates in real-time. Only includes data from closed and archived threads in #datapack-help. Excludes bots.",
-            colour=disnake.Colour.orange()
+            colour=discord.Colour.orange()
         )
         
-        await inter.edit_original_message(embed=out_embed)
+        await inter.send_followup(embed=out_embed)
     
-    @stats.sub_command(
+    @stats.command(
         name="average",
         description="Shows averages of various data from help channels"
     )
     async def cmd_averages(
-        inter: disnake.ApplicationCommandInteraction, 
-        stat: str = commands.Param(
+        inter: discord.ApplicationContext, 
+        stat: str = discord.Option(
             description="The statistic to average",
             choices=DATA_OPTIONS
         ),
-        timeframe: str = commands.Param(
+        timeframe: str = discord.Option(
             description="Accepts: 'last _ days', 'since/before dd/mm/yyyy', 'dd/mm/yyyy to dd/mm/yyyy'",
             default="last 14 days",
             autocomplete=autocomplete_timeframe
         )
     ):
         # Defer the response in case it takes forever
-        await inter.response.defer()
+        await inter.defer()
         
         # Load Question Data
         qn_data = json.load(open_stats())
@@ -293,7 +291,7 @@ class StatsCommand(commands.Cog, name="stats"):
             dates = parse_date_range(timeframe)
             threads = [thread for thread in qn_data if (thread["created_at"]["timestamp"] > dates[0].timestamp() and thread["created_at"]["timestamp"] < dates[1].timestamp())]
         else:
-            return await inter.edit_original_message("Invalid dateframe")
+            return await inter.send_followup("Invalid dateframe")
         
         stat = stat.lower()
         
@@ -333,29 +331,29 @@ class StatsCommand(commands.Cog, name="stats"):
                 
             out = f"<t:{average_posix_timestamp}:t>"
         else:
-            await inter.edit_original_message("Invalid statistic")
+            await inter.send_followup("Invalid statistic")
             
-        out_embed = disnake.Embed(
+        out_embed = discord.Embed(
             description=f"The average for `{stat}` during the timeframe `{timeframe}` is **{out}**.\n\n-# Updates in real-time. Only includes data from closed and archived threads in #datapack-help. Excludes bots.",
-            color=disnake.Colour.orange()
+            color=discord.Colour.orange()
         )
         
-        await inter.edit_original_message(embed=out_embed)
+        await inter.send_followup(embed=out_embed)
         
-    @stats.sub_command(
+    @stats.command(
         name="graph",
         description="Shows a graph of various data from help channels"
     )
     async def cmd_graph(
-        inter: disnake.ApplicationCommandInteraction, 
-        timeframe: str = commands.Param(
+        inter: discord.ApplicationContext, 
+        timeframe: str = discord.Option(
             description="Accepts: 'last _ days', 'since/before dd/mm/yyyy', 'dd/mm/yyyy to dd/mm/yyyy'",
             default="last 14 days",
             autocomplete=autocomplete_timeframe
         )
     ):
         # Defer the response in case it takes forever
-        await inter.response.defer()
+        await inter.defer()
         
         # Load Question Data
         qn_data = json.load(open_stats())
@@ -368,7 +366,7 @@ class StatsCommand(commands.Cog, name="stats"):
             start_timestamp = int(start_timestamp.timestamp())
             end_timestamp = int(end_timestamp.timestamp())
         else:
-            return await inter.edit_original_message("Invalid dateframe")
+            return await inter.send_followup("Invalid dateframe")
         
         filtered_questions = [q for q in qn_data if start_timestamp <= q['created_at']['timestamp'] <= end_timestamp]
 
@@ -462,26 +460,26 @@ class StatsCommand(commands.Cog, name="stats"):
         
         plt.savefig(os.path.join(ROOT_DIR,"out.png"))
         
-        await inter.edit_original_message(file=disnake.File(os.path.join(ROOT_DIR,"out.png")))
+        await inter.send_followup(file=discord.File(os.path.join(ROOT_DIR,"out.png")))
         
-    @stats.sub_command_group(name="user")
-    async def user(self, inter):
-        pass
+    user = stats.create_subgroup("user")
     
-    @user.sub_command(name="breakdown")
+    @user.command(name="breakdown")
     async def cmd_breakdown(
-        inter: disnake.ApplicationCommandInteraction,
-        user: disnake.Member = commands.Param(
-            description="The user to view stats for"
+        self,
+        inter: discord.commands.ApplicationContext,
+        user: discord.Member = discord.Option(
+            description="The user to view stats for",
+            input_type=discord.SlashCommandOptionType(value=discord.Member)
         ),
-        timeframe: str = commands.Param(
+        timeframe: str = discord.Option(
             description="Accepts: 'last _ days', 'since/before dd/mm/yyyy', 'dd/mm/yyyy to dd/mm/yyyy', 'all time'",
             default="all time",
             autocomplete=autocomplete_timeframe
         )
     ):
         # Defer the response in case it takes forever
-        await inter.response.defer()
+        await inter.defer()
         
         # Load Question Data
         qn_data = json.load(open_stats())
@@ -493,10 +491,10 @@ class StatsCommand(commands.Cog, name="stats"):
             dates = parse_date_range(timeframe)
             threads = [thread for thread in qn_data if (thread["created_at"]["timestamp"] > dates[0].timestamp() and thread["created_at"]["timestamp"] < dates[1].timestamp())]
         else:
-            return await inter.edit_original_message("Invalid dateframe")
+            return await inter.send_followup("Invalid dateframe")
         
-        out_embed = disnake.Embed(
-            color=disnake.Colour.orange(),
+        out_embed = discord.Embed(
+            color=discord.Colour.orange(),
             title=f"Stats breakdown for {user.global_name}",
             description=f"This is the breakdown of stats for the user `{user.global_name}` during the timeframe `{timeframe}`, only including data from archived threads in #datapack-help."
         )

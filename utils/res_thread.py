@@ -1,4 +1,4 @@
-import disnake
+import discord
 import utils.log as Log
 from utils.stats import update
 import datetime
@@ -22,7 +22,7 @@ def format_duration_between(date_time_start, date_time_end):
 
     return formatted_duration if formatted_duration else "0m"
 
-async def resolve_thread(thread: disnake.Thread, response: disnake.InteractionResponse, closer: disnake.User):
+async def resolve_thread(thread: discord.Thread, response: discord.InteractionResponse, closer: discord.User):
     if len(thread.applied_tags) == 5:
         return await response.send_message("This post has 5 tags, which is the maximum. **Please remove one tag** and then try again.")
 
@@ -42,21 +42,21 @@ async def resolve_thread(thread: disnake.Thread, response: disnake.InteractionRe
             oldest_first=True, limit=1
         ).flatten()
 
-        emb = disnake.Embed(
+        emb = discord.Embed(
             title="Question Closed",
             description=f"Your question, <#{thread.id}> ({thread.name}), was resolved!",
-            colour=disnake.Colour.green()
+            colour=discord.Colour.green()
         ).add_field("Original Message", messages[0].jump_url, inline=False).add_field("Duration open",format_duration_between(messages[0].created_at,datetime.datetime.now(messages[0].created_at.tzinfo))).set_footer(text="Any further messages or reactions will re-open this thread.")
         
         await thread.send(
             embed=emb,
             components=[
-                disnake.ui.ActionRow()
+                discord.ui.ActionRow()
                 .add_button(label="Jump to top", url=messages[0].jump_url)
                 .add_button(
                     label="Review Datapack Hub",
                     url="https://disboard.org/review/create/935560260725379143",
-                    style=disnake.ButtonStyle.gray,
+                    style=discord.ButtonStyle.gray,
                 )
             ]
         )

@@ -1,5 +1,5 @@
-import disnake
-from disnake.ext import commands
+import discord
+from discord.ext import commands
 import variables
 
 class ReportCommand(commands.Cog):
@@ -7,29 +7,29 @@ class ReportCommand(commands.Cog):
         self.bot = bot
 
     @commands.message_command(name="Report Message")
-    async def report(self, inter: disnake.MessageCommandInteraction):
+    async def report(self, inter: discord.MessageCommandInteraction):
         await inter.response.send_modal(ReportModal(inter.target))
 
-class ReportModal(disnake.ui.Modal):
-    def __init__(self, message: disnake.Message) -> None:
+class ReportModal(discord.ui.Modal):
+    def __init__(self, message: discord.Message) -> None:
         self.message = message
         components = [
-            disnake.ui.TextInput(
+            discord.ui.TextInput(
                 label="(Optional) Additional information",
                 placeholder="If you have nothing to add, leave this blank.",
                 custom_id="message",
-                style=disnake.TextInputStyle.long,
+                style=discord.TextInputStyle.long,
                 required=False
             )
         ]
         super().__init__(title="Report Message", custom_id="report", components=components)
 
-    async def callback(self, inter: disnake.ModalInteraction) -> None:
+    async def callback(self, inter: discord.ModalInteraction) -> None:
         report_message = inter.text_values["message"]
         
-        report_embed = disnake.Embed(
+        report_embed = discord.Embed(
             title="New Message Report",
-            colour=disnake.Colour.red()
+            colour=discord.Colour.red()
         )
         
         report_embed.add_field("Message",self.message.clean_content,inline=False)
@@ -38,18 +38,18 @@ class ReportModal(disnake.ui.Modal):
         
         await inter.guild.get_channel(variables.report_channel).send(
             content=f"<@&{variables.report_ping}>",
-            allowed_mentions=disnake.AllowedMentions(roles=True),
+            allowed_mentions=discord.AllowedMentions(roles=True),
             embed=report_embed,
             components=[
-                disnake.ui.Button(url=self.message.jump_url,label="View Message"),
-                disnake.ui.Button(custom_id="close_report",label="Dismiss/Close Report",style=disnake.ButtonStyle.red)
+                discord.ui.Button(url=self.message.jump_url,label="View Message"),
+                discord.ui.Button(custom_id="close_report",label="Dismiss/Close Report",style=discord.ButtonStyle.red)
             ]
         )
         
         await inter.response.send_message(
-            embed=disnake.Embed(
+            embed=discord.Embed(
                 title="Reported message",
-                colour=disnake.Colour.orange(),
+                colour=discord.Colour.orange(),
                 description="Successfully reported the message to moderators.",
             )
             .add_field("Report Message",report_message if bool(report_message.strip()) else "None supplied",inline=False)
@@ -57,5 +57,5 @@ class ReportModal(disnake.ui.Modal):
             ephemeral=True
         )
 
-    async def on_error(self, error, interaction: disnake.ModalInteraction) -> None:
+    async def on_error(self, error, interaction: discord.ModalInteraction) -> None:
         await interaction.response.send_message("Oops, something went wrong.", ephemeral=True)

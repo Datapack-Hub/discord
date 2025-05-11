@@ -1,6 +1,6 @@
 import os
-import disnake
-from disnake.ext import commands
+import discord
+from discord.ext import commands
 
 ICONS = list(map(lambda s:  s.removesuffix(".gif"),os.listdir(os.path.join(os.getcwd(), "static", "icons"))))
 
@@ -11,8 +11,8 @@ class IconCommand(commands.Cog):
     @commands.slash_command(name="icon", description="Changes the icon of the server.")
     async def icon(
         self,
-        inter: disnake.ApplicationCommandInteraction,
-        icon_type: str = commands.Param(
+        inter: discord.ApplicationContext,
+        icon_type: str = discord.Option(
             default="Normal",
             choices=ICONS
         )

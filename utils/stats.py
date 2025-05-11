@@ -1,4 +1,4 @@
-import disnake
+import discord
 import variables
 import json
 import utils.log as log
@@ -24,7 +24,7 @@ def format_duration_between(date_time_start, date_time_end):
 
     return formatted_duration if formatted_duration else "0m"
 
-async def gen_json(thread: disnake.Thread):
+async def gen_json(thread: discord.Thread):
     messages = await thread.history(limit=None, oldest_first=True).flatten()
     
     if messages.__len__() == 0:
@@ -68,7 +68,7 @@ async def gen_json(thread: disnake.Thread):
     
     participants = []
     
-    def update_p_count(user: disnake.Member):
+    def update_p_count(user: discord.Member):
         for member in participants:
             if member["id"] == user.id:
                 member["count"] += 1
@@ -83,7 +83,7 @@ async def gen_json(thread: disnake.Thread):
     
     return this
 
-async def update(thread: disnake.Thread):
+async def update(thread: discord.Thread):
     if thread.parent.id != variables.help_channels[0]: return True
         
     os.chdir(ROOT_DIR)
@@ -137,7 +137,7 @@ async def update(thread: disnake.Thread):
     
     participants = []
     
-    def update_p_count(user: disnake.Member):
+    def update_p_count(user: discord.Member):
         for member in participants:
             if member["id"] == user.id:
                 member["count"] += 1

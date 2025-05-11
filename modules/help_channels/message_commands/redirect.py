@@ -1,5 +1,5 @@
-import disnake
-from disnake.ext import commands
+import discord
+from discord.ext import commands
 import utils.log as Log
 import variables
 
@@ -27,20 +27,20 @@ class RedirectCommand(commands.Cog):
         self.bot = bot
 
     @commands.message_command(name="Redirect to help channel")
-    async def redirect(self, inter: disnake.MessageCommandInteraction):
-        embed = disnake.Embed(
+    async def redirect(self, inter: discord.MessageCommandInteraction):
+        embed = discord.Embed(
             title="Please ask this in the help channels!",
             description=MESSAGE,
-            colour=disnake.Colour.orange(),
+            colour=discord.Colour.orange(),
         )
         
         # python :D :D :D
         try:
             if inter.target.channel.parent.id in variables.help_channels + [1143095605577654392]:
-                embed = disnake.Embed(
+                embed = discord.Embed(
                     title="This is the wrong channel.",
                     description=WRONG_CHANNEL_MESSAGE,
-                    color=disnake.Colour.red()
+                    color=discord.Colour.red()
                 )
         except:
             pass

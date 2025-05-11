@@ -1,7 +1,7 @@
 import datetime
 import asyncio
-from disnake.ext.commands.bot import InteractionBot
-from disnake import ForumChannel, AllowedMentions
+from discord.ext.commands.bot import InteractionBot
+from discord import ForumChannel, AllowedMentions
 from variables import qotd_channel, qotd_input_channel, qotd_role
 
 def _seconds_until_oclock(hour: int):

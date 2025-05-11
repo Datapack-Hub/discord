@@ -1,5 +1,5 @@
-import disnake
-from disnake.ext import commands
+import discord
+from discord.ext import commands
 import variables
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
 import os
@@ -98,7 +98,7 @@ class WelcomeListeners(commands.Cog):
         self.bot = bot
 
     @commands.Cog.listener()
-    async def on_member_join(self, member: disnake.Member):
+    async def on_member_join(self, member: discord.Member):
         channel = self.bot.get_channel(variables.new_member_channel)
         
         if channel is None:
@@ -110,18 +110,18 @@ class WelcomeListeners(commands.Cog):
         directory = os.getcwd()
         await channel.send(
             # content=random.choice(welcome_messages) % member.name,
-            file=disnake.File(os.path.join(directory, "files", "output.png")),
-            allowed_mentions=disnake.AllowedMentions.none()
+            file=discord.File(os.path.join(directory, "files", "output.png")),
+            allowed_mentions=discord.AllowedMentions.none()
         )
         
     @commands.Cog.listener()
-    async def on_message(self, message: disnake.Message):
+    async def on_message(self, message: discord.Message):
         if message.channel.id == variables.intro and not message.author.bot:
             # Add reaction
             await message.add_reaction("👋")
             
             # Delete past bot message
-            def is_user(m: disnake.Message):
+            def is_user(m: discord.Message):
                 if m.author.id != self.bot.user.id:
                     return False
                 return True
@@ -129,10 +129,10 @@ class WelcomeListeners(commands.Cog):
             await message.channel.purge(limit=10, check=is_user)
             
             # Post new bot message
-            embed = disnake.Embed(
+            embed = discord.Embed(
                 title="👋 Introduce yourself to the community!",
                 description="This is your chance to make yourself known. Tell us a bit about yourself:\n- your past experiences with datapacks\n- how you found Datapack Hub\n- some facts about yourself\nThen, come say hi in our general chat!",
-                color=disnake.Colour.orange()
+                color=discord.Colour.orange()
             )
             
             await message.channel.send(embed=embed)

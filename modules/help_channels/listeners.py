@@ -1,5 +1,5 @@
-import disnake
-from disnake.ext import commands
+import discord
+from discord.ext import commands
 import variables
 import asyncio
 import utils.log as Log
@@ -13,20 +13,20 @@ class HelpChannelListeners(commands.Cog):
         self.bot = bot
 
     @commands.Cog.listener()
-    async def on_thread_create(self, thread: disnake.Thread):
+    async def on_thread_create(self, thread: discord.Thread):
         await asyncio.sleep(1)
         if thread.parent_id in variables.help_channels and not thread.name.startswith("!n"):
             ts30 = datetime.now() + timedelta(minutes=30)
             
-            embed = disnake.Embed(
-                colour=disnake.Colour.orange(),
+            embed = discord.Embed(
+                colour=discord.Colour.orange(),
                 title=("Someone will come and help soon!"),
                 description=(
                     f"💬 While you wait, take this time to provide more context and details.\n\n🙇 If nobody has answered you by <t:{int(ts30.timestamp())}:t>, feel free to use the `Summon Helpers` button to ping our helper team.\n\n✅ Once your question has been resolved (or you no longer need it), please click Resolve Question or run `/resolve`"
                 ),
             )
-            summon_helpers_button = disnake.ui.Button(label="Summon Helpers",custom_id="summon_helpers_button",style=disnake.ButtonStyle.blurple,emoji="🙇",)
-            resolve_question_button = disnake.ui.Button(label="Resolve Question",custom_id="resolve_question_button",style=disnake.ButtonStyle.green,emoji="✅",)
+            summon_helpers_button = discord.ui.Button(label="Summon Helpers",custom_id="summon_helpers_button",style=discord.ButtonStyle.blurple,emoji="🙇",)
+            resolve_question_button = discord.ui.Button(label="Resolve Question",custom_id="resolve_question_button",style=discord.ButtonStyle.green,emoji="✅",)
             
             # Pin first message
             try:
@@ -44,7 +44,7 @@ class HelpChannelListeners(commands.Cog):
                         summon_helpers_button,
                         resolve_question_button,
                     ],
-                    allowed_mentions=disnake.AllowedMentions(roles=True),
+                    allowed_mentions=discord.AllowedMentions(roles=True),
                 )
             except Exception as e:
                 Log.error("Could not send the opening help channel message: " + " ".join(e.args))
@@ -62,15 +62,15 @@ class HelpChannelListeners(commands.Cog):
                     and not t.id == thread.id
                 ):
                     await thread.send(
-                        embed=disnake.Embed(
+                        embed=discord.Embed(
                             title="⚠️ You already have a question open!",
                             description=f"Don't forget to close or resolve your old questions once you're done with them. It makes our lives much easier! :D\n\n**Open question**: <#{t.id}>",
-                            colour=disnake.Colour.red(),
+                            colour=discord.Colour.red(),
                         )
                     )
     
     @commands.Cog.listener()
-    async def on_thread_update(self, before: disnake.Thread, after: disnake.Thread):
+    async def on_thread_update(self, before: discord.Thread, after: discord.Thread):
         if before.archived == False and after.archived == True and not (after.parent.get_tag_by_name("Resolved") in after.applied_tags) and after.parent.id in variables.help_channels:
             await resolve_thread(thread=after,closer=self.bot.user)
         elif (
@@ -88,7 +88,7 @@ class HelpChannelListeners(commands.Cog):
             await after.send(
                 "**Re-opened the channel.** Make sure to close it again once you're done.",
                 components=[
-                    disnake.ui.Button(
+                    discord.ui.Button(
                         label="Close Question", custom_id="resolve_question_button"
                     )
                 ],

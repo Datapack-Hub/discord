@@ -1,5 +1,5 @@
-import disnake
-from disnake.ext import commands
+import discord
+from discord.ext import commands
 
 message_commands = """
 - `Quick Look`: Opens a ZIP or text file inside Discord.
@@ -53,8 +53,8 @@ class HelpCommand(commands.Cog):
         self.bot = bot
 
     @commands.slash_command(name="help", description="View all commands")
-    async def help(self, inter: disnake.ApplicationCommandInteraction):
-        embed = disnake.Embed(title="Datapack Hub Server Bot",description="This bot helps manage Datapack Hub server. Below is a list of all the features provided by the bot. *\* means the command only works in the help channels*",color=disnake.Color.orange())
+    async def help(self, inter: discord.ApplicationContext):
+        embed = discord.Embed(title="Datapack Hub Server Bot",description="This bot helps manage Datapack Hub server. Below is a list of all the features provided by the bot. *\* means the command only works in the help channels*",color=discord.Color.orange())
         
         embed.add_field("Features",features,inline=False)
         embed.add_field("Commands",slash_commands,inline=False)
@@ -65,7 +65,7 @@ class HelpCommand(commands.Cog):
         
     @commands.has_permissions(manage_messages=True)
     @commands.slash_command(name="help-staff",description="Show help commands including staff-only commands")
-    async def help_staff(self, inter: disnake.ApplicationCommandInteraction):
-        embed = disnake.Embed(title="Staff Commands",description=slash_commands_staff,color=disnake.Color.orange())
+    async def help_staff(self, inter: discord.ApplicationContext):
+        embed = discord.Embed(title="Staff Commands",description=slash_commands_staff,color=discord.Color.orange())
         
         await inter.response.send_message(embed=embed)

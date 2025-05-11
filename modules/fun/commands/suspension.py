@@ -1,7 +1,7 @@
 import random
 
-import disnake
-from disnake.ext import commands
+import discord
+from discord.ext import commands
 
 IMAGES = [
     {
@@ -47,23 +47,23 @@ class SuspensionRailwayCommand(commands.Cog, name="suspension_railway"):
         self.bot = bot
 
     @commands.slash_command(name="susprail")
-    async def susprail(self, inter: disnake.ApplicationCommandInteraction):
+    async def susprail(self, inter: discord.ApplicationContext):
         return
     
     @susprail.sub_command("image","Generate a random image of a suspension railway")
-    async def image(self, inter: disnake.ApplicationCommandInteraction):
+    async def image(self, inter: discord.ApplicationContext):
         image = random.choice(IMAGES)
-        embed = disnake.Embed(
+        embed = discord.Embed(
             title=image["title"],
-            colour=disnake.Colour.blue()
+            colour=discord.Colour.blue()
         ).set_image(image["url"]).set_footer(text=image["credits"])
         await inter.response.send_message(embed=embed)
         
     @susprail.sub_command("info","Learn about suspension railways")
-    async def info(self, inter: disnake.ApplicationCommandInteraction):
-        embed = disnake.Embed(
+    async def info(self, inter: discord.ApplicationContext):
+        embed = discord.Embed(
             title="Learn about Suspension Railways",
-            colour=disnake.Colour.blue()
+            colour=discord.Colour.blue()
         )
         embed.add_field("What are suspension railways?","A suspension railway is a type of elevated monorail. The suspension railway vehicles are suspended from a single, fixed track (not a cable). This makes them good for being built above streets or even other railway types.",inline=False)
         embed.add_field("What suspension railways are there?","There are many suspension railways including the following:\n- **Schwebebahn** in Wuppertal, Germany\n- **Schwebebahn** in Dresden, Germany\n- **H-Bahn** in TU Dortmund, Germany\n- **Sky train** in Dusseldorf Airport, Germany\n- **Strela** in Glukhovo , Russia\n- **Shonan** in Kanagawa Prefecture, Japan\n- **Chiba Urban** in Chiba, Japan\n- **SkyTrain** in Chengdu, China\n- **Optics Valley** in Wuhan, China\n- **Red Rail** in Xingguo, China",inline=False)

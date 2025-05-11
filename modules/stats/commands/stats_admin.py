@@ -1,5 +1,5 @@
-import disnake
-from disnake.ext import commands
+import discord
+from discord.ext import commands
 import utils.log as Log
 from utils.stats import gen_json
 import json
@@ -48,14 +48,14 @@ class StatsAdminCommand(commands.Cog, name="stats-admin"):
 
     @commands.has_permissions(administrator=True)
     @commands.slash_command(name="stats-admin")
-    async def statsadm(self, inter: disnake.ApplicationCommandInteraction):
+    async def statsadm(self, inter: discord.ApplicationContext):
         return
     
     @statsadm.sub_command(name="update",description="Force update stats to include any missed questions")
-    async def cmd_update(self, inter: disnake.ApplicationCommandInteraction):
+    async def cmd_update(self, inter: discord.ApplicationContext):
         channel = self.bot.get_channel(variables.help_channels[0])
         
-        await inter.response.defer()
+        await inter.defer()
         
         data = json.load(open_stats())
         
@@ -75,11 +75,11 @@ class StatsAdminCommand(commands.Cog, name="stats-admin"):
         
         json.dump(sorted(data, key=lambda d: d["total_messages"], reverse=True), open_stats("w"), indent=3)
         
-        return await inter.edit_original_message(f"Force-updated {i} of the past 50 questions. If that number is more than 0, please contact Silabear.")
+        return await inter.send_followup(f"Force-updated {i} of the past 50 questions. If that number is more than 0, please contact Silabear.")
     
     @statsadm.sub_command(name="regen",description="Regenerate all stats (DO NOT RUN UNLESS YOU KNOW WHAT YOU ARE DOING)")
-    async def cmd_regen(self, inter: disnake.ApplicationCommandInteraction):
-        await inter.response.defer()
+    async def cmd_regen(self, inter: discord.ApplicationContext):
+        await inter.defer()
         
         channel = self.bot.get_channel(variables.help_channels[0])
         
@@ -103,11 +103,11 @@ class StatsAdminCommand(commands.Cog, name="stats-admin"):
         
         json.dump(sorted(data, key=lambda d: d["total_messages"], reverse=True), open_stats("w"), indent=3)
         
-        return await inter.edit_original_message(f"Regenerated {i} questions. It took a while.")
+        return await inter.send_followup(f"Regenerated {i} questions. It took a while.")
     
     @statsadm.sub_command(name="remove-duplicates",description="Remove any duplicate questions in the data")
-    async def cmd_remove_dupes(self, inter: disnake.ApplicationCommandInteraction):
-        await inter.response.defer()
+    async def cmd_remove_dupes(self, inter: discord.ApplicationContext):
+        await inter.defer()
         
         data = json.load(open_stats("r"))
         
@@ -127,4 +127,4 @@ class StatsAdminCommand(commands.Cog, name="stats-admin"):
         
         json.dump(sorted(data, key=lambda d: d["total_messages"], reverse=True), open_stats("w"), indent=3)
         
-        return await inter.edit_original_message(f"Removed {i} duplicate entries from the data.")
+        return await inter.send_followup(f"Removed {i} duplicate entries from the data.")

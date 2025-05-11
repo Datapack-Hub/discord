@@ -1,5 +1,5 @@
-import disnake
-from disnake.ext import commands
+import discord
+from discord.ext import commands
 import variables
 import utils.log as Log
 from utils.res_thread import resolve_thread
@@ -10,7 +10,7 @@ class ResolveCommand(commands.Cog, name="resolve"):
         self.bot = bot
 
     @commands.slash_command(title="resolve", description="Marks question as resolved")
-    async def resolve(self, inter: disnake.ApplicationCommandInteraction):
+    async def resolve(self, inter: discord.ApplicationContext):
         role = inter.guild.get_role(variables.helper)
         
         # Try and get parent channel

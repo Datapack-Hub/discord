@@ -1,4 +1,4 @@
-import disnake
+import discord
 import variables
 
 class Colour:
@@ -44,7 +44,7 @@ class Colour:
     RESET = '\033[0m'
     
 def _discord(message: str):
-    # wh = disnake.SyncWebhook.from_url("https://discord.com/api/webhooks/1280943139561013419/uOBxWfApyCitRmcvnqzZjTafAIJAwspT7ndB9-sIMc2I7mVEOxfFv8sWyU13zRXny_tl")
+    # wh = discord.SyncWebhook.from_url("https://discord.com/api/webhooks/1280943139561013419/uOBxWfApyCitRmcvnqzZjTafAIJAwspT7ndB9-sIMc2I7mVEOxfFv8sWyU13zRXny_tl")
     # wh.send(message)
     pass
 

@@ -1,5 +1,5 @@
-import disnake
-from disnake.ext import commands
+import discord
+from discord.ext import commands
 import variables
 import datetime
 import utils.log as Log
@@ -12,15 +12,15 @@ class OnButtonClick(commands.Cog):
         self.bot = bot
 
     @commands.Cog.listener()
-    async def on_button_click(self, inter: disnake.MessageInteraction):
+    async def on_button_click(self, inter: discord.MessageInteraction):
         if inter.component.custom_id == "resolve_question_button":
             role = inter.guild.get_role(variables.helper)
             if (inter.channel.owner_id == inter.user.id) or (role in inter.user.roles):
                 await resolve_thread(inter.channel, inter.response, inter.author)
             else:
                 await inter.response.send_message(
-                    embed=disnake.Embed(
-                        colour=disnake.Colour.red(),
+                    embed=discord.Embed(
+                        colour=discord.Colour.red(),
                         title="❌ Resolve Help Channel",
                         description="You can't do this since you are neither a helper nor the owner of this channel!",
                     ),
@@ -46,8 +46,8 @@ class OnButtonClick(commands.Cog):
                 if time_difference_minutes >= 30 or role in inter.author.roles:
                     await inter.response.send_message(
                         f"<@&{variables.helper!s}> <@&{variables.comm_helper_B!s}>",
-                        embed=disnake.Embed(
-                            colour=disnake.Colour.blue(),
+                        embed=discord.Embed(
+                            colour=discord.Colour.blue(),
                             title=("🙇 Helpers Arise!"),
                             description=(
                                 "Please note that you still might not immediately get a response since all helpers are human beings and volunteers (and also might be sleeping right now)"
@@ -56,18 +56,18 @@ class OnButtonClick(commands.Cog):
                             text=("Requested by " + inter.user.name),
                             icon_url=inter.user.avatar,
                         ),
-                        allowed_mentions=disnake.AllowedMentions(roles=True),
+                        allowed_mentions=discord.AllowedMentions(roles=True),
                     )
 
-                    embed = disnake.Embed(
-                        colour=disnake.Colour.orange(),
+                    embed = discord.Embed(
+                        colour=discord.Colour.orange(),
                         title="Someone will come and help soon!",
                         description="💬 While you wait, take this time to provide more context and details.\n\n✅ Once your question has been resolved (or you no longer need it), please click Resolve Question or run `/resolve`"
                     )
-                    resolve_question_button = disnake.ui.Button(
+                    resolve_question_button = discord.ui.Button(
                         label="Resolve Question",
                         custom_id="resolve_question_button",
-                        style=disnake.ButtonStyle.green,
+                        style=discord.ButtonStyle.green,
                         emoji="✅",
                     )
 
@@ -78,8 +78,8 @@ class OnButtonClick(commands.Cog):
                     Log.info(f"{inter.author.name} summoned helpers")
 
                 else:
-                    embed = disnake.Embed(
-                        colour=disnake.Colour.red(),
+                    embed = discord.Embed(
+                        colour=discord.Colour.red(),
                         title="🕑 Be patient!",
                         description=(
                             f"Typically, you should get a response within 10 minutes, but our helpers are volunteers. We therefore need you to wait until <t:{int((datetime.datetime.now() + datetime.timedelta(minutes=30 - time_difference_minutes)).timestamp())}:t> before you use this button.\n\nIf nobody has helped you yet, try rephrasing your question, giving more details, or just being patient."
@@ -89,8 +89,8 @@ class OnButtonClick(commands.Cog):
                     
                     Log.info(f"{inter.author.name} tried to summon helpers, but still has {str(30 - int(time_difference_minutes))} minutes left.")
             else:
-                embed = disnake.Embed(
-                    colour=disnake.Colour.red(),
+                embed = discord.Embed(
+                    colour=discord.Colour.red(),
                     title="❌ Summon Helpers",
                     description="You can't do this since you are neither a helper nor the owner of this channel!",
                 )
@@ -100,7 +100,7 @@ class OnButtonClick(commands.Cog):
             await inter.message.delete()
         if inter.component.custom_id == "close_report":
             embed = inter.message.embeds[0]
-            embed.colour = disnake.Colour.blue()
+            embed.colour = discord.Colour.blue()
             embed.title = "Closed Message Report"
             embed.add_field("Closed by",f"{inter.author.global_name} ({inter.author.id})",inline=False)
             

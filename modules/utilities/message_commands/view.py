@@ -1,5 +1,5 @@
-import disnake
-from disnake.ext import commands
+import discord
+from discord.ext import commands
 from io import BytesIO
 import zipfile
 
@@ -9,7 +9,7 @@ class ViewFileCommand(commands.Cog):
         self.bot = bot
 
     @commands.message_command(name="Quick Look")
-    async def quicklook(self, inter: disnake.MessageCommandInteraction):
+    async def quicklook(self, inter: discord.MessageCommandInteraction):
         if len(inter.target.attachments) == 0:
             return await inter.response.send_message(
                 "There is no file attached to this message!", ephemeral=True
@@ -44,10 +44,10 @@ class ViewFileCommand(commands.Cog):
                                 + "\n"
                             )
 
-            emb = disnake.Embed(
+            emb = discord.Embed(
                 title="Quick Look",
                 description=f"All Files:\n```\n{paths_out}```",
-                colour=disnake.Colour.orange(),
+                colour=discord.Colour.orange(),
             ).add_field("Total Files", str(amount))
             if len(files_out) > 25:
                 await inter.response.send_message(
@@ -65,10 +65,10 @@ class ViewFileCommand(commands.Cog):
             cont = file.decode()
             if len(cont) > 3050:
                 cont = cont[0:3050] + "\n... this file is too long and has been truncated."
-            emb = disnake.Embed(
+            emb = discord.Embed(
                 title="Quick Look",
                 description=f"```{formatting}\n{cont}```",
-                colour=disnake.Colour.orange(),
+                colour=discord.Colour.orange(),
             )
             await inter.response.send_message(embed=emb, ephemeral=True)
         else:
@@ -77,35 +77,35 @@ class ViewFileCommand(commands.Cog):
             )
 
 
-class SelectView(disnake.ui.View):
+class SelectView(discord.ui.View):
     def __init__(self, files):
         self.files = files
         super().__init__()
 
-    @disnake.ui.button(label="Open File", style=disnake.ButtonStyle.blurple)
+    @discord.ui.button(label="Open File", style=discord.ButtonStyle.blurple)
     async def confirm(
-        self, inter: disnake.MessageInteraction
+        self, inter: discord.MessageInteraction
     ):
         await inter.response.send_modal(SelectModal(self.files))
 
 
-class SelectModal(disnake.ui.Modal):
+class SelectModal(discord.ui.Modal):
     def __init__(self, files) -> None:
         self.files = files
         components = [
-            disnake.ui.TextInput(
+            discord.ui.TextInput(
                 label="ID",
                 placeholder="28",
                 custom_id="id",
-                style=disnake.TextInputStyle.short,
+                style=discord.TextInputStyle.short,
             ),
         ]
         super().__init__(
             title="Open File", custom_id="mod_reason", components=components
         )
 
-    async def callback(self, inter: disnake.ModalInteraction) -> None:
-        await inter.response.defer(ephemeral=True)
+    async def callback(self, inter: discord.ModalInteraction) -> None:
+        await inter.defer(ephemeral=True)
         for i in self.files:
             if i["index"] == int(inter.text_values["id"].strip()):
                 formatting = "json"
@@ -114,22 +114,22 @@ class SelectModal(disnake.ui.Modal):
                 
                 if len(i["content"]) > 3050:
                     i["content"] = i["content"][0:3050] + "\n... this file is too long and has been truncated."
-                emb = disnake.Embed(
+                emb = discord.Embed(
                     title="Quick Look",
                     description=f"`{i['path']}`:\n```{formatting}\n{i['content']}```",
-                    colour=disnake.Colour.orange(),
+                    colour=discord.Colour.orange(),
                 )
                 await inter.send(embed=emb,ephemeral=True)
 
-    async def on_error(self, error, interaction: disnake.ModalInteraction) -> None:
+    async def on_error(self, error, interaction: discord.ModalInteraction) -> None:
         await interaction.response.send_message("Oops, something went wrong.", ephemeral=True)
 
 
-class Dropdown(disnake.ui.StringSelect):
+class Dropdown(discord.ui.StringSelect):
     def __init__(self, files):
         self.files = files
         options = [
-            disnake.SelectOption(label=f"{i['index']!s}: {i['path']}") for i in files
+            discord.SelectOption(label=f"{i['index']!s}: {i['path']}") for i in files
         ]
         super().__init__(
             placeholder="Pick a file",
@@ -138,22 +138,22 @@ class Dropdown(disnake.ui.StringSelect):
             options=options,
         )
 
-    async def callback(self, inter: disnake.MessageInteraction):
-        await inter.response.defer(ephemeral=True)
+    async def callback(self, inter: discord.MessageInteraction):
+        await inter.defer(ephemeral=True)
         for i in self.files:
             if i["path"] == " ".join(self.values[0].split()[1:10000000]):
                 formatting = "json"
                 if i["path"].endswith("mcfunction"):
                     formatting = "hs"
-                emb = disnake.Embed(
+                emb = discord.Embed(
                     title="Quick Look",
                     description=f"`{i['path']}`:\n```{formatting}\n{i['content']}```",
-                    colour=disnake.Colour.orange(),
+                    colour=discord.Colour.orange(),
                 )
-                await inter.edit_original_message(embed=emb)
+                await inter.send_followup(embed=emb)
 
 
-class DropdownView(disnake.ui.View):
+class DropdownView(discord.ui.View):
     def __init__(self, files):
         super().__init__()
 
