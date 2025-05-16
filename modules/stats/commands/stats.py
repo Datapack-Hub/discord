@@ -269,6 +269,7 @@ class StatsCommand(commands.Cog, name="stats"):
         description="Shows averages of various data from help channels"
     )
     async def cmd_averages(
+        self,
         inter: disnake.ApplicationCommandInteraction, 
         stat: str = commands.Param(
             description="The statistic to average",
