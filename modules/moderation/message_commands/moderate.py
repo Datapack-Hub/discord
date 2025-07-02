@@ -23,10 +23,7 @@ class ModerateCommand(commands.Cog):
         self.bot = bot
 
     @commands.message_command(name="Moderate")
-    async def moderate(self, inter: discord.MessageCommandInteraction):
-        # Store message
-        message = inter.target
-        
+    async def moderate(self, inter: discord.ApplicationContext, message: discord.Message):
         if message.author.id == self.bot.user.id:
             return await inter.response.send_modal(EditBotMessageModal(message))
         
@@ -105,18 +102,18 @@ class WarnModal(discord.ui.Modal):
     def __init__(self, message: discord.Message) -> None:
         self.member = message.author
         self.message = message
-        components = [
-            discord.ui.TextInput(
-                label="Warn Message",
-                placeholder="Don't do a silly like that.",
-                custom_id="message",
-                style=discord.TextInputStyle.long
-            )
-        ]
-        super().__init__(title="Warn User", custom_id="warn", components=components)
+        
+        super().__init__()
+        
+        self.add_item(discord.ui.InputText(
+            label="Warn Message",
+            placeholder="Don't do a silly like that",
+            custom_id="message",
+            style=discord.InputTextStyle.long
+        ))
 
-    async def callback(self, inter: discord.ModalInteraction) -> None:
-        reason = uwu.uwuify_sentence(inter.text_values["message"]) if self.member.id in AUTO_UWU else inter.text_values["message"]
+    async def callback(self, inter: discord.Interaction) -> None:
+        reason = uwu.uwuify_sentence(self.children[0].value) if self.member.id in AUTO_UWU else self.children[0].value
         try:
             await self.member.send(
                 embed=discord.Embed(
@@ -164,32 +161,32 @@ class WarnModal(discord.ui.Modal):
                 "reason":reason
             })
 
-    async def on_error(self, error, interaction: discord.ModalInteraction) -> None:
+    async def on_error(self, error, interaction: discord.Interaction) -> None:
         await interaction.response.send_message("Oops, something went wrong.", ephemeral=True)
         
 class MuteModal(discord.ui.Modal):
     def __init__(self, message: discord.Message) -> None:
         self.member = message.guild.get_member(message.author.id)
         self.message = message
-        components = [
-            discord.ui.TextInput(
-                label="Mute Message",
-                placeholder="Don't do a silly like that.",
-                custom_id="message",
-                style=discord.TextInputStyle.long
-            ),
-            discord.ui.TextInput(
-                label="Mute Length (max two weeks)",
-                placeholder="4h",
-                custom_id="length",
-                style=discord.TextInputStyle.short
-            )
-        ]
-        super().__init__(title="Mute User", custom_id="mute", components=components)
+        
+        super().__init__(title="Mute User")
+        
+        self.add_item(discord.ui.TextInput(
+            label="Mute Message",
+            placeholder="Don't do a silly like that.",
+            custom_id="message",
+            style=discord.TextInputStyle.long
+        ))
+        self.add_item(discord.ui.TextInput(
+            label="Mute Length (max two weeks)",
+            placeholder="4h",
+            custom_id="length",
+            style=discord.TextInputStyle.short
+        ))
 
-    async def callback(self, inter: discord.ModalInteraction) -> None:
-        reason = uwu.uwuify_sentence(inter.text_values["message"]) if self.member.id in AUTO_UWU else inter.text_values["message"]
-        length = inter.text_values["length"]
+    async def callback(self, inter: discord.Interaction) -> None:
+        reason = uwu.uwuify_sentence(self.children[0].value) if self.member.id in AUTO_UWU else self.children[0].value
+        length = self.children[1].value
         seconds = timeparse(length)
         
         try:
@@ -238,32 +235,32 @@ class MuteModal(discord.ui.Modal):
                 "length":length
             })
 
-    async def on_error(self, error, interaction: discord.ModalInteraction) -> None:
+    async def on_error(self, error, interaction: discord.Interaction) -> None:
         await interaction.response.send_message("Oops, something went wrong.", ephemeral=True)
         
 class BanModal(discord.ui.Modal):
     def __init__(self, message: discord.Message) -> None:
         self.member = message.author
         self.message = message
-        components = [
-            discord.ui.TextInput(
-                label="Ban Message",
-                placeholder="Don't do a silly like that.",
-                custom_id="message",
-                style=discord.TextInputStyle.long
-            ),
-            discord.ui.TextInput(
-                label="Delete Messages?",
-                placeholder="Leave blank for yes, or enter anything for no",
-                custom_id="delete",
-                style=discord.TextInputStyle.short
-            )
-        ]
-        super().__init__(title="Ban User", custom_id="ban", components=components)
+        
+        super().__init__(title="Ban User", custom_id="ban")
+        
+        self.add_item(discord.ui.TextInput(
+            label="Ban Message",
+            placeholder="Don't do a silly like that.",
+            custom_id="message",
+            style=discord.TextInputStyle.long
+        ))
+        self.add_item(discord.ui.TextInput(
+            label="Delete Messages?",
+            placeholder="Leave blank for yes, or enter anything for no",
+            custom_id="delete",
+            style=discord.TextInputStyle.short
+        ))
 
-    async def callback(self, inter: discord.ModalInteraction) -> None:
-        reason = uwu.uwuify_sentence(inter.text_values["message"]) if self.member.id in AUTO_UWU else inter.text_values["message"]
-        delete = not bool(inter.text_values["message"].strip())
+    async def callback(self, inter: discord.Interaction) -> None:
+        reason = uwu.uwuify_sentence(self.children[0].value) if self.member.id in AUTO_UWU else self.children[0].value
+        delete = not bool(self.children[1].value.strip())
         
         try:
             await self.member.send(
@@ -310,27 +307,27 @@ class BanModal(discord.ui.Modal):
                 "reason":reason
             })
 
-    async def on_error(self, error, interaction: discord.ModalInteraction) -> None:
+    async def on_error(self, error, interaction: discord.Interaction) -> None:
         await interaction.response.send_message("Oops, something went wrong.", ephemeral=True)
         
 class EditBotMessageModal(discord.ui.Modal):
     def __init__(self, message: discord.Message) -> None:
         self.message = message
-        components = [
-            discord.ui.TextInput(
-                label="Message Content",
-                placeholder="This can't be blank!",
-                custom_id="message",
-                style=discord.TextInputStyle.long,
-                value=message.content
-            )
-        ]
-        super().__init__(title="Edit Bot Message", custom_id="edit", components=components)
+        
+        super().__init__(title="Edit Bot Message", custom_id="edit")
+        
+        self.add_item(discord.ui.TextInput(
+            label="Message Content",
+            placeholder="This can't be blank!",
+            custom_id="message",
+            style=discord.TextInputStyle.long,
+            value=message.content
+        ))
 
-    async def callback(self, inter: discord.ModalInteraction) -> None:
-        await self.message.edit(inter.text_values["message"])
+    async def callback(self, inter: discord.Interaction) -> None:
+        await self.message.edit(self.children[0].value)
         
         await inter.response.send_message("Done!",ephemeral=True)
 
-    async def on_error(self, error, interaction: discord.ModalInteraction) -> None:
+    async def on_error(self, error, interaction: discord.Interaction) -> None:
         await interaction.response.send_message("Oops, something went wrong.", ephemeral=True)

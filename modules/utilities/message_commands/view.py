@@ -9,12 +9,12 @@ class ViewFileCommand(commands.Cog):
         self.bot = bot
 
     @commands.message_command(name="Quick Look")
-    async def quicklook(self, inter: discord.MessageCommandInteraction):
-        if len(inter.target.attachments) == 0:
+    async def quicklook(self, inter: discord.ApplicationContext, message: discord.Message):
+        if len(message.attachments) == 0:
             return await inter.response.send_message(
                 "There is no file attached to this message!", ephemeral=True
             )
-        file = inter.target.attachments[0]
+        file = message.attachments[0]
         if file.content_type == "application/zip":
             read_file = await file.read()
 
@@ -104,7 +104,7 @@ class SelectModal(discord.ui.Modal):
             title="Open File", custom_id="mod_reason", components=components
         )
 
-    async def callback(self, inter: discord.ModalInteraction) -> None:
+    async def callback(self, inter: discord.Interaction) -> None:
         await inter.defer(ephemeral=True)
         for i in self.files:
             if i["index"] == int(inter.text_values["id"].strip()):
@@ -119,13 +119,12 @@ class SelectModal(discord.ui.Modal):
                     description=f"`{i['path']}`:\n```{formatting}\n{i['content']}```",
                     colour=discord.Colour.orange(),
                 )
-                await inter.send(embed=emb,ephemeral=True)
+                await inter.respond(embed=emb,ephemeral=True)
 
-    async def on_error(self, error, interaction: discord.ModalInteraction) -> None:
+    async def on_error(self, error, interaction: discord.Interaction) -> None:
         await interaction.response.send_message("Oops, something went wrong.", ephemeral=True)
 
-
-class Dropdown(discord.ui.StringSelect):
+class Dropdown(discord.ui.Select):
     def __init__(self, files):
         self.files = files
         options = [
@@ -150,11 +149,10 @@ class Dropdown(discord.ui.StringSelect):
                     description=f"`{i['path']}`:\n```{formatting}\n{i['content']}```",
                     colour=discord.Colour.orange(),
                 )
-                await inter.send_followup(embed=emb)
-
+                await inter.respond(embed=emb)
 
 class DropdownView(discord.ui.View):
     def __init__(self, files):
         super().__init__()
-
+        
         self.add_item(Dropdown(files))

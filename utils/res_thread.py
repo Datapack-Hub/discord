@@ -3,70 +3,47 @@ import utils.log as Log
 from utils.stats import update
 import datetime
 
-def format_duration_between(date_time_start, date_time_end):
-    time_difference = date_time_end - date_time_start
-
-    # Calculate days, hours, and minutes
-    days = time_difference.days
-    hours, remainder = divmod(time_difference.seconds, 3600)
-    minutes, _ = divmod(remainder, 60)
-
-    # Build the human-readable string
-    formatted_duration = ""
-    if days > 0:
-        formatted_duration += f"{days}d"
-    if hours > 0:
-        formatted_duration += f"{hours}h"
-    if minutes > 0:
-        formatted_duration += f"{minutes}m"
-
-    return formatted_duration if formatted_duration else "0m"
-
-async def resolve_thread(thread: discord.Thread, response: discord.InteractionResponse, closer: discord.User):
+async def resolve_thread(thread: discord.Thread, response: discord.InteractionResponse):
     if len(thread.applied_tags) == 5:
         return await response.send_message("This post has 5 tags, which is the maximum. **Please remove one tag** and then try again.")
 
     if thread.archived: await thread.edit(archived=False)
     
-    try:
-        resolved_tag = thread.parent.get_tag_by_name("Resolved")
-        await thread.add_tags(resolved_tag)
-        await response.send_message("Done",ephemeral=True)
-    except Exception as e:
-        Log.error("Could not add or find the resolved tag: " + " ".join(e.args))
-        await response.send_message("There was an issue! Please try again - contact Silabear if the issue persists.",ephemeral=True)
-    else:
+    resolved_tag = next(t for t in thread.parent.available_tags if t.name.lower() == "resolved")
+    tags = thread.applied_tags
+    tags.append(resolved_tag)
+    await thread.edit(applied_tags=tags)
+    await response.send_message("Done",ephemeral=True)
+    
+    from modules.help_channels.components.views import ResolvedThreadView
+    
+    msg = await thread.send(
+        view=ResolvedThreadView(thread=thread)
+    )
+    
+    await msg.add_reaction("🔓")
 
-        # Feedback
-        messages = await thread.history(
-            oldest_first=True, limit=1
-        ).flatten()
+    # Archive channel
+    await thread.edit(locked=True, archived=True)
+    
+async def resolve_thread_without_interaction(thread: discord.Thread):
+    if len(thread.applied_tags) == 5:
+        return await thread.send_message("This post has 5 tags, which is the maximum. **Please remove one tag** and then try again.")
 
-        emb = discord.Embed(
-            title="Question Closed",
-            description=f"Your question, <#{thread.id}> ({thread.name}), was resolved!",
-            colour=discord.Colour.green()
-        ).add_field("Original Message", messages[0].jump_url, inline=False).add_field("Duration open",format_duration_between(messages[0].created_at,datetime.datetime.now(messages[0].created_at.tzinfo))).set_footer(text="Any further messages or reactions will re-open this thread.")
-        
-        await thread.send(
-            embed=emb,
-            components=[
-                discord.ui.ActionRow()
-                .add_button(label="Jump to top", url=messages[0].jump_url)
-                .add_button(
-                    label="Review Datapack Hub",
-                    url="https://disboard.org/review/create/935560260725379143",
-                    style=discord.ButtonStyle.gray,
-                )
-            ]
-        )
+    if thread.archived: await thread.edit(archived=False)
+    
+    resolved_tag = next(t for t in thread.parent.available_tags if t.name.lower() == "resolved")
+    tags = thread.applied_tags
+    tags.append(resolved_tag)
+    await thread.edit(applied_tags=tags)
+    
+    from modules.help_channels.components.views import ResolvedThreadView
+    
+    msg = await thread.send(
+        view=ResolvedThreadView(thread=thread)
+    )
+    
+    await msg.add_reaction("🔓")
 
-        # Archive channel
-        await thread.edit(archived=True)
-
-        Log.info(f"{closer.name} closed a help channel using a button.")
-
-        try:
-            await update(thread)
-        except Exception as e:
-            Log.error("Could not log thread to stats data: " + ' '.join(e.args))
+    # Archive channel
+    await thread.edit(locked=True, archived=True)

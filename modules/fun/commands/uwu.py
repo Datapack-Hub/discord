@@ -10,11 +10,9 @@ class UwuCommand(commands.Cog, name="uwu"):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.slash_command(name="uwu")
-    async def uwu(self, inter: discord.ApplicationContext):
-        return
+    uwu = discord.SlashCommandGroup(name="uwu")
     
-    @uwu.sub_command("message","Send an uwufied message")
+    @uwu.command(description="Send an uwufied message")
     async def message(self, inter: discord.ApplicationContext, text: str):
         hooks = await inter.channel.webhooks()
 
@@ -28,7 +26,7 @@ class UwuCommand(commands.Cog, name="uwu"):
         await inter.response.send_message("yes done",ephemeral=True)
         Log.info(f"Uwufied a message from {inter.author.name} in #{inter.channel.name}")
     
-    @uwu.sub_command("auto","Enable the auto uwufier")
+    @uwu.command(description="Enable the auto uwufier")
     async def auto(self, inter: discord.ApplicationContext):
         try:
             users = uwu_data["users"]
@@ -44,7 +42,7 @@ class UwuCommand(commands.Cog, name="uwu"):
         except Exception as e:
             Log.error(f"Could not toggle uwufier for user {inter.author.name}: {e}")
     
-    @uwu.sub_command("channel","Enable the auto uwufier for the current channel")
+    @uwu.command(description="Enable the auto uwufier for the current channel")
     async def channel(self, inter: discord.ApplicationContext):
         try:
             if inter.channel.id in uwu_data["channels"]:
@@ -58,7 +56,7 @@ class UwuCommand(commands.Cog, name="uwu"):
         except Exception as e:
             Log.error(f"Could not toggle uwufier for channel #{inter.channel.name}: {e}")
             
-    @uwu.sub_command("ban","Ban a user from using the uwu features")
+    @uwu.command(description="Ban a user from using the uwu features")
     async def ban(self, inter: discord.ApplicationContext, user: discord.Member):
         try:
             if user.id in uwu_data["banned"]:
@@ -72,8 +70,8 @@ class UwuCommand(commands.Cog, name="uwu"):
         except Exception as e:
             Log.error(f"Could not ban user {user.name} from the uwufier: {e}")
         
-    @uwu.sub_command("user","Enable the auto uwufier for another user")
-    async def auto(self, inter: discord.ApplicationContext, user: discord.Member):
+    @uwu.command(description="Enable the auto uwufier for another user")
+    async def user(self, inter: discord.ApplicationContext, user: discord.Member):
         try:
             users = uwu_data["users"]
             if user.id in users:
@@ -88,7 +86,7 @@ class UwuCommand(commands.Cog, name="uwu"):
         except Exception as e:
             Log.error(f"Could not toggle uwufier for user {user.name}: {e}")
             
-    @uwu.sub_command("override","Toggle all uwu features")
+    @uwu.command(description="Toggle all uwu features")
     async def override(self, inter: discord.ApplicationContext):
         try:
             if uwu_data["enabled"]:

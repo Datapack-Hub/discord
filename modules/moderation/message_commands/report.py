@@ -7,24 +7,22 @@ class ReportCommand(commands.Cog):
         self.bot = bot
 
     @commands.message_command(name="Report Message")
-    async def report(self, inter: discord.MessageCommandInteraction):
-        await inter.response.send_modal(ReportModal(inter.target))
+    async def report(self, inter: discord.ApplicationContext, message: discord.Message):
+        await inter.response.send_modal(ReportModal(message))
 
 class ReportModal(discord.ui.Modal):
     def __init__(self, message: discord.Message) -> None:
         self.message = message
-        components = [
-            discord.ui.TextInput(
-                label="(Optional) Additional information",
-                placeholder="If you have nothing to add, leave this blank.",
-                custom_id="message",
-                style=discord.TextInputStyle.long,
-                required=False
-            )
-        ]
-        super().__init__(title="Report Message", custom_id="report", components=components)
+        self.add_item(discord.ui.TextInput(
+            label="(Optional) Additional information",
+            placeholder="If you have nothing to add, leave this blank.",
+            custom_id="message",
+            style=discord.TextInputStyle.long,
+            required=False
+        ))
+        super().__init__(title="Report Message", custom_id="report")
 
-    async def callback(self, inter: discord.ModalInteraction) -> None:
+    async def callback(self, inter: discord.Interaction, message: discord.Message) -> None:
         report_message = inter.text_values["message"]
         
         report_embed = discord.Embed(
@@ -57,5 +55,5 @@ class ReportModal(discord.ui.Modal):
             ephemeral=True
         )
 
-    async def on_error(self, error, interaction: discord.ModalInteraction) -> None:
+    async def on_error(self, error, interaction: discord.Interaction) -> None:
         await interaction.response.send_message("Oops, something went wrong.", ephemeral=True)

@@ -8,7 +8,7 @@ class RemindCommand(commands.Cog):
         self.bot = bot
 
     @commands.message_command(name="Remind them to resolve thread")
-    async def remind(self, inter: discord.MessageCommandInteraction):
+    async def remind(self, inter: discord.ApplicationContext, message: discord.Message):
         # Build the embed
         embed = discord.Embed(
             title="🎗️ Is your question resolved?",
@@ -22,7 +22,7 @@ class RemindCommand(commands.Cog):
         )
         
         # Send embed with resolve button
-        await inter.target.reply(
+        await message.reply(
             embed=embed,
             components=[
                 discord.ui.Button(

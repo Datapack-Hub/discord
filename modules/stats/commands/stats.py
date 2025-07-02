@@ -171,7 +171,7 @@ class StatsCommand(commands.Cog, name="stats"):
             dates = parse_date_range(timeframe)
             threads = [thread for thread in qn_data if (thread["created_at"]["timestamp"] > dates[0].timestamp() and thread["created_at"]["timestamp"] < dates[1].timestamp())]
         else:
-            return await inter.send_followup("Invalid dateframe")
+            return await inter.respond("Invalid dateframe")
         
         out = ""
         
@@ -260,7 +260,7 @@ class StatsCommand(commands.Cog, name="stats"):
             colour=discord.Colour.orange()
         )
         
-        await inter.send_followup(embed=out_embed)
+        await inter.respond(embed=out_embed)
     
     @stats.command(
         name="average",
@@ -291,7 +291,7 @@ class StatsCommand(commands.Cog, name="stats"):
             dates = parse_date_range(timeframe)
             threads = [thread for thread in qn_data if (thread["created_at"]["timestamp"] > dates[0].timestamp() and thread["created_at"]["timestamp"] < dates[1].timestamp())]
         else:
-            return await inter.send_followup("Invalid dateframe")
+            return await inter.respond("Invalid dateframe")
         
         stat = stat.lower()
         
@@ -331,14 +331,14 @@ class StatsCommand(commands.Cog, name="stats"):
                 
             out = f"<t:{average_posix_timestamp}:t>"
         else:
-            await inter.send_followup("Invalid statistic")
+            await inter.respond("Invalid statistic")
             
         out_embed = discord.Embed(
             description=f"The average for `{stat}` during the timeframe `{timeframe}` is **{out}**.\n\n-# Updates in real-time. Only includes data from closed and archived threads in #datapack-help. Excludes bots.",
             color=discord.Colour.orange()
         )
         
-        await inter.send_followup(embed=out_embed)
+        await inter.respond(embed=out_embed)
         
     @stats.command(
         name="graph",
@@ -366,7 +366,7 @@ class StatsCommand(commands.Cog, name="stats"):
             start_timestamp = int(start_timestamp.timestamp())
             end_timestamp = int(end_timestamp.timestamp())
         else:
-            return await inter.send_followup("Invalid dateframe")
+            return await inter.respond("Invalid dateframe")
         
         filtered_questions = [q for q in qn_data if start_timestamp <= q['created_at']['timestamp'] <= end_timestamp]
 
@@ -460,7 +460,7 @@ class StatsCommand(commands.Cog, name="stats"):
         
         plt.savefig(os.path.join(ROOT_DIR,"out.png"))
         
-        await inter.send_followup(file=discord.File(os.path.join(ROOT_DIR,"out.png")))
+        await inter.respond(file=discord.File(os.path.join(ROOT_DIR,"out.png")))
         
     user = stats.create_subgroup("user")
     
@@ -491,7 +491,7 @@ class StatsCommand(commands.Cog, name="stats"):
             dates = parse_date_range(timeframe)
             threads = [thread for thread in qn_data if (thread["created_at"]["timestamp"] > dates[0].timestamp() and thread["created_at"]["timestamp"] < dates[1].timestamp())]
         else:
-            return await inter.send_followup("Invalid dateframe")
+            return await inter.respond("Invalid dateframe")
         
         out_embed = discord.Embed(
             color=discord.Colour.orange(),

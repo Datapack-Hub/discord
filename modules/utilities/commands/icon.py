@@ -22,7 +22,7 @@ class IconCommand(commands.Cog):
                 icon_data = image_file.read()
 
             await inter.guild.edit(icon=icon_data)
-            await inter.send("Guild icon updated.", ephemeral=True)
+            await inter.send_response("Guild icon updated.", suppress=True)
         except Exception as e:
-            await inter.send(f"Updating guild icon failed: {''.join(e.args)}", ephemeral=True)
+            await inter.send_response(f"Updating guild icon failed: {''.join(e.args)}", ephemeral=True)
         

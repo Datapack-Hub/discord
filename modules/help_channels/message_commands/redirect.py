@@ -27,7 +27,7 @@ class RedirectCommand(commands.Cog):
         self.bot = bot
 
     @commands.message_command(name="Redirect to help channel")
-    async def redirect(self, inter: discord.MessageCommandInteraction):
+    async def redirect(self, inter: discord.ApplicationContext, message: discord.Message):
         embed = discord.Embed(
             title="Please ask this in the help channels!",
             description=MESSAGE,
@@ -36,7 +36,7 @@ class RedirectCommand(commands.Cog):
         
         # python :D :D :D
         try:
-            if inter.target.channel.parent.id in variables.help_channels + [1143095605577654392]:
+            if message.channel.parent.id in variables.help_channels + [1143095605577654392]:
                 embed = discord.Embed(
                     title="This is the wrong channel.",
                     description=WRONG_CHANNEL_MESSAGE,
@@ -49,7 +49,7 @@ class RedirectCommand(commands.Cog):
             text="Requested by " + inter.author.display_name,
             icon_url=inter.author.display_avatar.url,
         )
-        await inter.target.reply(embed=embed)
+        await message.reply(embed=embed)
         await inter.response.send_message("Sent message", ephemeral=True)
         
-        Log.info(f"{inter.author.name} redirected the user {inter.target.author.name} to help channels in #{inter.channel.name}")
+        Log.info(f"{inter.author.name} redirected the user {message.author.name} to help channels in #{inter.channel.name}")

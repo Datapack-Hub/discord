@@ -75,7 +75,7 @@ class StatsAdminCommand(commands.Cog, name="stats-admin"):
         
         json.dump(sorted(data, key=lambda d: d["total_messages"], reverse=True), open_stats("w"), indent=3)
         
-        return await inter.send_followup(f"Force-updated {i} of the past 50 questions. If that number is more than 0, please contact Silabear.")
+        return await inter.respond(f"Force-updated {i} of the past 50 questions. If that number is more than 0, please contact Silabear.")
     
     @statsadm.sub_command(name="regen",description="Regenerate all stats (DO NOT RUN UNLESS YOU KNOW WHAT YOU ARE DOING)")
     async def cmd_regen(self, inter: discord.ApplicationContext):
@@ -103,7 +103,7 @@ class StatsAdminCommand(commands.Cog, name="stats-admin"):
         
         json.dump(sorted(data, key=lambda d: d["total_messages"], reverse=True), open_stats("w"), indent=3)
         
-        return await inter.send_followup(f"Regenerated {i} questions. It took a while.")
+        return await inter.respond(f"Regenerated {i} questions. It took a while.")
     
     @statsadm.sub_command(name="remove-duplicates",description="Remove any duplicate questions in the data")
     async def cmd_remove_dupes(self, inter: discord.ApplicationContext):
@@ -127,4 +127,4 @@ class StatsAdminCommand(commands.Cog, name="stats-admin"):
         
         json.dump(sorted(data, key=lambda d: d["total_messages"], reverse=True), open_stats("w"), indent=3)
         
-        return await inter.send_followup(f"Removed {i} duplicate entries from the data.")
+        return await inter.respond(f"Removed {i} duplicate entries from the data.")

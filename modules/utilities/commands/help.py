@@ -54,18 +54,26 @@ class HelpCommand(commands.Cog):
 
     @commands.slash_command(name="help", description="View all commands")
     async def help(self, inter: discord.ApplicationContext):
-        embed = discord.Embed(title="Datapack Hub Server Bot",description="This bot helps manage Datapack Hub server. Below is a list of all the features provided by the bot. *\* means the command only works in the help channels*",color=discord.Color.orange())
+        embed = discord.Embed(
+            title="Datapack Hub Server Bot",
+            description="This bot helps manage Datapack Hub server. Below is a list of all the features provided by the bot. *\* means the command only works in the help channels*",
+            color=discord.Color.orange()
+        )
         
-        embed.add_field("Features",features,inline=False)
-        embed.add_field("Commands",slash_commands,inline=False)
-        embed.add_field("Message Commands",message_commands,inline=False)
-        embed.add_field("Datapack Helper","My fellow bot <@1108074519308017734> provides loads of other useful commands helping people create datapacks. Check out that bot's help command for more info.",inline=False)
+        embed.add_field(name="Features",value=features,inline=False)
+        embed.add_field(name="Commands",value=slash_commands,inline=False)
+        embed.add_field(name="Message Commands",value=message_commands,inline=False)
+        embed.add_field(name="Datapack Helper",value="My fellow bot <@1108074519308017734> provides loads of other useful commands helping people create datapacks. Check out that bot's help command for more info.",inline=False)
         
         await inter.response.send_message(embed=embed)
         
     @commands.has_permissions(manage_messages=True)
     @commands.slash_command(name="help-staff",description="Show help commands including staff-only commands")
     async def help_staff(self, inter: discord.ApplicationContext):
-        embed = discord.Embed(title="Staff Commands",description=slash_commands_staff,color=discord.Color.orange())
+        embed = discord.Embed(
+            title="Staff Commands",
+            description=slash_commands_staff,
+            color=discord.Color.orange()
+        )
         
         await inter.response.send_message(embed=embed)

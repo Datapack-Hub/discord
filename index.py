@@ -17,62 +17,62 @@ bot = commands.Bot(
 )
 
 # Logs
-# from modules.logs.listeners import LogsListeners
-# bot.add_cog(LogsListeners(bot))
+from modules.logs.listeners import LogsListeners
+bot.add_cog(LogsListeners(bot))
 
 # Moderation
-# from modules.moderation.listeners import ModerationListeners
-# bot.add_cog(ModerationListeners(bot))
-# from modules.moderation.commands.mod import ModCommand
-# bot.add_cog(ModCommand(bot))
-# from modules.moderation.message_commands.moderate import ModerateCommand
-# bot.add_cog(ModerateCommand(bot))
-# from modules.moderation.message_commands.report import ReportCommand
-# bot.add_cog(ReportCommand(bot))
+from modules.moderation.listeners import ModerationListeners
+bot.add_cog(ModerationListeners(bot))
+from modules.moderation.commands.mod import ModCommand
+bot.add_cog(ModCommand(bot))
+from modules.moderation.message_commands.moderate import ModerateCommand
+bot.add_cog(ModerateCommand(bot))
+from modules.moderation.message_commands.report import ReportCommand
+bot.add_cog(ReportCommand(bot))
 
 # Help Channels
-# from modules.help_channels.listeners import HelpChannelListeners
-# bot.add_cog(HelpChannelListeners(bot))
-# from modules.help_channels.commands.resolve import ResolveCommand
-# bot.add_cog(ResolveCommand(bot))
-# from modules.help_channels.commands.summon import SummonCommand
-# bot.add_cog(SummonCommand(bot))
-# from modules.help_channels.commands.top import TopCommand
-# bot.add_cog(TopCommand(bot))
-# from modules.help_channels.message_commands.redirect import RedirectCommand
-# bot.add_cog(RedirectCommand(bot))
-# from modules.help_channels.message_commands.remind import RemindCommand
-# bot.add_cog(RemindCommand(bot))
+from modules.help_channels.listeners import HelpChannelListeners
+bot.add_cog(HelpChannelListeners(bot))
+from modules.help_channels.commands.resolve import ResolveCommand
+bot.add_cog(ResolveCommand(bot))
+from modules.help_channels.commands.summon import SummonCommand
+bot.add_cog(SummonCommand(bot))
+from modules.help_channels.commands.top import TopCommand
+bot.add_cog(TopCommand(bot))
+from modules.help_channels.message_commands.redirect import RedirectCommand
+bot.add_cog(RedirectCommand(bot))
+from modules.help_channels.message_commands.remind import RemindCommand
+bot.add_cog(RemindCommand(bot))
 
 # Utilities
-# from modules.utilities.commands.members import MembersCommand
-# bot.add_cog(MembersCommand(bot))
-# from modules.utilities.commands.help import HelpCommand
-# bot.add_cog(HelpCommand(bot))
-# from modules.utilities.commands.icon import IconCommand
-# bot.add_cog(IconCommand(bot))
-# from modules.utilities.message_commands.view import ViewFileCommand
-# bot.add_cog(ViewFileCommand(bot))
+from modules.utilities.commands.members import MembersCommand
+bot.add_cog(MembersCommand(bot))
+from modules.utilities.commands.help import HelpCommand
+bot.add_cog(HelpCommand(bot))
+from modules.utilities.commands.icon import IconCommand
+bot.add_cog(IconCommand(bot))
+from modules.utilities.message_commands.view import ViewFileCommand
+bot.add_cog(ViewFileCommand(bot))
 
 # Fun
-# from modules.fun.listeners import FunListeners
-# bot.add_cog(FunListeners(bot))
-# from modules.fun.commands.suspension import SuspensionRailwayCommand
-# bot.add_cog(SuspensionRailwayCommand(bot))
-# from modules.fun.commands.uwu import UwuCommand
-# bot.add_cog(UwuCommand(bot))
+from modules.fun.listeners import FunListeners
+bot.add_cog(FunListeners(bot))
+from modules.fun.commands.suspension import SuspensionRailwayCommand
+bot.add_cog(SuspensionRailwayCommand(bot))
+from modules.fun.commands.uwu import UwuCommand
+bot.add_cog(UwuCommand(bot))
 
 # Welcome
-# from modules.welcome.listeners import WelcomeListeners
-# bot.add_cog(WelcomeListeners(bot))
+from modules.welcome.listeners import WelcomeListeners
+bot.add_cog(WelcomeListeners(bot))
 
 # Events
-# from modules.events.button_click import OnButtonClick
-# bot.add_cog(OnButtonClick(bot))
+from modules.events.button_click import OnButtonClick
+bot.add_cog(OnButtonClick(bot))
 
 # Stats
-from modules.stats.commands.stats import StatsCommand
-bot.add_cog(StatsCommand(bot))
+# from modules.stats.commands.stats import StatsCommand
+# bot.add_cog(StatsCommand(bot))
 # from modules.stats.commands.stats_admin import StatsAdminCommand
 # bot.add_cog(StatsAdminCommand(bot))
 
@@ -138,7 +138,7 @@ async def on_ready():
     Log.info("Bot has started!")
     
     await autoclose_loop.start()
-    await schedule_qotd(bot)
+    # await schedule_qotd(bot)
 
 # Run bot
 bot.run(TOKEN)

@@ -1,5 +1,4 @@
 import discord
-from discord.ext import commands
 from pytimeparse.timeparse import timeparse
 from datetime import datetime, timedelta
 import variables
@@ -42,15 +41,13 @@ def generate_discord_relative_timestamp(seconds):
     return formatted_timestamp
 
 
-class ModCommand(commands.Cog):
+class ModCommand(discord.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.slash_command(name="mod")
-    async def mod(self, inter: discord.ApplicationContext):
-        return
+    mod = discord.SlashCommandGroup(name="mod")
     
-    @mod.sub_command("lockdown","Locks all server channels",)
+    @mod.command(description="Locks all server channels",)
     async def lockdown(self, inter: discord.ApplicationContext):
         await inter.defer()
         
@@ -63,9 +60,9 @@ class ModCommand(commands.Cog):
         
         await inter.guild.default_role.edit(permissions=current_perms)
                 
-        await inter.send_followup("🔒 **All server channels have been locked**")
+        await inter.respond("🔒 **All server channels have been locked**")
         
-    @mod.sub_command("unlockdown","Unlocks all server channels",)
+    @mod.command(description="Unlocks all server channels",)
     async def unlockdown(self, inter: discord.ApplicationContext):
         await inter.defer()
         
@@ -78,15 +75,15 @@ class ModCommand(commands.Cog):
         
         await inter.guild.default_role.edit(permissions=current_perms)
                 
-        await inter.send_followup("🔓 **All server channels have been unlocked**")
+        await inter.respond("🔓 **All server channels have been unlocked**")
             
         
-    @mod.sub_command("purge", "Bulk delete some messages")
+    @mod.command(description="Bulk delete some messages")
     async def purge(
         self, 
         inter: discord.ApplicationContext, 
         limit: int = discord.Option(description="How many messages to remove"), 
-        user: discord.User = discord.Option(description="User to delete messages from",default=None)
+        user: discord.User = discord.Option(description="User to delete messages from")
     ):
         # Stops the purge if the purge amount is over the API's limit
         if limit > 100:
@@ -132,7 +129,7 @@ class ModCommand(commands.Cog):
             f"{len(deleted_messages)} messages have been deleted", ephemeral=True
         )
             
-    @mod.sub_command("warn", "Sends a user a warning")
+    @mod.command(description="Sends a user a warning")
     async def warn(self, inter: discord.ApplicationContext, user: discord.Member, message: str, uwufy: bool = False):
         if uwufy:
             uwu = Uwuifier()
@@ -180,7 +177,7 @@ class ModCommand(commands.Cog):
                 "reason":message
             })
 
-    @mod.sub_command("mute", "Mutes a member for a length of time")
+    @mod.command(description="Mutes a member for a length of time")
     async def mute(self, inter: discord.ApplicationContext, user: discord.Member, length: str, reason: str, uwufy: bool = False):
         if uwufy:
             uwu = Uwuifier()
@@ -227,9 +224,13 @@ class ModCommand(commands.Cog):
                 "length":length
             })
 
-    @mod.sub_command("ban", "Bans a member for a length of time")
+    @mod.command(description="Bans a member for a length of time")
     async def ban(
-        self, inter: discord.ApplicationContext, user: discord.Member, reason: str, uwufy: bool = False
+        self, 
+        inter: discord.ApplicationContext, 
+        user: discord.Member, 
+        reason: str, 
+        uwufy: bool = False
     ):
         if uwufy:
             uwu = Uwuifier()
@@ -269,7 +270,7 @@ class ModCommand(commands.Cog):
                 "reason":reason
             })
     
-    @mod.sub_command("banall","Ban literally everyone",)
+    @mod.command(description="Ban literally everyone",)
     async def banall(self, inter: discord.ApplicationContext):
         #legi go away
         emb = discord.Embed(
@@ -282,16 +283,16 @@ class ModCommand(commands.Cog):
     def role_list(self):
         return [discord.OptionChoice(name=role.name,value=role.id) for role in self.bot.guild.roles if role.id in variables.mod_edit_roles]
 
-    @mod.sub_command("role","Grants or removes a (non-vital) role")
+    @mod.command(description="Grants or removes a (non-vital) role")
     async def role(
         self,
         inter: discord.ApplicationContext,
         user: discord.Member,
+        role: discord.Role = discord.Option(),
         modification: str = discord.Option(
             default = "add",
             choices = ["add", "remove"]
-        ),
-        role: discord.Role = discord.Option()
+        )
     ):
         if not role.id in variables.mod_edit_roles:
             await inter.response.send_message(f"Role `{role.name}` is not allowed in this command", ephemeral=True)
