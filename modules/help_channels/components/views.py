@@ -75,8 +75,61 @@ class ResolvedThreadView(discord.ui.View):
         else:
             container.add_text(f"This thread was open for {format_duration_between(thread.created_at,discord.utils.utcnow())}")
         
-        container.add_text("React to this message with 🔓 to unlock the thread, if you have any other questions or if you closed it by mistake.")
+        container.add_text("If you send another message in this thread or add a reaction, then this thread will automatically re-open.")
         
         container.add_text(f"-# You closed this help thread {discord.utils.format_dt(discord.utils.utcnow(), style='R')}")
+        
+        self.add_item(container)
+            
+class ReopenedThreadView(discord.ui.View):
+    def __init__(self):
+        super().__init__(timeout=None)
+        
+        container = discord.ui.Container()
+        
+        container.add_section(discord.ui.TextDisplay("**Channel reopened.** Don't forget to close it when you're done."), accessory=ResolveQuestionButton())
+        
+        self.add_item(container)
+        
+class ReminderMessageView(discord.ui.View):
+    def __init__(self):
+        super().__init__(timeout=None)
+        
+        container = discord.ui.Container()
+        
+        container.add_text("## Has your question been answered?")
+        container.add_section(discord.ui.TextDisplay("If your question has been answered, or you no longer need it, then don't forget to close the channel."), accessory=ResolveQuestionButton())
+        
+        self.add_item(container)
+        
+CHANNELS_MESSAGE = """
+- <#1051225367807000706> for questions about datapacks and commands
+- <#1051227454980755546> for questions about resource packs
+- <#1143095605577654392> for anything else
+
+*If you can't see the above channels, make sure you have `Show All Channels` enabled in the server menu.*
+"""
+
+class RedirectMessageView(discord.ui.View):
+    def __init__(self):
+        super().__init__(timeout=None)
+        
+        container = discord.ui.Container()
+        
+        container.add_text("## Please use a help channel!")
+        container.add_text("Please ask any questions about datapacks, commands, or resource packs in the correct help channel!")
+        container.add_text(CHANNELS_MESSAGE)
+        
+        self.add_item(container)
+
+class WrongChannelMessageView(discord.ui.View):
+    def __init__(self):
+        super().__init__(timeout=None)
+        
+        container = discord.ui.Container()
+        
+        container.add_text("## This is the wrong channel!")
+        container.add_text("You've posted this in the wrong help channel. Please ask this question again in the correct help channel!")
+        container.add_text(CHANNELS_MESSAGE)
         
         self.add_item(container)

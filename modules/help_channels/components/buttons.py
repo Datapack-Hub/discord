@@ -50,7 +50,7 @@ class SummonHelpersButton(discord.ui.Button):
 class ResolveQuestionButton(discord.ui.Button):
     def __init__(self):
         super().__init__(
-            label="Resolve Question",
+            label="Close Question",
             custom_id="resolve_question_button",
             style=discord.ButtonStyle.green,
             emoji="✅"

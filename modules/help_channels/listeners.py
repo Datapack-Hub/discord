@@ -3,9 +3,8 @@ from discord.ext import commands
 import variables
 import asyncio
 import utils.log as Log
-from utils.stats import remove
 from utils.res_thread import resolve_thread_without_interaction
-from modules.help_channels.components.views import HelpChannelMessageView
+from modules.help_channels.components.views import HelpChannelMessageView, ReopenedThreadView
 
 def get_opened_threads(thread: discord.Thread) -> list[discord.Thread]:
     parent = thread.parent
@@ -49,11 +48,21 @@ class HelpChannelListeners(discord.Cog):
             await thread.send(view=HelpChannelMessageView(threads=get_opened_threads(thread)))
     
     @commands.Cog.listener()
-    async def on_thread_update(self, before: discord.Thread, after: discord.Thread):
+    async def on_raw_thread_update(self, payload: discord.RawThreadUpdateEvent):
+        thread = payload.thread
+        
         if (
-            before.archived == False and 
-            after.archived == True 
-            and not (any(tag.name.lower() == "resolved" for tag in after.applied_tags)) 
-            and after.parent.id in variables.help_channels
+            thread.archived == True 
+            and not (any(tag.name.lower() == "resolved" for tag in thread.applied_tags)) 
+            and thread.parent.id in variables.help_channels
         ):
-            await resolve_thread_without_interaction(thread=after)
+            await resolve_thread_without_interaction(thread=thread)
+            
+        elif (
+            thread.archived == False 
+            and (any(tag.name.lower() == "resolved" for tag in thread.applied_tags)) 
+            and thread.parent.id in variables.help_channels
+        ):
+            tags = [tag for tag in thread.applied_tags if not (tag.name.lower() == "resolved")]
+            await thread.edit(applied_tags=tags)
+            await thread.last_message.reply(view=ReopenedThreadView(), allowed_mentions=discord.AllowedMentions.none())
