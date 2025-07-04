@@ -1,16 +1,16 @@
-import disnake
-from disnake.ext import commands
+import discord
+
 import variables
 import utils.log as Log
-from utils.res_thread import resolve_thread
+from modules.help_channels.res_thread import resolve_thread
 
 
-class ResolveCommand(commands.Cog, name="resolve"):
+class ResolveCommand(discord.Cog, name="resolve"):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.slash_command(title="resolve", description="Marks question as resolved")
-    async def resolve(self, inter: disnake.ApplicationCommandInteraction):
+    @discord.slash_command(title="resolve", description="Marks question as resolved")
+    async def resolve(self, inter: discord.ApplicationContext):
         role = inter.guild.get_role(variables.helper)
         
         # Try and get parent channel
@@ -21,7 +21,7 @@ class ResolveCommand(commands.Cog, name="resolve"):
             return False
         
         if (inter.channel.owner_id == inter.author.id) or (role in inter.author.roles) and channel in variables.help_channels:
-            await resolve_thread(inter.channel, inter.response, inter.author)
+            await resolve_thread(inter.channel, inter.response)
         else:
             await inter.response.send_message("You aren't allowed to do this here.", ephemeral=True)
             Log.info(f"{inter.author.name} tried to resolve a thread which wasn't theirs")

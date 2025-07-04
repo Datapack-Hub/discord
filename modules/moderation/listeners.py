@@ -1,5 +1,5 @@
-import disnake
-from disnake.ext import commands
+import discord
+
 import variables
 from utils.uwufier import Uwuifier
 import re
@@ -8,15 +8,15 @@ import json
 import utils.log as Log
 
 
-class ModerationListeners(commands.Cog):
+class ModerationListeners(discord.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.Cog.listener()
-    async def on_message(self, message: disnake.Message):
+    @discord.Cog.listener()
+    async def on_message(self, message: discord.Message):
         # * CENSOR
         if any(ext in message.content.lower() for ext in automod.terms) and not message.author.bot:
-            if message.channel.type != disnake.ChannelType.public_thread and message.channel.type != disnake.ChannelType.private_thread:
+            if message.channel.type != discord.ChannelType.public_thread and message.channel.type != discord.ChannelType.private_thread:
                 hooks = await message.channel.webhooks()
                 for hook in hooks:
                     if hook.name == "DPH":
@@ -61,10 +61,10 @@ class ModerationListeners(commands.Cog):
             censored = pattern.sub("<:r1:1100839366005358692><:r2:1100839228792901752><:r3:1100839175361671309>",text)
             
             # Resend
-            if message.channel.type != disnake.ChannelType.public_thread and message.channel.type != disnake.ChannelType.private_thread:
-                await hook.send(censored,wait=False,files=files,username=message.author.display_name,avatar_url=message.author.display_avatar.url,allowed_mentions=disnake.AllowedMentions.none())
+            if message.channel.type != discord.ChannelType.public_thread and message.channel.type != discord.ChannelType.private_thread:
+                await hook.send(censored,wait=False,files=files,username=message.author.display_name,avatar_url=message.author.display_avatar.url,allowed_mentions=discord.AllowedMentions.none())
             else:
-                await hook.send(censored,wait=False,files=files,username=message.author.display_name,avatar_url=message.author.display_avatar.url,allowed_mentions=disnake.AllowedMentions.none(),thread=message.channel)
+                await hook.send(censored,wait=False,files=files,username=message.author.display_name,avatar_url=message.author.display_avatar.url,allowed_mentions=discord.AllowedMentions.none(),thread=message.channel)
             
             # Timeout
             data = json.load(open("mute_lengths.json","r"))
@@ -81,13 +81,13 @@ class ModerationListeners(commands.Cog):
             
             try:
                 await message.author.timeout(duration=seconds,reason="Censor Timeout")
-            except disnake.errors.Forbidden:
+            except discord.errors.Forbidden:
                 pass
             
             # Log
-            await self.bot.get_channel(variables.automodlogs).send(embed=disnake.Embed(
+            await self.bot.get_channel(variables.automodlogs).send(embed=discord.Embed(
                 title="Message Censored",
-                colour=disnake.Colour.orange()
+                colour=discord.Colour.orange()
             ).add_field("Content",f"{message.content}",inline=False).add_field("Channel",message.channel.jump_url,inline=False).add_field("Attachments",f"{message.attachments.__len__()!s} attachments",inline=False).set_author(name=message.author.global_name,icon_url=message.author.avatar.url))
             
             Log.info(f"Censored a message by {message.author.name}")

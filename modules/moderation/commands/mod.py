@@ -1,13 +1,11 @@
-import disnake
-from disnake.ext import commands
+import discord
 from pytimeparse.timeparse import timeparse
 from datetime import datetime, timedelta
 import variables
 import io
 from utils.uwufier import Uwuifier
 import utils.modlogs as modlogs
-import matplotlib.pyplot as plt
-import numpy as np
+from modules.moderation.components.views import UserModPanelView
 
 REASONS = [
     {
@@ -42,17 +40,19 @@ def generate_discord_relative_timestamp(seconds):
     return formatted_timestamp
 
 
-class ModCommand(commands.Cog):
+class ModCommand(discord.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.slash_command(name="mod")
-    async def mod(self, inter: disnake.ApplicationCommandInteraction):
-        return
+    mod = discord.SlashCommandGroup(name="mod")
     
-    @mod.sub_command("lockdown","Locks all server channels",)
-    async def lockdown(self, inter: disnake.ApplicationCommandInteraction):
-        await inter.response.defer()
+    @mod.command(description="Opens the moderation menu for a user")
+    async def user(self, inter: discord.ApplicationContext, user: discord.Member):
+        await inter.respond(view=UserModPanelView(user=user))
+    
+    @mod.command(description="Locks all server channels",)
+    async def lockdown(self, inter: discord.ApplicationContext):
+        await inter.defer()
         
         current_perms = inter.guild.default_role.permissions
         
@@ -63,11 +63,11 @@ class ModCommand(commands.Cog):
         
         await inter.guild.default_role.edit(permissions=current_perms)
                 
-        await inter.edit_original_message("🔒 **All server channels have been locked**")
+        await inter.respond("🔒 **All server channels have been locked**")
         
-    @mod.sub_command("unlockdown","Unlocks all server channels",)
-    async def unlockdown(self, inter: disnake.ApplicationCommandInteraction):
-        await inter.response.defer()
+    @mod.command(description="Unlocks all server channels",)
+    async def unlockdown(self, inter: discord.ApplicationContext):
+        await inter.defer()
         
         current_perms = inter.guild.default_role.permissions
         
@@ -78,15 +78,15 @@ class ModCommand(commands.Cog):
         
         await inter.guild.default_role.edit(permissions=current_perms)
                 
-        await inter.edit_original_message("🔓 **All server channels have been unlocked**")
+        await inter.respond("🔓 **All server channels have been unlocked**")
             
         
-    @mod.sub_command("purge", "Bulk delete some messages")
+    @mod.command(description="Bulk delete some messages")
     async def purge(
         self, 
-        inter: disnake.ApplicationCommandInteraction, 
-        limit: int = commands.Param(description="How many messages to remove"), 
-        user: disnake.User = commands.Param(description="User to delete messages from",default=None)
+        inter: discord.ApplicationContext, 
+        limit: int = discord.Option(description="How many messages to remove"), 
+        user: discord.User = discord.Option(description="User to delete messages from")
     ):
         # Stops the purge if the purge amount is over the API's limit
         if limit > 100:
@@ -95,7 +95,7 @@ class ModCommand(commands.Cog):
             )
             return
 
-        def is_user(m: disnake.Message):
+        def is_user(m: discord.Message):
             if m.author != user:
                 return False
             return True
@@ -107,8 +107,8 @@ class ModCommand(commands.Cog):
             deleted_messages = await inter.channel.purge(limit=limit)
 
         # Logs the purge action
-        log_embed = disnake.Embed(
-            colour=disnake.Colour.orange(),
+        log_embed = discord.Embed(
+            colour=discord.Colour.orange(),
             title="`/purge` Command",
             description=f"{inter.user.name} purged {len(deleted_messages)} messages in {inter.channel.mention}.",
         )
@@ -121,7 +121,7 @@ class ModCommand(commands.Cog):
             )
 
         file_content.seek(0)
-        file = disnake.File(fp=file_content, filename="purged messages.txt")
+        file = discord.File(fp=file_content, filename="purged messages.txt")
 
         log_channel = inter.guild.get_channel(variables.logs)
 
@@ -131,167 +131,30 @@ class ModCommand(commands.Cog):
         await inter.response.send_message(
             f"{len(deleted_messages)} messages have been deleted", ephemeral=True
         )
-            
-    @mod.sub_command("warn", "Sends a user a warning")
-    async def warn(self, inter: disnake.ApplicationCommandInteraction, user: disnake.Member, message: str, uwufy: bool = False):
-        if uwufy:
-            uwu = Uwuifier()
-            message = uwu.uwuify_sentence(message)
-        try:
-            await user.send(
-                embed=disnake.Embed(
-                    title="You recieved a warning",
-                    colour=disnake.Colour.orange(),
-                    description="You have been given a warning in Datapack Hub by a moderator.",
-                    timestamp=datetime.now(),
-                )
-                .add_field("Warning",f"```\n{message}```",inline=False)
-                .set_footer(text="If you think this was done incorrectly, please contact a staff member.")
-            )
-        except disnake.errors.Forbidden:
-            await inter.response.send_message(
-                f"I could not warn {user.mention} because either they have not enabled DMs from this server, or they have blocked the bot.",
-                ephemeral=True,
-            )
-        except Exception as e:
-            await inter.response.send_message(
-                f"Failed to warn user {user.mention}: `{e}`",
-                ephemeral=True,
-            )
-        else:
-            await inter.response.send_message(
-                f"Warned user {user.mention} for reason:```\n{message}```",
-                ephemeral=True,
-            )
-            
-            await inter.guild.get_channel(variables.modlogs).send(
-                embed=disnake.Embed(
-                    title="User Warned",
-                    description=f"{user.name} (UID {user.id}) was warned.",
-                    colour=disnake.Colour.red(),
-                )
-                .set_author(name=inter.author.global_name, icon_url=inter.author.avatar.url)
-                .add_field("Warning",f"```\n{message}```",inline=False)
-            )
-            
-            modlogs.log({
-                "action":"warn",
-                "user":user.id,
-                "reason":message
-            })
-
-    @mod.sub_command("mute", "Mutes a member for a length of time")
-    async def mute(self, inter: disnake.ApplicationCommandInteraction, user: disnake.Member, length: str, reason: str, uwufy: bool = False):
-        if uwufy:
-            uwu = Uwuifier()
-            reason = uwu.uwuify_sentence(reason)
-        seconds = timeparse(length)
-        try:
-            await user.timeout(duration=seconds, reason=reason)
-        except disnake.errors.Forbidden:
-            await inter.response.send_message(f"Failed to mute user {user.mention}: I don't have permission to do this.",ephemeral=True)
-        except Exception as e:
-            await inter.response.send_message(f"Failed to mute user {user.mention}: `{e}`",ephemeral=True)
-        else:
-            await inter.response.send_message(f"Muted user {user.mention} for reason:```\n{reason}```",ephemeral=True)
-            try:
-                await user.send(
-                    embed=disnake.Embed(
-                        title=f"You were muted",
-                        colour=disnake.Colour.red(),
-                        description=f"You were muted in Datapack Hub by a moderator for {length}.",
-                        timestamp=datetime.now(),
-                    )
-                    .add_field("Reason",f"```\n{reason}```",inline=False)
-                    .add_field("Expires",generate_discord_relative_timestamp(seconds),inline=False)
-                    .set_footer(text="If you think this was done incorrectly, please contact a staff member.")
-                )
-            except:
-                pass
-            
-            await inter.guild.get_channel(variables.modlogs).send(embed=disnake.Embed(
-                title="User Muted",
-                description=f"{user.name} (UID {user.id}) was muted.",
-                colour=disnake.Colour.red(),
-            )
-            .set_author(name=inter.author.global_name, icon_url=inter.author.avatar.url)
-            .add_field("Reason", reason, inline=False)
-            .add_field("Expires",generate_discord_relative_timestamp(seconds),inline=False)
-            .add_field("Length",length,inline=False)
-            )
-            
-            modlogs.log({
-                "action":"mute",
-                "user":user.id,
-                "reason":reason,
-                "length":length
-            })
-
-    @mod.sub_command("ban", "Bans a member for a length of time")
-    async def ban(
-        self, inter: disnake.ApplicationCommandInteraction, user: disnake.Member, reason: str, uwufy: bool = False
-    ):
-        if uwufy:
-            uwu = Uwuifier()
-            reason = uwu.uwuify_sentence(reason)
-        try:
-            await user.send(
-                embed=disnake.Embed(
-                    title="You were banned",
-                    colour=disnake.Colour.red(),
-                    description=f"You were banned from Datapack Hub by a moderator.",
-                    timestamp=datetime.now(),
-                )
-                .add_field("Reason",f"```\n{reason}```",inline=False)
-                .set_footer(text="If you think this was done incorrectly, please contact a staff member.")
-            )
-            
-            await user.ban(reason=reason)
-        except disnake.errors.Forbidden:
-            await inter.response.send_message(f"Failed to ban user {user.mention}: I don't have permission to do this.",ephemeral=True)
-        except Exception as e:
-            await inter.response.send_message(f"Failed to ban user {user.mention}: `{e}`",ephemeral=True)
-        else:
-            await inter.response.send_message(f"Banned user {user.mention} for reason:```\n{reason}```",ephemeral=True)
-            
-            await inter.guild.get_channel(variables.modlogs).send(embed=disnake.Embed(
-                title="User Banned",
-                description=f"{user.name} (UID {user.id}) was banned.",
-                colour=disnake.Colour.red(),
-            )
-            .set_author(name=inter.author.global_name, icon_url=inter.author.avatar.url)
-            .add_field("Reason",f"```\n{reason}```",inline=False)
-            )
-            
-            modlogs.log({
-                "action":"ban",
-                "user":user.id,
-                "reason":reason
-            })
-    
-    @mod.sub_command("banall","Ban literally everyone",)
-    async def banall(self, inter: disnake.ApplicationCommandInteraction):
+        
+    @mod.command(description="Ban literally everyone",)
+    async def banall(self, inter: discord.ApplicationContext):
         #legi go away
-        emb = disnake.Embed(
+        emb = discord.Embed(
             title="⚠️ BAN ALL MEMBERS",
             description="Are you sure? This action is IRREVERSIBLE. Flyne is going to be very angry if you run this command. ONLY USE THIS IN EMERGENCIES. You have been warned.",
-            colour=disnake.Colour.dark_red()
+            colour=discord.Colour.dark_red()
         )
-        await inter.response.send_message(embed=emb,components=[disnake.ui.Button(style=disnake.ButtonStyle.red,label="CONFIRM")])
+        await inter.response.send_message(embed=emb,components=[discord.ui.Button(style=discord.ButtonStyle.red,label="CONFIRM")])
 
     def role_list(self):
-        return [disnake.OptionChoice(name=role.name,value=role.id) for role in self.bot.guild.roles if role.id in variables.mod_edit_roles]
+        return [discord.OptionChoice(name=role.name,value=role.id) for role in self.bot.guild.roles if role.id in variables.mod_edit_roles]
 
-    @mod.sub_command("role","Grants or removes a (non-vital) role")
+    @mod.command(description="Grants or removes a (non-vital) role")
     async def role(
         self,
-        inter: disnake.ApplicationCommandInteraction,
-        user: disnake.Member,
-        modification: str = commands.Param(
+        inter: discord.ApplicationContext,
+        user: discord.Member,
+        role: discord.Role = discord.Option(),
+        modification: str = discord.Option(
             default = "add",
             choices = ["add", "remove"]
-        ),
-        role: disnake.Role = commands.Param()
+        )
     ):
         if not role.id in variables.mod_edit_roles:
             await inter.response.send_message(f"Role `{role.name}` is not allowed in this command", ephemeral=True)
