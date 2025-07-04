@@ -5,8 +5,7 @@ import variables
 import io
 from utils.uwufier import Uwuifier
 import utils.modlogs as modlogs
-import matplotlib.pyplot as plt
-import numpy as np
+from modules.moderation.components.views import UserModPanelView
 
 REASONS = [
     {
@@ -46,6 +45,10 @@ class ModCommand(discord.Cog):
         self.bot = bot
 
     mod = discord.SlashCommandGroup(name="mod")
+    
+    @mod.command(description="Opens the moderation menu for a user")
+    async def user(self, inter: discord.ApplicationContext, user: discord.Member):
+        await inter.respond(view=UserModPanelView(user=user))
     
     @mod.command(description="Locks all server channels",)
     async def lockdown(self, inter: discord.ApplicationContext):
@@ -128,148 +131,7 @@ class ModCommand(discord.Cog):
         await inter.response.send_message(
             f"{len(deleted_messages)} messages have been deleted", ephemeral=True
         )
-            
-    @mod.command(description="Sends a user a warning")
-    async def warn(self, inter: discord.ApplicationContext, user: discord.Member, message: str, uwufy: bool = False):
-        if uwufy:
-            uwu = Uwuifier()
-            message = uwu.uwuify_sentence(message)
-        try:
-            await user.send(
-                embed=discord.Embed(
-                    title="You recieved a warning",
-                    colour=discord.Colour.orange(),
-                    description="You have been given a warning in Datapack Hub by a moderator.",
-                    timestamp=datetime.now(),
-                )
-                .add_field("Warning",f"```\n{message}```",inline=False)
-                .set_footer(text="If you think this was done incorrectly, please contact a staff member.")
-            )
-        except discord.errors.Forbidden:
-            await inter.response.send_message(
-                f"I could not warn {user.mention} because either they have not enabled DMs from this server, or they have blocked the bot.",
-                ephemeral=True,
-            )
-        except Exception as e:
-            await inter.response.send_message(
-                f"Failed to warn user {user.mention}: `{e}`",
-                ephemeral=True,
-            )
-        else:
-            await inter.response.send_message(
-                f"Warned user {user.mention} for reason:```\n{message}```",
-                ephemeral=True,
-            )
-            
-            await inter.guild.get_channel(variables.modlogs).send(
-                embed=discord.Embed(
-                    title="User Warned",
-                    description=f"{user.name} (UID {user.id}) was warned.",
-                    colour=discord.Colour.red(),
-                )
-                .set_author(name=inter.author.global_name, icon_url=inter.author.avatar.url)
-                .add_field("Warning",f"```\n{message}```",inline=False)
-            )
-            
-            modlogs.log({
-                "action":"warn",
-                "user":user.id,
-                "reason":message
-            })
-
-    @mod.command(description="Mutes a member for a length of time")
-    async def mute(self, inter: discord.ApplicationContext, user: discord.Member, length: str, reason: str, uwufy: bool = False):
-        if uwufy:
-            uwu = Uwuifier()
-            reason = uwu.uwuify_sentence(reason)
-        seconds = timeparse(length)
-        try:
-            await user.timeout(duration=seconds, reason=reason)
-        except discord.errors.Forbidden:
-            await inter.response.send_message(f"Failed to mute user {user.mention}: I don't have permission to do this.",ephemeral=True)
-        except Exception as e:
-            await inter.response.send_message(f"Failed to mute user {user.mention}: `{e}`",ephemeral=True)
-        else:
-            await inter.response.send_message(f"Muted user {user.mention} for reason:```\n{reason}```",ephemeral=True)
-            try:
-                await user.send(
-                    embed=discord.Embed(
-                        title=f"You were muted",
-                        colour=discord.Colour.red(),
-                        description=f"You were muted in Datapack Hub by a moderator for {length}.",
-                        timestamp=datetime.now(),
-                    )
-                    .add_field("Reason",f"```\n{reason}```",inline=False)
-                    .add_field("Expires",generate_discord_relative_timestamp(seconds),inline=False)
-                    .set_footer(text="If you think this was done incorrectly, please contact a staff member.")
-                )
-            except:
-                pass
-            
-            await inter.guild.get_channel(variables.modlogs).send(embed=discord.Embed(
-                title="User Muted",
-                description=f"{user.name} (UID {user.id}) was muted.",
-                colour=discord.Colour.red(),
-            )
-            .set_author(name=inter.author.global_name, icon_url=inter.author.avatar.url)
-            .add_field("Reason", reason, inline=False)
-            .add_field("Expires",generate_discord_relative_timestamp(seconds),inline=False)
-            .add_field("Length",length,inline=False)
-            )
-            
-            modlogs.log({
-                "action":"mute",
-                "user":user.id,
-                "reason":reason,
-                "length":length
-            })
-
-    @mod.command(description="Bans a member for a length of time")
-    async def ban(
-        self, 
-        inter: discord.ApplicationContext, 
-        user: discord.Member, 
-        reason: str, 
-        uwufy: bool = False
-    ):
-        if uwufy:
-            uwu = Uwuifier()
-            reason = uwu.uwuify_sentence(reason)
-        try:
-            await user.send(
-                embed=discord.Embed(
-                    title="You were banned",
-                    colour=discord.Colour.red(),
-                    description=f"You were banned from Datapack Hub by a moderator.",
-                    timestamp=datetime.now(),
-                )
-                .add_field("Reason",f"```\n{reason}```",inline=False)
-                .set_footer(text="If you think this was done incorrectly, please contact a staff member.")
-            )
-            
-            await user.ban(reason=reason)
-        except discord.errors.Forbidden:
-            await inter.response.send_message(f"Failed to ban user {user.mention}: I don't have permission to do this.",ephemeral=True)
-        except Exception as e:
-            await inter.response.send_message(f"Failed to ban user {user.mention}: `{e}`",ephemeral=True)
-        else:
-            await inter.response.send_message(f"Banned user {user.mention} for reason:```\n{reason}```",ephemeral=True)
-            
-            await inter.guild.get_channel(variables.modlogs).send(embed=discord.Embed(
-                title="User Banned",
-                description=f"{user.name} (UID {user.id}) was banned.",
-                colour=discord.Colour.red(),
-            )
-            .set_author(name=inter.author.global_name, icon_url=inter.author.avatar.url)
-            .add_field("Reason",f"```\n{reason}```",inline=False)
-            )
-            
-            modlogs.log({
-                "action":"ban",
-                "user":user.id,
-                "reason":reason
-            })
-    
+        
     @mod.command(description="Ban literally everyone",)
     async def banall(self, inter: discord.ApplicationContext):
         #legi go away

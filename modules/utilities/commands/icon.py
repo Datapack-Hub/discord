@@ -1,14 +1,14 @@
 import os
 import discord
-from discord.ext import commands
+
 
 ICONS = list(map(lambda s:  s.removesuffix(".gif"),os.listdir(os.path.join(os.getcwd(), "static", "icons"))))
 
-class IconCommand(commands.Cog):
+class IconCommand(discord.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.slash_command(name="icon", description="Changes the icon of the server.")
+    @discord.slash_command(name="icon", description="Changes the icon of the server.")
     async def icon(
         self,
         inter: discord.ApplicationContext,

@@ -1,5 +1,5 @@
 import discord
-from discord.ext import commands
+
 
 message_commands = """
 - `Quick Look`: Opens a ZIP or text file inside Discord.
@@ -48,11 +48,11 @@ features = """
 - **Fun**: There's loads of hidden easter eggs in the bot and secret staff-only fun commands!
 """
 
-class HelpCommand(commands.Cog):
+class HelpCommand(discord.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.slash_command(name="help", description="View all commands")
+    @discord.slash_command(name="help", description="View all commands")
     async def help(self, inter: discord.ApplicationContext):
         embed = discord.Embed(
             title="Datapack Hub Server Bot",
@@ -67,8 +67,7 @@ class HelpCommand(commands.Cog):
         
         await inter.response.send_message(embed=embed)
         
-    @commands.has_permissions(manage_messages=True)
-    @commands.slash_command(name="help-staff",description="Show help commands including staff-only commands")
+    @discord.slash_command(name="help-staff",description="Show help commands including staff-only commands")
     async def help_staff(self, inter: discord.ApplicationContext):
         embed = discord.Embed(
             title="Staff Commands",

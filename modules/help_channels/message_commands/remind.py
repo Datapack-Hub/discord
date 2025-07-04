@@ -1,14 +1,14 @@
 import discord
-from discord.ext import commands
+
 import utils.log as Log
 from modules.help_channels.components.views import ReminderMessageView
 
 
-class RemindCommand(commands.Cog):
+class RemindCommand(discord.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.message_command(name="Remind them to resolve thread")
+    @discord.message_command(name="Remind them to resolve thread")
     async def remind(self, inter: discord.ApplicationContext, message: discord.Message):
         # Send embed with resolve button
         await message.reply(view=ReminderMessageView())

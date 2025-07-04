@@ -1,5 +1,5 @@
 import discord
-from discord.ext import commands
+
 import variables
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
 import os
@@ -93,11 +93,11 @@ async def get_member_join_card(user, self):
     background_pfp.save(output_path)
 
 
-class WelcomeListeners(commands.Cog):
-    def __init__(self, bot: commands.Bot):
+class WelcomeListeners(discord.Cog):
+    def __init__(self, bot: discord.Bot):
         self.bot = bot
 
-    @commands.Cog.listener()
+    @discord.Cog.listener()
     async def on_member_join(self, member: discord.Member):
         channel = self.bot.get_channel(variables.new_member_channel)
         
@@ -114,7 +114,7 @@ class WelcomeListeners(commands.Cog):
             allowed_mentions=discord.AllowedMentions.none()
         )
         
-    @commands.Cog.listener()
+    @discord.Cog.listener()
     async def on_message(self, message: discord.Message):
         if message.channel.id == variables.intro and not message.author.bot:
             # Add reaction

@@ -1,6 +1,5 @@
 import discord
 import utils.log as Log
-from utils.stats import update
 import datetime
 
 async def resolve_thread(thread: discord.Thread, response: discord.InteractionResponse):

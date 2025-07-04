@@ -1,18 +1,18 @@
 import discord
-from discord.ext import commands
+
 import variables
 
-class LogsListeners(commands.Cog):
-    def __init__(self, bot: commands.Bot):
+class LogsListeners(discord.Cog):
+    def __init__(self, bot: discord.Bot):
         self.bot = bot
         
-    @commands.Cog.listener()
+    @discord.Cog.listener()
     async def on_ready(self):
         self.logs_channel = self.bot.get_channel(variables.logs)
         self.user_logs_channel = self.bot.get_channel(variables.userlogs)
     
     # Member Join
-    @commands.Cog.listener()
+    @discord.Cog.listener()
     async def on_member_join(self, member: discord.Member):
         await self.user_logs_channel.send(
             embed=discord.Embed(
@@ -26,7 +26,7 @@ class LogsListeners(commands.Cog):
         )
         
     # Member Join
-    @commands.Cog.listener()
+    @discord.Cog.listener()
     async def on_member_remove(self, member: discord.Member):
         roles = ""
         if len(member.roles) != 0:
@@ -45,7 +45,7 @@ class LogsListeners(commands.Cog):
             
         
     # Channel Delete
-    @commands.Cog.listener()
+    @discord.Cog.listener()
     async def on_guild_channel_delete(self, channel: discord.abc.GuildChannel):
         entry = await channel.guild.audit_logs(action=discord.AuditLogAction.channel_delete, limit=1).get()
         await self.logs_channel.send(embed=discord.Embed(
@@ -58,7 +58,7 @@ class LogsListeners(commands.Cog):
         )
     
     # Channel Create
-    @commands.Cog.listener()
+    @discord.Cog.listener()
     async def on_guild_channel_create(self, channel: discord.abc.GuildChannel):
         entry = await channel.guild.audit_logs(action=discord.AuditLogAction.channel_create, limit=1).get()
         await self.logs_channel.send(
@@ -72,7 +72,7 @@ class LogsListeners(commands.Cog):
         )
     
     # Message Edit
-    @commands.Cog.listener()
+    @discord.Cog.listener()
     async def on_message_edit(self, before: discord.Message, after: discord.Message):
         if before.content != after.content:
             await self.logs_channel.send(
@@ -87,7 +87,7 @@ class LogsListeners(commands.Cog):
             )
     
     # Message Delete
-    @commands.Cog.listener()
+    @discord.Cog.listener()
     async def on_message_delete(self, message: discord.Message):
         await self.logs_channel.send(
             embed=discord.Embed(

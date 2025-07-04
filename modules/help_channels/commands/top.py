@@ -1,13 +1,13 @@
 import discord
-from discord.ext import commands
+
 import utils.log as Log
 
 
-class TopCommand(commands.Cog, name="top"):
+class TopCommand(discord.Cog, name="top"):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.slash_command(title="top", description="Jump to the top of the thread or channel!")
+    @discord.slash_command(title="top", description="Jump to the top of the thread or channel!")
     async def top(self, inter: discord.ApplicationContext):
         message = await inter.channel.history(limit=1, oldest_first=True).flatten()
 

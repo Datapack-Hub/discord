@@ -2,11 +2,11 @@ import json
 from utils.uwufier import Uwuifier
 import utils.log as Log
 import discord
-from discord.ext import commands
+
 
 uwu_data = {"users": [], "channels": [], "banned": [], "enabled": True}
 
-class UwuCommand(commands.Cog, name="uwu"):
+class UwuCommand(discord.Cog, name="uwu"):
     def __init__(self, bot):
         self.bot = bot
 

@@ -1,5 +1,5 @@
 import discord
-from discord.ext import commands
+
 import variables
 from utils.uwufier import Uwuifier
 import json
@@ -7,11 +7,11 @@ import utils.log as Log
 import os
 from .commands.uwu import uwu_data
 
-class FunListeners(commands.Cog):
+class FunListeners(discord.Cog):
     def __init__(self, bot):
         self.bot = bot
         
-    @commands.Cog.listener()
+    @discord.Cog.listener()
     async def on_message(self, message: discord.Message):
         if uwu_data["enabled"]:
             if variables.uwu_trigger in message.content.lower() and message.channel.type == discord.ChannelType.text and not message.author.bot and not message.author.id in uwu_data["banned"]:

@@ -1,12 +1,12 @@
 import discord
-from discord.ext import commands
 
 
-class MembersCommand(commands.Cog):
+
+class MembersCommand(discord.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.slash_command(name="members", description="View member list and count")
+    @discord.slash_command(name="members", description="View member list and count")
     async def members(self, inter: discord.ApplicationContext):
         
         with open("member_names.txt","w+") as file:

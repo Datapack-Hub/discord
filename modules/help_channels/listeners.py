@@ -1,9 +1,9 @@
 import discord
-from discord.ext import commands
+
 import variables
 import asyncio
 import utils.log as Log
-from utils.res_thread import resolve_thread_without_interaction
+from modules.help_channels.res_thread import resolve_thread_without_interaction
 from modules.help_channels.components.views import HelpChannelMessageView, ReopenedThreadView
 
 def get_opened_threads(thread: discord.Thread) -> list[discord.Thread]:
@@ -28,10 +28,6 @@ class HelpChannelListeners(discord.Cog):
     @discord.Cog.listener()
     async def on_ready(self):
         self.bot.add_view(HelpChannelMessageView())
-        
-    @discord.slash_command()
-    async def test(self, inter: discord.ApplicationContext):
-        await inter.respond(view=HelpChannelMessageView(discord.utils.utcnow(), get_opened_threads(inter.channel)))
 
     @discord.Cog.listener()
     async def on_thread_create(self, thread: discord.Thread):
@@ -47,7 +43,7 @@ class HelpChannelListeners(discord.Cog):
             # Send message
             await thread.send(view=HelpChannelMessageView(threads=get_opened_threads(thread)))
     
-    @commands.Cog.listener()
+    @discord.Cog.listener()
     async def on_raw_thread_update(self, payload: discord.RawThreadUpdateEvent):
         thread = payload.thread
         

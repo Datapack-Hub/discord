@@ -1,15 +1,15 @@
 import discord
-from discord.ext import commands
+
 import utils.log as Log
 import variables
 from modules.help_channels.components.views import RedirectMessageView, WrongChannelMessageView
 
 
-class RedirectCommand(commands.Cog):
+class RedirectCommand(discord.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.message_command(name="Redirect to help channel")
+    @discord.message_command(name="Redirect to help channel")
     async def redirect(self, inter: discord.ApplicationContext, message: discord.Message):
         try: message.channel.parent
         except: await message.reply(view=RedirectMessageView())

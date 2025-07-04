@@ -1,6 +1,7 @@
 import discord
 from modules.help_channels.components.buttons import SummonHelpersButton, ResolveQuestionButton
 from datetime import datetime
+import variables
 
 def format_duration_between(date_time_start, date_time_end):
     time_difference = date_time_end - date_time_start
@@ -81,6 +82,26 @@ class ResolvedThreadView(discord.ui.View):
         
         self.add_item(container)
             
+class AutoclosedThreadView(discord.ui.View):
+    def __init__(self, thread: discord.Thread):
+        super().__init__(timeout=None)
+        
+        container = discord.ui.Container()
+        
+        container.add_text("## Question closed due to inactivity")
+        container.add_text(f"Your question, <#{thread.id}> ({thread.name}), has been open for 3 days without any message, and so has been automatically closed. If you weren't done, then please send a message to reopen this thread.")
+        
+        if thread.starting_message:
+            sect1 = discord.ui.Section(accessory=discord.ui.Button(label="Jump to top", url=thread.starting_message.jump_url))
+            sect1.add_text(f"This thread was open for {format_duration_between(thread.created_at,discord.utils.utcnow())}")
+            container.add_item(sect1)
+        else:
+            container.add_text(f"This thread was open for {format_duration_between(thread.created_at,discord.utils.utcnow())}")
+        
+        container.add_text(f"-# This thread was closed {discord.utils.format_dt(discord.utils.utcnow(), style='R')}")
+        
+        self.add_item(container)
+            
 class ReopenedThreadView(discord.ui.View):
     def __init__(self):
         super().__init__(timeout=None)
@@ -88,6 +109,18 @@ class ReopenedThreadView(discord.ui.View):
         container = discord.ui.Container()
         
         container.add_section(discord.ui.TextDisplay("**Channel reopened.** Don't forget to close it when you're done."), accessory=ResolveQuestionButton())
+        
+        self.add_item(container)
+            
+class SummonedHelpersView(discord.ui.View):
+    def __init__(self):
+        super().__init__(timeout=None)
+        
+        container = discord.ui.Container()
+        
+        container.add_text("**I've summoned the helpers.** Remember that all helpers are volunteers, so please be respectful and remember that we all have a life outside of Discord.")
+        
+        container.add_text(f"<@&{variables.helper!s}> <@&{variables.comm_helper_B!s}>")
         
         self.add_item(container)
         

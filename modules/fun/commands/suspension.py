@@ -1,7 +1,7 @@
 import random
 
 import discord
-from discord.ext import commands
+
 
 IMAGES = [
     {
@@ -42,7 +42,7 @@ IMAGES = [
 ]
 
 
-class SuspensionRailwayCommand(commands.Cog, name="suspension_railway"):
+class SuspensionRailwayCommand(discord.Cog, name="suspension_railway"):
     def __init__(self, bot):
         self.bot = bot
 

@@ -1,5 +1,5 @@
 import discord
-from discord.ext import commands
+
 import variables
 from utils.uwufier import Uwuifier
 import re
@@ -8,11 +8,11 @@ import json
 import utils.log as Log
 
 
-class ModerationListeners(commands.Cog):
+class ModerationListeners(discord.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.Cog.listener()
+    @discord.Cog.listener()
     async def on_message(self, message: discord.Message):
         # * CENSOR
         if any(ext in message.content.lower() for ext in automod.terms) and not message.author.bot:

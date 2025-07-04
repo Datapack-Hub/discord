@@ -1,15 +1,15 @@
 import discord
-from discord.ext import commands
+
 import variables
 import utils.log as Log
-from utils.res_thread import resolve_thread
+from modules.help_channels.res_thread import resolve_thread
 
 
-class ResolveCommand(commands.Cog, name="resolve"):
+class ResolveCommand(discord.Cog, name="resolve"):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.slash_command(title="resolve", description="Marks question as resolved")
+    @discord.slash_command(title="resolve", description="Marks question as resolved")
     async def resolve(self, inter: discord.ApplicationContext):
         role = inter.guild.get_role(variables.helper)
         

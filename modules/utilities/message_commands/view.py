@@ -1,14 +1,14 @@
 import discord
-from discord.ext import commands
+
 from io import BytesIO
 import zipfile
 
 
-class ViewFileCommand(commands.Cog):
+class ViewFileCommand(discord.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.message_command(name="Quick Look")
+    @discord.message_command(name="Quick Look")
     async def quicklook(self, inter: discord.ApplicationContext, message: discord.Message):
         if len(message.attachments) == 0:
             return await inter.response.send_message(
@@ -48,7 +48,7 @@ class ViewFileCommand(commands.Cog):
                 title="Quick Look",
                 description=f"All Files:\n```\n{paths_out}```",
                 colour=discord.Colour.orange(),
-            ).add_field("Total Files", str(amount))
+            ).add_field(name="Total Files", value=str(amount))
             if len(files_out) > 25:
                 await inter.response.send_message(
                     embed=emb, view=SelectView(files_out), ephemeral=True
@@ -84,30 +84,26 @@ class SelectView(discord.ui.View):
 
     @discord.ui.button(label="Open File", style=discord.ButtonStyle.blurple)
     async def confirm(
-        self, inter: discord.MessageInteraction
+        self, button: discord.ui.Button, inter: discord.MessageInteraction
     ):
         await inter.response.send_modal(SelectModal(self.files))
 
 
 class SelectModal(discord.ui.Modal):
-    def __init__(self, files) -> None:
-        self.files = files
-        components = [
-            discord.ui.TextInput(
-                label="ID",
-                placeholder="28",
-                custom_id="id",
-                style=discord.TextInputStyle.short,
-            ),
-        ]
+    def __init__(self, files, *args, **kwargs) -> None:
         super().__init__(
-            title="Open File", custom_id="mod_reason", components=components
+            title="Open File", custom_id="mod_reason", *args, **kwargs
         )
+        self.files = files
+        self.add_item(discord.ui.InputText(
+            label="ID",
+            placeholder="28",
+            custom_id="id"
+        ))
 
     async def callback(self, inter: discord.Interaction) -> None:
-        await inter.defer(ephemeral=True)
         for i in self.files:
-            if i["index"] == int(inter.text_values["id"].strip()):
+            if i["index"] == int(self.children[0].value.strip()):
                 formatting = "json"
                 if i["path"].endswith("mcfunction"):
                     formatting = "hs"
@@ -123,6 +119,7 @@ class SelectModal(discord.ui.Modal):
 
     async def on_error(self, error, interaction: discord.Interaction) -> None:
         await interaction.response.send_message("Oops, something went wrong.", ephemeral=True)
+        print(error)
 
 class Dropdown(discord.ui.Select):
     def __init__(self, files):
@@ -138,7 +135,6 @@ class Dropdown(discord.ui.Select):
         )
 
     async def callback(self, inter: discord.MessageInteraction):
-        await inter.defer(ephemeral=True)
         for i in self.files:
             if i["path"] == " ".join(self.values[0].split()[1:10000000]):
                 formatting = "json"
@@ -149,7 +145,7 @@ class Dropdown(discord.ui.Select):
                     description=f"`{i['path']}`:\n```{formatting}\n{i['content']}```",
                     colour=discord.Colour.orange(),
                 )
-                await inter.respond(embed=emb)
+                await inter.respond(embed=emb, ephemeral=True)
 
 class DropdownView(discord.ui.View):
     def __init__(self, files):
