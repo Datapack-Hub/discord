@@ -120,8 +120,6 @@ class SummonedHelpersView(discord.ui.View):
         
         container.add_text("**I've summoned the helpers.** Remember that all helpers are volunteers, so please be respectful and remember that we all have a life outside of Discord.")
         
-        container.add_text(f"<@&{variables.helper!s}> <@&{variables.comm_helper_B!s}>")
-        
         self.add_item(container)
         
 class ReminderMessageView(discord.ui.View):

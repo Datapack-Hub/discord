@@ -1,6 +1,7 @@
 import discord
 import variables
 from modules.help_channels.res_thread import resolve_thread
+from asyncio import sleep
 
 class SummonHelpersButton(discord.ui.Button):
     def __init__(self, enabled = True):
@@ -33,9 +34,14 @@ class SummonHelpersButton(discord.ui.Button):
             return await inter.respond("**Please be patient!** It has not been long enough to summon helpers. Please wait a bit more before trying again.",ephemeral=True)
         
         # Ping helpers
-        await inter.respond(
-            view=SummonedHelpersView(),
+        msg = await inter.respond("Summoning helpers...")
+        await msg.delete_original_response()
+        await inter.channel.send(
+            f"-# Helpers summoned in thread '{inter.channel.name}' (<@&{variables.helper!s}> <@&{variables.comm_helper_B!s}>)",
             allowed_mentions=discord.AllowedMentions(roles=True)
+        )
+        await inter.channel.send(
+            view=SummonedHelpersView()
         )
         
         await inter.respond("Done!",ephemeral=True)
