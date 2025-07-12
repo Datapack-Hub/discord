@@ -41,7 +41,11 @@ class HelpChannelListeners(discord.Cog):
                 Log.warn("Could not pin the starting message to the help thread: " + " ".join(e.args))
 
             # Send message
-            await thread.send(view=HelpChannelMessageView(threads=get_opened_threads(thread)))
+            msg = await thread.send(
+                f"Summoning helpers... ( <@&{variables.comm_helper_C!s}>)",
+                allowed_mentions=discord.AllowedMentions(roles=True)
+            )
+            await msg.edit(view=HelpChannelMessageView(threads=get_opened_threads(thread)))
     
     @discord.Cog.listener()
     async def on_raw_thread_update(self, payload: discord.RawThreadUpdateEvent):

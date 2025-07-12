@@ -27,8 +27,11 @@ class QuestionCommand(discord.Cog, name="question"):
 
     @question.command(name="summon-helpers", description="Manually summon helpers")
     async def summon(self, inter: discord.ApplicationContext):
-        msg = await inter.respond("Summoning helpers...")
-        await msg.delete_original_response()
+        msg = await inter.respond(
+            f"Summoning helpers... (<@&{variables.helper!s}> <@&{variables.comm_helper_B!s}>)",
+            allowed_mentions=discord.AllowedMentions(roles=True)
+        )
+        await msg.delete_original_response() 
         await inter.channel.send(
             f"-# Helpers summoned in thread '{inter.channel.name}' (<@&{variables.helper!s}> <@&{variables.comm_helper_B!s}>)",
             allowed_mentions=discord.AllowedMentions(roles=True)

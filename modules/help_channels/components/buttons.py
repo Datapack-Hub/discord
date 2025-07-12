@@ -34,7 +34,10 @@ class SummonHelpersButton(discord.ui.Button):
             return await inter.respond("**Please be patient!** It has not been long enough to summon helpers. Please wait a bit more before trying again.",ephemeral=True)
         
         # Ping helpers
-        msg = await inter.respond("Summoning helpers...")
+        msg = await inter.respond(
+            f"Summoning helpers... (<@&{variables.helper!s}> <@&{variables.comm_helper_B!s}>)",
+            allowed_mentions=discord.AllowedMentions(roles=True)
+        )
         await msg.delete_original_response()
         await inter.channel.send(
             f"-# Helpers summoned in thread '{inter.channel.name}' (<@&{variables.helper!s}> <@&{variables.comm_helper_B!s}>)",
