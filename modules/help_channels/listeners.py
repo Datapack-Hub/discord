@@ -45,7 +45,8 @@ class HelpChannelListeners(discord.Cog):
                 f"Summoning helpers... ( <@&{variables.comm_helper_C!s}>)",
                 allowed_mentions=discord.AllowedMentions(roles=True)
             )
-            await msg.edit(view=HelpChannelMessageView(threads=get_opened_threads(thread)))
+            await msg.delete()
+            await thread.send(view=HelpChannelMessageView(threads=get_opened_threads(thread)))
     
     @discord.Cog.listener()
     async def on_raw_thread_update(self, payload: discord.RawThreadUpdateEvent):
