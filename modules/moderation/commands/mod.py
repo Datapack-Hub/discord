@@ -48,7 +48,7 @@ class ModCommand(discord.Cog):
     
     @mod.command(description="Opens the moderation menu for a user")
     async def user(self, inter: discord.ApplicationContext, user: discord.Member):
-        await inter.respond(view=UserModPanelView(user=user))
+        await inter.respond(view=UserModPanelView(user=user), ephemeral=True)
     
     @mod.command(description="Locks all server channels",)
     async def lockdown(self, inter: discord.ApplicationContext):
