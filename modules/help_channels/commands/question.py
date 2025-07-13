@@ -33,7 +33,7 @@ class QuestionCommand(discord.Cog, name="question"):
         )
         await msg.delete_original_response() 
         await inter.channel.send(
-            f"-# Helpers summoned in thread '{inter.channel.name}' (<@&{variables.helper!s}> <@&{variables.comm_helper_B!s}>)",
+            f"<@&{variables.helper!s}> <@&{variables.comm_helper_B!s}>",
             allowed_mentions=discord.AllowedMentions(roles=True)
         )
         await inter.channel.send(
