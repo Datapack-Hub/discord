@@ -86,7 +86,7 @@ class ModCommand(discord.Cog):
         self, 
         inter: discord.ApplicationContext, 
         limit: int = discord.Option(description="How many messages to remove"), 
-        user: discord.User = discord.Option(description="User to delete messages from")
+        user: discord.User = discord.Option(description="User to delete messages from", required=False)
     ):
         # Stops the purge if the purge amount is over the API's limit
         if limit > 100:
