@@ -150,7 +150,7 @@ class ModCommand(discord.Cog):
         self,
         inter: discord.ApplicationContext,
         user: discord.Member,
-        role: discord.Role = discord.Option(),
+        role: discord.Role = discord.Option(discord.Role),
         modification: str = discord.Option(
             default = "add",
             choices = ["add", "remove"]
