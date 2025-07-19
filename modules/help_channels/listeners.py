@@ -42,7 +42,7 @@ class HelpChannelListeners(discord.Cog):
 
             # Send message
             msg = await thread.send(
-                f"Summoning helpers... ( <@&{variables.comm_helper_C!s}>)",
+                f"-# (thread created) <@&{variables.comm_helper_C!s}>",
                 allowed_mentions=discord.AllowedMentions(roles=True)
             )
             await msg.delete()

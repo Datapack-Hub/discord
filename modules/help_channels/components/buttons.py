@@ -30,12 +30,12 @@ class SummonHelpersButton(discord.ui.Button):
         time_difference = discord.utils.utcnow() - inter.message.channel.created_at
         time_difference_minutes = time_difference.total_seconds() / 60
         
-        if time_difference_minutes < 2 and (not role in inter.user.roles):
+        if time_difference_minutes < 30 and (not role in inter.user.roles):
             return await inter.respond("**Please be patient!** It has not been long enough to summon helpers. Please wait a bit more before trying again.",ephemeral=True)
         
         # Ping helpers
         await inter.channel.send(
-            f"-# <@&{variables.helper!s}> <@&{variables.comm_helper_B!s}>",
+            f"-# (helpers summoned) <@&{variables.helper!s}> <@&{variables.comm_helper_B!s}>",
             allowed_mentions=discord.AllowedMentions(roles=True)
         )
         await inter.channel.send(
