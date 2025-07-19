@@ -19,17 +19,14 @@ async def autoclose_loop(bot: discord.Bot):
                 diff = discord.utils.utcnow() - last.created_at
                 if diff > timedelta(days=3):
                     try:
-                        tags = thread.applied_tags
-                        tags.append(resolved_tag)
-                        await thread.edit(applied_tags=tags)
-                    except Exception as e:
-                        Log.error("Failed to autoclose thread: " + " ".join(e.args))
-                    else:
                         resolved_tag = next(t for t in thread.parent.available_tags if t.name.lower() == "resolved")
                         tags = thread.applied_tags
                         tags.append(resolved_tag)
+                        
                         if len(tags) < 5:
                             await thread.send(view=AutoclosedThreadView(thread))
                             await thread.edit(archived=True)
                             
                             Log.info(f"Automatically closed thread {thread.name} due to inactivity")
+                    except Exception as e:
+                        Log.error("Failed to autoclose thread: " + " ".join(e.args))
