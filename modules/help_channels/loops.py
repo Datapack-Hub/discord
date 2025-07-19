@@ -23,7 +23,7 @@ async def autoclose_loop(bot: discord.Bot):
                         tags = thread.applied_tags
                         tags.append(resolved_tag)
                         
-                        if len(tags) < 5:
+                        if len(tags) < 6:
                             await thread.send(view=AutoclosedThreadView(thread))
                             await thread.edit(archived=True, applied_tags=tags)
                             
