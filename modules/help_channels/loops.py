@@ -29,7 +29,7 @@ async def autoclose_loop(bot: discord.Bot):
                         tags = thread.applied_tags
                         tags.append(resolved_tag)
                         if len(tags) < 5:
-                            await thread.send(view=AutoclosedThreadView())
+                            await thread.send(view=AutoclosedThreadView(thread))
                             await thread.edit(archived=True, applied_tags=tags)
                             
                             Log.info(f"Automatically closed thread {thread.name} due to inactivity")
