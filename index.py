@@ -59,6 +59,13 @@ bot.add_cog(UwuCommand(bot))
 from modules.welcome.listeners import WelcomeListeners
 bot.add_cog(WelcomeListeners(bot))
 
+# Stats
+from modules.stats.commands.stats import StatsCommand
+bot.add_cog(StatsCommand(bot))
+from modules.stats.commands.stats_admin import StatsAdminCommand
+bot.add_cog(StatsAdminCommand(bot))
+
+
 # QOTD
 # from modules.qotd.schedule import schedule_qotd
 

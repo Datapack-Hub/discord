@@ -4,6 +4,7 @@ import variables
 from datetime import timedelta
 import utils.log as Log
 from modules.help_channels.components.views import AutoclosedThreadView
+from modules.help_channels.res_thread import register
 
 @tasks.loop(hours=1)
 async def autoclose_loop(bot: discord.Bot):
@@ -24,6 +25,9 @@ async def autoclose_loop(bot: discord.Bot):
                         tags.append(resolved_tag)
                         
                         if len(tags) < 6:
+                            if thread.parent.id == variables.help_channels[0]:
+                                await register(thread)
+                                
                             await thread.send(view=AutoclosedThreadView(thread))
                             await thread.edit(archived=True, applied_tags=tags)
                             

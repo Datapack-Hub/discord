@@ -1,5 +1,5 @@
 import discord
-
+import json
 import variables
 import asyncio
 import utils.log as Log
@@ -67,3 +67,14 @@ class HelpChannelListeners(discord.Cog):
             tags = [tag for tag in thread.applied_tags if not (tag.name.lower() == "resolved")]
             await thread.edit(applied_tags=tags)
             await thread.last_message.reply(view=ReopenedThreadView(), allowed_mentions=discord.AllowedMentions.none())
+            
+            if thread.parent.id == variables.help_channels[0]:
+                # Remove from stats
+                with open("data/questions.json","r") as fp:
+                    qns = json.load(fp)
+                    
+                new_qns = [t for t in qns if t["id"] != thread.id]
+                
+                with open("data/questions.json","w") as fp:
+                    json.dump(new_qns,fp)
+            
