@@ -138,7 +138,8 @@ class StatsAdminCommand(discord.Cog):
         with open("data/users.json", "w") as f:
             json.dump(users_list, f, indent=3)
         print("Saved User Data")
-        
+    
+    @stad.command(name="update",description="force-update recently missed questions")
     async def cmd_update(self, inter: discord.ApplicationContext):
         channel: discord.ForumChannel = self.bot.get_channel(variables.help_channels[0])
         await inter.defer()
