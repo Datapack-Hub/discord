@@ -30,7 +30,7 @@ class LogsListeners(discord.Cog):
     async def on_member_remove(self, member: discord.Member):
         roles = ""
         if len(member.roles) != 0:
-            roles = ", ".join(member.roles[2:])
+            roles = ", ".join([role.name for role in member.roles[2:]])
         await self.user_logs_channel.send(
             embed=discord.Embed(
                 title="Member Left",
