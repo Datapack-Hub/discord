@@ -200,6 +200,21 @@ class StatsAdminCommand(discord.Cog):
                     "total_messages": len(messages)
                 }
                 
+                # Count messages per person
+                participants = {}
+                for message in messages:
+                    author = message.author
+                    if author.id not in participants:
+                        participants[author.id] = {
+                            "username": author.name,
+                            "id": author.id,
+                            "count": 1
+                        }
+                    else:
+                        participants[author.id]["count"] += 1
+
+                this["participants"] = list(participants.values())
+                
             except Exception as err:
                 Log.error(f"couldn't force update thread {thread.id}: {' '.join(err.args)}")
                 

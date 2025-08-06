@@ -67,6 +67,21 @@ async def register(thread: discord.Thread):
         "total_messages": len(messages)
     }
     
+    # Count messages per person
+    participants = {}
+    for message in messages:
+        author = message.author
+        if author.id not in participants:
+            participants[author.id] = {
+                "username": author.name,
+                "id": author.id,
+                "count": 1
+            }
+        else:
+            participants[author.id]["count"] += 1
+
+    this["participants"] = list(participants.values())
+    
     with open("data/questions.json","r") as fp:
         qns = json.load(fp)
         qns.append(this)
