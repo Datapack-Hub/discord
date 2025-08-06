@@ -85,9 +85,11 @@ class ModCommand(discord.Cog):
     async def purge(
         self, 
         inter: discord.ApplicationContext, 
-        limit: int = discord.Option(description="How many messages to remove"), 
-        user: discord.User = discord.Option(description="User to delete messages from", required=False)
+        limit: int = discord.Option(description="How many messages to remove. (not how many messages to search)"), 
+        user: discord.User = discord.Option(description="If specified, only deletes messages from this user", required=False)
     ):
+        limit = int(limit)
+        
         # Stops the purge if the purge amount is over the API's limit
         if limit > 100:
             await inter.response.send_message(
