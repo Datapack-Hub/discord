@@ -42,38 +42,13 @@ class LogsListeners(discord.Cog):
             .add_field(name="Roles",value=roles,inline=False)
             .set_author(name=member.global_name,icon_url=member.display_avatar.url)
         )
-            
-        
-    # Channel Delete
-    @discord.Cog.listener()
-    async def on_guild_channel_delete(self, channel: discord.abc.GuildChannel):
-        entry = await channel.guild.audit_logs(action=discord.AuditLogAction.channel_delete, limit=1).get()
-        await self.logs_channel.send(embed=discord.Embed(
-            title="Guild Channel Deleted",
-            colour=discord.Colour.from_rgb(130, 7, 31)
-        )
-        .add_field(name="Channel Name",value=channel.name,inline=False)
-        .add_field(name="Category",value=channel.category.name,inline=False)
-        .set_author(name=entry.user.global_name,icon_url=entry.user.avatar.url)
-        )
-    
-    # Channel Create
-    @discord.Cog.listener()
-    async def on_guild_channel_create(self, channel: discord.abc.GuildChannel):
-        entry = await channel.guild.audit_logs(action=discord.AuditLogAction.channel_create, limit=1).get()
-        await self.logs_channel.send(
-            embed=discord.Embed(
-                title="Guild Channel Created",
-                colour=discord.Colour.from_rgb(37, 199, 32)
-            )
-            .add_field(name="Channel Name",value=channel.name,inline=False)
-            .add_field(name="Category",value=channel.category.name,inline=False)
-            .set_author(name=entry.user.global_name,icon_url=entry.user.avatar.url)
-        )
     
     # Message Edit
     @discord.Cog.listener()
     async def on_message_edit(self, before: discord.Message, after: discord.Message):
+        if after.author.bot: 
+            return
+        
         if before.content != after.content:
             await self.logs_channel.send(
                 embed=discord.Embed(
@@ -89,6 +64,9 @@ class LogsListeners(discord.Cog):
     # Message Delete
     @discord.Cog.listener()
     async def on_message_delete(self, message: discord.Message):
+        if message.author.bot: 
+            return
+        
         await self.logs_channel.send(
             embed=discord.Embed(
                 title="Message Deleted",
