@@ -115,7 +115,7 @@ class StatsAdminCommand(discord.Cog):
             data.extend([r for r in results if r is not None])
 
             # Write questions data
-            with open("data/questions.json", "w") as f:
+            with open(variables.stats_location, "w") as f:
                 json.dump(sorted(data, key=lambda d: d["total_messages"], reverse=True), f, indent=3)
             print("Saved Channel Data")
 
@@ -144,7 +144,7 @@ class StatsAdminCommand(discord.Cog):
         channel: discord.ForumChannel = self.bot.get_channel(variables.help_channels[0])
         await inter.defer()
         
-        with open("data/questions.json","r") as fp:
+        with open(variables.stats_location,"r") as fp:
             data = json.load(fp)
             
         i=0
@@ -221,7 +221,7 @@ class StatsAdminCommand(discord.Cog):
             else:
                 data.append(this)
         
-        with open("data/questions.json","w") as fp:
+        with open(variables.stats_location,"w") as fp:
             json.dump(sorted(data, key=lambda d: d["total_messages"], reverse=True), fp)
         
         return await inter.respond(f"Force-updated {i} of the past 50 questions. If that number is more than 0, please contact Silabear.")

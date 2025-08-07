@@ -82,11 +82,11 @@ async def register(thread: discord.Thread):
 
     this["participants"] = list(participants.values())
     
-    with open("data/questions.json","r") as fp:
+    with open(variables.stats_location,"r") as fp:
         qns = json.load(fp)
         qns.append(this)
         
-    with open("data/questions.json","w") as fp:
+    with open(variables.stats_location,"w") as fp:
         json.dump(qns, fp)
 
 async def resolve_thread(thread: discord.Thread, response: discord.InteractionResponse):

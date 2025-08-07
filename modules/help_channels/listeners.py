@@ -70,11 +70,11 @@ class HelpChannelListeners(discord.Cog):
             
             if thread.parent.id == variables.help_channels[0]:
                 # Remove from stats
-                with open("data/questions.json","r") as fp:
+                with open(variables.stats_location,"r") as fp:
                     qns = json.load(fp)
                     
                 new_qns = [t for t in qns if t["id"] != thread.id]
                 
-                with open("data/questions.json","w") as fp:
+                with open(variables.stats_location,"w") as fp:
                     json.dump(new_qns,fp)
             
