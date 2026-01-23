@@ -22,7 +22,7 @@ def format_duration_between(date_time_start, date_time_end):
 
     return formatted_duration if formatted_duration else "0m"
 
-class HelpChannelMessageView(discord.ui.View):
+class HelpChannelMessageView(discord.ui.DesignerView):
     def __init__(self, created_at: datetime = discord.utils.utcnow(), threads: list[discord.Thread] = [],  summoned = False):
         super().__init__(timeout=None)
         
@@ -60,7 +60,7 @@ class HelpChannelMessageView(discord.ui.View):
                 
             self.add_item(warning_container)
             
-class ResolvedThreadView(discord.ui.View):
+class ResolvedThreadView(discord.ui.DesignerView):
     def __init__(self, thread: discord.Thread):
         super().__init__(timeout=None)
         
@@ -82,7 +82,7 @@ class ResolvedThreadView(discord.ui.View):
         
         self.add_item(container)
             
-class AutoclosedThreadView(discord.ui.View):
+class AutoclosedThreadView(discord.ui.DesignerView):
     def __init__(self, thread: discord.Thread):
         super().__init__(timeout=None)
         
@@ -102,7 +102,7 @@ class AutoclosedThreadView(discord.ui.View):
         
         self.add_item(container)
             
-class ReopenedThreadView(discord.ui.View):
+class ReopenedThreadView(discord.ui.DesignerView):
     def __init__(self):
         super().__init__(timeout=None)
         
@@ -112,7 +112,7 @@ class ReopenedThreadView(discord.ui.View):
         
         self.add_item(container)
             
-class SummonedHelpersView(discord.ui.View):
+class SummonedHelpersView(discord.ui.DesignerView):
     def __init__(self):
         super().__init__(timeout=None)
         
@@ -122,7 +122,7 @@ class SummonedHelpersView(discord.ui.View):
         
         self.add_item(container)
         
-class ReminderMessageView(discord.ui.View):
+class ReminderMessageView(discord.ui.DesignerView):
     def __init__(self):
         super().__init__(timeout=None)
         
@@ -141,7 +141,7 @@ CHANNELS_MESSAGE = """
 *If you can't see the above channels, make sure you have `Show All Channels` enabled in the server menu.*
 """
 
-class RedirectMessageView(discord.ui.View):
+class RedirectMessageView(discord.ui.DesignerView):
     def __init__(self):
         super().__init__(timeout=None)
         
@@ -153,7 +153,7 @@ class RedirectMessageView(discord.ui.View):
         
         self.add_item(container)
 
-class WrongChannelMessageView(discord.ui.View):
+class WrongChannelMessageView(discord.ui.DesignerView):
     def __init__(self):
         super().__init__(timeout=None)
         

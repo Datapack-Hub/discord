@@ -1,7 +1,7 @@
 import discord
 from modules.moderation.components.buttons import BanUserModPanelButton, QuickBanUserModPanelButton, KickUserModPanelButton, MuteUserModPanelButton, WarnUserModPanelButton
 
-class UserModPanelView(discord.ui.View):
+class UserModPanelView(discord.ui.DesignerView):
     def __init__(self, user: discord.Member):
         super().__init__(timeout=None)
         
