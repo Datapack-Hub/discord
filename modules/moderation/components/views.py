@@ -53,7 +53,7 @@ class MessageModPanelView(discord.ui.DesignerView):
 
         container.add_separator()
 
-        container.add_text(f"-# You are moderating `{user.name}` with reference to the selected message. **The user will see a copy of their message along with the reason you provide.** their message will be deleted when an action is taken.")
+        container.add_text(f"-# You are moderating `{user.name}` with reference to the selected message. **The user will see a copy of their message along with the reason you provide.** 5heir message will be deleted when an action is taken.")
         
         self.add_item(container)
 
