@@ -4,6 +4,7 @@ from pytimeparse import timeparse
 from datetime import datetime, timedelta
 import utils.log as Log
 import traceback
+from modules.moderation.components.views import PunishmentMessageView
 
 def generate_discord_relative_timestamp(seconds):
     future_timestamp = int((datetime.now() + timedelta(seconds=seconds)).timestamp())
@@ -11,12 +12,13 @@ def generate_discord_relative_timestamp(seconds):
     return formatted_timestamp
 
 class BanUserModPanelModal(discord.ui.Modal):
-    def __init__(self, user: discord.Member, *args, **kwargs) -> None:
+    def __init__(self, user: discord.Member, cause_message: discord.Message | None = None, *args, **kwargs) -> None:
         super().__init__(
             title="Ban " + user.name, custom_id="ban_user", *args, **kwargs
         )
         
         self.user = user
+        self.cause_message = cause_message
         
         self.add_item(discord.ui.InputText(
             label="Reason",
@@ -27,7 +29,7 @@ class BanUserModPanelModal(discord.ui.Modal):
         
         self.add_item(discord.ui.InputText(
             label="Delete Messages?",
-            placeholder="Leave blank for yes, or enter anything for no",
+            placeholder="enter 'y' for yes",
             custom_id="delete",
             style=discord.InputTextStyle.short,
             required=False
@@ -35,31 +37,23 @@ class BanUserModPanelModal(discord.ui.Modal):
         
     async def callback(self, inter: discord.Interaction) -> None:
         reason = self.children[0].value
-        delete = not bool(self.children[1].value.strip())
+        delete = bool(self.children[1].value.strip().lower() == "y")
         
         try:
             try:
-                await self.user.send(
-                    embed=discord.Embed(
-                        title="You were banned",
-                        colour=discord.Colour.red(),
-                        description=f"You were banned from Datapack Hub by a moderator.",
-                        timestamp=discord.utils.utcnow(),
-                    )
-                    .add_field(name="Reason",value=f"```\n{reason}```",inline=False)
-                    .set_footer(text="If you think this was done incorrectly, please contact a staff member.")
-                )
+                await self.user.send(view=PunishmentMessageView("ban",reason, cause=self.cause_message))
             except:
                 pass
             
             if delete:
-                await self.user.ban()
+                await self.user.ban(delete_message_seconds=604800)
             else:
-                await self.user.ban(clean_history_duration=0)
+                await self.user.ban()
         except discord.errors.Forbidden:
             await inter.response.send_message(f"Failed to ban user {self.user.mention}: I don't have permission to do this.",ephemeral=True)
         except Exception as e:
             await inter.response.send_message(f"Failed to ban user {self.user.mention}: `{e}`",ephemeral=True)
+            raise e
         else:
             conf = discord.Embed(
                 title="User Banned",
@@ -82,12 +76,13 @@ class BanUserModPanelModal(discord.ui.Modal):
         await interaction.response.send_message("Oops, something went wrong.", ephemeral=True)
         
 class KickUserModPanelModal(discord.ui.Modal):
-    def __init__(self, user: discord.Member, *args, **kwargs) -> None:
+    def __init__(self, user: discord.Member, cause_message: discord.Message | None = None, *args, **kwargs) -> None:
         super().__init__(
             title="Kick " + user.name, custom_id="kick_user", *args, **kwargs
         )
         
         self.user = user
+        self.cause_message = cause_message
         
         self.add_item(discord.ui.InputText(
             label="Reason",
@@ -101,16 +96,7 @@ class KickUserModPanelModal(discord.ui.Modal):
         
         try:
             try:
-                await self.user.send(
-                    embed=discord.Embed(
-                        title="You were kicked",
-                        colour=discord.Colour.red(),
-                        description=f"You were kicked from Datapack Hub by a moderator.",
-                        timestamp=discord.utils.utcnow(),
-                    )
-                    .add_field(name="Reason",value=f"```\n{reason}```",inline=False)
-                    .set_footer(text="If you think this was done incorrectly, please contact a staff member.")
-                )
+                await self.user.send(view=PunishmentMessageView("kick",reason, cause=self.cause_message))
             except:
                 pass
             
@@ -141,12 +127,13 @@ class KickUserModPanelModal(discord.ui.Modal):
         await interaction.response.send_message("Oops, something went wrong.", ephemeral=True)
         
 class MuteUserModPanelModal(discord.ui.Modal):
-    def __init__(self, user: discord.Member, *args, **kwargs) -> None:
+    def __init__(self, user: discord.Member, cause_message: discord.Message | None = None, *args, **kwargs) -> None:
         super().__init__(
             title="Mute " + user.name, custom_id="mute_user", *args, **kwargs
         )
         
         self.user = user
+        self.cause_message = cause_message
         
         self.add_item(discord.ui.InputText(
             label="Reason",
@@ -168,17 +155,7 @@ class MuteUserModPanelModal(discord.ui.Modal):
         
         try:
             try:
-                await self.user.send(
-                    embed=discord.Embed(
-                        title="You were muted",
-                        colour=discord.Colour.red(),
-                        description=f"You were muted in Datapack Hub by a moderator.",
-                        timestamp=discord.utils.utcnow(),
-                    )
-                    .add_field(name="Reason",value=f"```\n{reason}```",inline=False)
-                    .add_field("Expires",generate_discord_relative_timestamp(seconds),inline=False)
-                    .set_footer(text="If you think this was done incorrectly, please contact a staff member.")
-                )
+                await self.user.send(view=PunishmentMessageView("mute",reason, cause=self.cause_message, expires=seconds))
             except:
                 pass
             
@@ -210,12 +187,13 @@ class MuteUserModPanelModal(discord.ui.Modal):
         await interaction.response.send_message("Oops, something went wrong.", ephemeral=True)
         
 class WarnUserModPanelModal(discord.ui.Modal):
-    def __init__(self, user: discord.Member, *args, **kwargs) -> None:
+    def __init__(self, user: discord.Member, cause_message: discord.Message | None = None, *args, **kwargs) -> None:
         super().__init__(
             title="Warn " + user.name, custom_id="warn_user", *args, **kwargs
         )
         
         self.user = user
+        self.cause_message = cause_message
         
         self.add_item(discord.ui.InputText(
             label="Warn message",
@@ -228,19 +206,12 @@ class WarnUserModPanelModal(discord.ui.Modal):
         reason = self.children[0].value
         
         try:
-            await self.user.send(
-                embed=discord.Embed(
-                    title="You were warned",
-                    colour=discord.Colour.red(),
-                    description=f"You were warned in Datapack Hub by a moderator.",
-                    timestamp=discord.utils.utcnow(),
-                )
-                .add_field(name="Warn message",value=f"```\n{reason}```",inline=False)
-            )
+            await self.user.send(view=PunishmentMessageView("warn",reason, cause=self.cause_message))
         except discord.errors.Forbidden:
             await inter.response.send_message(f"Failed to warn user {self.user.mention}: This user has DMs disabled!",ephemeral=True)
         except Exception as e:
             await inter.response.send_message(f"Failed to warn user {self.user.mention}: `{e}`",ephemeral=True)
+            raise e
         else:
             conf = discord.Embed(
                 title="User Warned",

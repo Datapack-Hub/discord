@@ -22,6 +22,8 @@ from modules.moderation.listeners import ModerationListeners
 bot.add_cog(ModerationListeners(bot))
 from modules.moderation.commands.mod import ModCommand
 bot.add_cog(ModCommand(bot))
+from modules.moderation.message_commands.moderate import ModerateCommand
+bot.add_cog(ModerateCommand(bot))
 
 # Help Channels
 from modules.help_channels.listeners import HelpChannelListeners
