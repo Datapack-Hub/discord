@@ -117,9 +117,10 @@ class ModCommand(discord.Cog):
 
         # Add the author and contents of the deleted messages to the log
         file_content = io.StringIO()
-        for messages in deleted_messages:
+        file_content.write(f"The following {len(deleted_messages)!s} messages were purged at [{datetime.now().strftime('%d/%m/%y %H:%M:%S')}]:\n")
+        for message in reversed(deleted_messages):
             file_content.write(
-                f"[{datetime.now().strftime('%d/%m/%y %H:%M:%S')}] @{messages.author.name}: {messages.content}\n"
+                f"[{message.created_at.strftime('%d/%m/%y %H:%M:%S')}] @{message.author.name}: {message.content}\n"
             )
 
         file_content.seek(0)
