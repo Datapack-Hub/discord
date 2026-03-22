@@ -67,6 +67,10 @@ bot.add_cog(StatsCommand(bot))
 from modules.stats.commands.stats_admin import StatsAdminCommand
 bot.add_cog(StatsAdminCommand(bot))
 
+# Spam detection
+from modules.spam_detection.duplicate_message_detector import DuplicateMessageDetector
+bot.add_cog(DuplicateMessageDetector(bot))
+
 
 # QOTD
 # from modules.qotd.schedule import schedule_qotd
