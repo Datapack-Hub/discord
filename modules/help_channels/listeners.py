@@ -4,7 +4,7 @@ import variables
 import asyncio
 import utils.log as Log
 from modules.help_channels.res_thread import resolve_thread_without_interaction
-from modules.help_channels.components.views import HelpChannelMessageView, ReopenedThreadView
+from modules.help_channels.components.views import HelpChannelMessageView, ReopenedThreadView, PostedZipView
 
 def get_opened_threads(thread: discord.Thread) -> list[discord.Thread]:
     parent = thread.parent
@@ -78,3 +78,25 @@ class HelpChannelListeners(discord.Cog):
                 with open(variables.stats_location,"w") as fp:
                     json.dump(new_qns,fp)
             
+    @discord.Cog.listener()
+    async def on_message(self, msg: discord.Message):
+        try:
+            msg.channel.parent  # must be in thread
+            msg.attachments[0]  # must have attachment
+        except: return
+
+        if (
+            not (msg.channel.parent.id in variables.help_channels)  # must be help channel
+            or msg.author.bot  # must not be bot
+            or not (msg.attachments[0].content_type == "application/zip")  # must have a zip attachment
+            or not (msg.author == msg.channel.owner)  # must be asked by thread owner
+        ): return
+        
+        # must be in the first 5 messages (this includes bot messages)
+        thread_history = await msg.channel.history(limit=10).flatten()
+        if not len(thread_history) < 7: return
+
+        print(len(thread_history))
+
+        # reply with the notice
+        await msg.reply(view=PostedZipView())

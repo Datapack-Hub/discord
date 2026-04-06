@@ -1,5 +1,5 @@
 import discord
-from modules.help_channels.components.buttons import SummonHelpersButton, ResolveQuestionButton
+from modules.help_channels.components.buttons import SummonHelpersButton, ResolveQuestionButton, DismissNoticeButton
 from datetime import datetime
 import variables
 
@@ -29,15 +29,13 @@ class HelpChannelMessageView(discord.ui.DesignerView):
         container = discord.ui.Container()
         
         container.add_text("## Someone will come and help soon!")
-        container.add_text("While you're waiting, please provide any more details to help us help you. What code have you tried already? What's your end goal?")
+        container.add_text("You'll get help faster if you take this time to **answer the following questions**: \n- what's your __minecraft version__?\n- what's your end goal, or what are you __trying to acheive__?")
         
         container.add_separator(spacing=discord.SeparatorSpacingSize.small)
         
         sect1 = discord.ui.Section(accessory=SummonHelpersButton(enabled=summoned))
         sect1.add_item(discord.ui.TextDisplay("If nobody has come to help within half an hour, you can summon the helpers. Note that you can only do this once!"))
         container.add_item(sect1)
-        
-        container.add_separator(spacing=discord.SeparatorSpacingSize.small)
         
         sect2 = discord.ui.Section(accessory=ResolveQuestionButton())
         sect2.add_item(discord.ui.TextDisplay("Once you're done, close the post, either by running `/resolve`, closing it in the menu, or clicking this button."))
@@ -162,5 +160,17 @@ class WrongChannelMessageView(discord.ui.DesignerView):
         container.add_text("## This is the wrong channel!")
         container.add_text("You've posted this in the wrong help channel. Please ask this question again in the correct help channel!")
         container.add_text(CHANNELS_MESSAGE)
+        
+        self.add_item(container)
+
+class PostedZipView(discord.ui.DesignerView):
+    def __init__(self):
+        super().__init__(timeout=None)
+        
+        container = discord.ui.Container()
+        
+        container.add_text("Instead of sending your entire zip file here, it's a lot easier for us if you **just send the contents of the relevant files** from your project. It takes helpers a lot of time to search through your datapacks, especially if they're on mobile. If someone needs to see your entire project, they'll ask you to share it. ")
+
+        container.add_row(DismissNoticeButton())
         
         self.add_item(container)

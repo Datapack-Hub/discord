@@ -62,3 +62,13 @@ class ResolveQuestionButton(discord.ui.Button):
             await resolve_thread(inter.channel, inter.response)
         else:
             await inter.respond("Only the original poster and staff members do this!",ephemeral=True)
+
+class DismissNoticeButton(discord.ui.Button):
+    def __init__(self):
+        super().__init__(
+            label="Dismiss this notice",
+            style=discord.ButtonStyle.gray
+        )
+
+    async def callback(self, inter: discord.Interaction):
+        await inter.message.delete()
