@@ -96,7 +96,5 @@ class HelpChannelListeners(discord.Cog):
         thread_history = await msg.channel.history(limit=10).flatten()
         if not len(thread_history) < 7: return
 
-        print(len(thread_history))
-
         # reply with the notice
         await msg.reply(view=PostedZipView())

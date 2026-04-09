@@ -10,7 +10,7 @@ class DuplicateMessageDetector(discord.Cog):
 
     @discord.Cog.listener()
     async def on_message(self, msg: discord.Message):
-        if msg.author.bot or not msg.guild:
+        if msg.author.bot or not msg.guild or msg.snapshots:
             return
         
         # get basic info
