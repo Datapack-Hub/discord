@@ -1,5 +1,4 @@
 import discord
-
 from io import BytesIO
 import zipfile
 
@@ -57,7 +56,11 @@ class ViewFileCommand(discord.Cog):
                 await inter.response.send_message(
                     embed=emb, view=DropdownView(files_out), ephemeral=True
                 )
-        elif file.content_type is None or "text/plain" in file.content_type:
+        elif (
+            file.content_type is None or 
+            "text/plain" in file.content_type or
+            "application/json" in file.content_type
+        ):
             formatting = "json"
             if file.filename.endswith("mcfunction"):
                 formatting = "hs"
