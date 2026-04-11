@@ -20,7 +20,7 @@ class DuplicateMessageDetector(discord.Cog):
         content = msg.content.strip().lower()
 
         # remove old messages from cache
-        self.message_cache = list(filter(lambda m: (current_time - m['time']) <= 7, self.message_cache))
+        self.message_cache = list(filter(lambda m: (current_time - m['time']) <= 5, self.message_cache))
 
         # add new message to cache
         self.message_cache.append({
@@ -60,8 +60,7 @@ class DuplicateMessageDetector(discord.Cog):
                 description=f"{msg.author.name} (UID {msg.author.id}) was softbanned.",
                 colour=discord.Colour.red(),
             )
-            .set_author(name="Spam detection system")
-            .add_field(name="Reason",value="Flagged by spam detection system for sending 3 messages across 3 channels within 7 seconds.",inline=False)
+            .set_author(name="spamn't detection system (built into this bot)")
             .add_field(name="Message",value=f"```\n{content}\n\n({len(msg.attachments)} attachments)```",inline=False)
             )
         except:
