@@ -2,6 +2,7 @@ import discord
 import variables
 import time
 from modules.spam_detection.components.views import SpamMessageView
+import utils.log as Log
 
 class DuplicateMessageDetector(discord.Cog):
     def __init__(self, bot: discord.Bot):
@@ -40,9 +41,12 @@ class DuplicateMessageDetector(discord.Cog):
         if not different_channels: # skip if they're in the same channel
             return
         
+        Log.info(f"user {msg.author.global_name} triggered scam detector")
+        
         try:
             await msg.author.send(view=SpamMessageView()) # send user notice
-        except: pass
+        except Exception as err: 
+            Log.warn(f"error on message send: " + str(err.args))
 
         # remove users messages from cache
         self.message_cache = list(filter(lambda m: m["user_id"] != user_id, self.message_cache))
@@ -51,17 +55,20 @@ class DuplicateMessageDetector(discord.Cog):
         try:
             await msg.author.ban(delete_message_seconds=30,reason="Spam detection system")
             await msg.author.unban(reason="Spam detection system")
-        except:
+        except Exception as err:
             await msg.reply("-# <@&935629680520855552> Automatic spam detection system failed to softban this user.",allowed_mentions=discord.AllowedMentions(replied_user=False, roles=True))
-
-        try:
-            await msg.guild.get_channel(variables.modlogs).send(embed=discord.Embed(
-                title="User Softbanned",
-                description=f"{msg.author.name} (UID {msg.author.id}) was softbanned.",
-                colour=discord.Colour.red(),
-            )
-            .set_author(name="spamn't detection system (built into this bot)")
-            .add_field(name="Message",value=f"```\n{content}\n\n({len(msg.attachments)} attachments)```",inline=False)
-            )
-        except:
-            pass
+            
+            Log.error(f"error on ban: " + str(err.args))
+        else:
+            Log.info("successfully softbanned user " + msg.author.global_name)
+            try:
+                await msg.guild.get_channel(variables.modlogs).send(embed=discord.Embed(
+                    title="User Softbanned",
+                    description=f"{msg.author.name} (UID {msg.author.id}) was softbanned.",
+                    colour=discord.Colour.red(),
+                )
+                .set_author(name="spamn't detection system (built into this bot)")
+                .add_field(name="Message",value=f"```\n{content}\n\n({len(msg.attachments)} attachments)```",inline=False)
+                )
+            except Exception as err:
+                Log.warn("error on logging softban: " + str(err.args))
