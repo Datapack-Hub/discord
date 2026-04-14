@@ -40,6 +40,9 @@ class DuplicateMessageDetector(discord.Cog):
 
         if not different_channels: # skip if they're in the same channel
             return
+
+        # remove users messages from cache
+        self.message_cache = list(filter(lambda m: m["user_id"] != user_id, self.message_cache))
         
         Log.info(f"user {msg.author.global_name} triggered scam detector")
         
@@ -47,9 +50,6 @@ class DuplicateMessageDetector(discord.Cog):
             await msg.author.send(view=SpamMessageView()) # send user notice
         except Exception as err: 
             Log.warn(f"error on message send: " + str(err.args))
-
-        # remove users messages from cache
-        self.message_cache = list(filter(lambda m: m["user_id"] != user_id, self.message_cache))
 
         # softban to remove messages
         try:
