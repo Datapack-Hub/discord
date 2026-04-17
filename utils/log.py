@@ -42,22 +42,22 @@ class Colour:
     # Reset code
     RESET = '\033[0m'
 
-def info(message: str, author: str | None):
+def info(message: str, author: str | None = None):
     now = datetime.datetime.now()
     print(f"{Colour.text.BLUE}INFO{Colour.RESET}  | {now.strftime('%d/%m %H:%M:%S')} {author if author else 'bot'} | " + str(message))
     
-def debug(message: str, author: str | None):
+def debug(message: str, author: str | None = None):
     now = datetime.datetime.now()
     print(f"{Colour.text.bright.BLACK}DEBUG{Colour.RESET} | {now.strftime('%d/%m %H:%M:%S')} {author if author else 'bot'} | " + str(message))
     
-def warn(message: str, author: str | None):
+def warn(message: str, author: str | None = None):
     now = datetime.datetime.now()
     print(f"{Colour.text.YELLOW}WARN{Colour.RESET}  | {now.strftime('%d/%m %H:%M:%S')} {author if author else 'bot'} | " + str(message))
 
-def error(message: str, author: str | None):
+def error(message: str, author: str | None = None):
     now = datetime.datetime.now()
     print(f"{Colour.text.RED}ERROR{Colour.RESET} | {now.strftime('%d/%m %H:%M:%S')} {author if author else 'bot'} | " + str(message))
     
-def fatal(message: str, author: str | None):
+def fatal(message: str, author: str | None = None):
     now = datetime.datetime.now()
     print(f"{Colour.bg.RED}ERROR{Colour.RESET} | {now.strftime('%d/%m %H:%M:%S')} {author if author else 'bot'} | " + str(message))
