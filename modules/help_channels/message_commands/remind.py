@@ -16,4 +16,4 @@ class RemindCommand(discord.Cog):
         # Send confirmation message
         await inter.respond("Done!",ephemeral=True)
         
-        Log.info(f"{inter.author.name} reminded OP to resolve the channel #{inter.channel.name}")
+        Log.info(f"reminded OP to resolve the channel '{inter.channel.name}'", inter.author.name)

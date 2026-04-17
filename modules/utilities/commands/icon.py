@@ -1,4 +1,5 @@
 import os
+import utils.log as Log
 import discord
 
 
@@ -23,6 +24,7 @@ class IconCommand(discord.Cog):
 
             await inter.guild.edit(icon=icon_data)
             await inter.send_response("Guild icon updated.", suppress=True)
+            Log.info("updated server icon", inter.author.name)
         except Exception as e:
             await inter.send_response(f"Updating guild icon failed: {''.join(e.args)}", ephemeral=True)
         

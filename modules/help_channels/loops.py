@@ -31,6 +31,6 @@ async def autoclose_loop(bot: discord.Bot):
                             await thread.send(view=AutoclosedThreadView(thread))
                             await thread.edit(archived=True, applied_tags=tags)
                             
-                            Log.info(f"Automatically closed thread {thread.name} due to inactivity")
+                            Log.info(f"automatically closed thread '{thread.name}' due to inactivity")
                     except Exception as e:
-                        Log.error("Failed to autoclose thread: " + " ".join(e.args))
+                        Log.error("failed to autoclose thread: " + " ".join(e.args))

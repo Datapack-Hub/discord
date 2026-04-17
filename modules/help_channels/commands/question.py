@@ -39,7 +39,7 @@ class QuestionCommand(discord.Cog, name="question"):
         await inter.channel.send(
             view=SummonedHelpersView()
         )
-        Log.info(f"User {inter.author.name} summoned helpers with a slash command")
+        Log.info("summoned helpers with a slash command", inter.author.name)
 
     @question.command(name="reset", description="Reset the original message and allow the user to summon helpers.")
     async def reset(self, inter: discord.ApplicationContext):
@@ -48,7 +48,9 @@ class QuestionCommand(discord.Cog, name="question"):
                 await msg.edit(view=HelpChannelMessageView(threads=get_opened_threads(inter.channel)))
                 await inter.respond("**This help channel has been reset.** The `Summon Helpers` button can now be used again.", ephemeral=True)
                 break
+        Log.info("reset the help channel header message", inter.author.name)
 
     @question.command(name="setup", description="Send the initial message again, just in case something went wrong the first time.")
     async def reset(self, inter: discord.ApplicationContext):
         await inter.respond(view=HelpChannelMessageView(threads=get_opened_threads(inter.channel)))
+        Log.info("re-sent the help channel header message", inter.author.name)

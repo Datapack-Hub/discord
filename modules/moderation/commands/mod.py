@@ -5,6 +5,7 @@ import variables
 import io
 from utils.uwufier import Uwuifier
 import utils.modlogs as modlogs
+import utils.log as Log
 from modules.moderation.components.views import UserModPanelView, UnableToModerateView
 
 REASONS = [
@@ -68,6 +69,8 @@ class ModCommand(discord.Cog):
                 
         await inter.respond("🔒 **All server channels have been locked**")
         
+        Log.info("triggered server lockdown", inter.author.name)
+        
     @mod.command(description="Unlocks all server channels",)
     async def unlockdown(self, inter: discord.ApplicationContext):
         await inter.defer()
@@ -82,6 +85,8 @@ class ModCommand(discord.Cog):
         await inter.guild.default_role.edit(permissions=current_perms)
                 
         await inter.respond("🔓 **All server channels have been unlocked**")
+
+        Log.info("ended server lockdown", inter.author.name)
             
         
     @mod.command(description="Bulk delete some messages")
@@ -137,6 +142,8 @@ class ModCommand(discord.Cog):
         await inter.response.send_message(
             f"{len(deleted_messages)} messages have been deleted", ephemeral=True
         )
+
+        Log.info(f"removed ~{limit} messages in channel #{inter.channel.name}", inter.author.name)
         
     @mod.command(description="Ban literally everyone",)
     async def banall(self, inter: discord.ApplicationContext):
@@ -180,3 +187,5 @@ class ModCommand(discord.Cog):
         except:
             await inter.response.send_message(f"Failed to {modification} role {role.name}, to user {user.name}", ephemeral=True)
         await inter.response.send_message(f"Role {modification + ('ed' if modification == 'add' else 'd')}", ephemeral=True)
+
+        Log.info("modified roles", inter.author.name)

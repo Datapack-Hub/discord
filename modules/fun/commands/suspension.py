@@ -1,5 +1,5 @@
 import random
-
+import utils.log as Log
 import discord
 
 
@@ -56,6 +56,8 @@ class SuspensionRailwayCommand(discord.Cog, name="suspension_railway"):
             colour=discord.Colour.blue()
         ).set_image(url=image["url"]).set_footer(text=image["credits"])
         await inter.response.send_message(embed=embed)
+
+        Log.info("generated an image of a suspension railway", inter.author.name)
         
     @susprail.command(description="Learn about suspension railways")
     async def info(self, inter: discord.ApplicationContext):
@@ -74,3 +76,5 @@ class SuspensionRailwayCommand(discord.Cog, name="suspension_railway"):
             inline=False
         )
         await inter.response.send_message(embed=embed)
+
+        Log.info("sent the suspension railway info message", inter.author.name)

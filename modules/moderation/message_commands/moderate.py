@@ -12,3 +12,4 @@ class ModerateCommand(discord.Cog):
     @discord.message_command(name="Moderate")
     async def moderate(self, inter: discord.ApplicationContext, message: discord.Message):
         await inter.respond(view=MessageModPanelView(message.author, message), ephemeral=True)
+        Log.info("opened mod panel for a message", inter.author.name)

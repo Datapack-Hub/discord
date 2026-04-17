@@ -47,6 +47,8 @@ class HelpChannelListeners(discord.Cog):
             )
             await msg.delete()
             await thread.send(view=HelpChannelMessageView(created_at=discord.utils.utcnow(), threads=get_opened_threads(thread)))
+
+            Log.info(f"setup thread '{thread.name}'")
     
     @discord.Cog.listener()
     async def on_raw_thread_update(self, payload: discord.RawThreadUpdateEvent):
@@ -58,6 +60,7 @@ class HelpChannelListeners(discord.Cog):
             and thread.parent.id in variables.help_channels
         ):
             await resolve_thread_without_interaction(thread=thread)
+            Log.info(f"resolved the thread {thread.name}")
             
         elif (
             thread.archived == False 
@@ -67,14 +70,13 @@ class HelpChannelListeners(discord.Cog):
             tags = [tag for tag in thread.applied_tags if not (tag.name.lower() == "resolved")]
             await thread.edit(applied_tags=tags)
             await thread.last_message.reply(view=ReopenedThreadView(), allowed_mentions=discord.AllowedMentions.none())
+            Log.info(f"reopened the thread {thread.name}")
             
+            # remove from stats
             if thread.parent.id == variables.help_channels[0]:
-                # Remove from stats
                 with open(variables.stats_location,"r") as fp:
                     qns = json.load(fp)
-                    
                 new_qns = [t for t in qns if t["id"] != thread.id]
-                
                 with open(variables.stats_location,"w") as fp:
                     json.dump(new_qns,fp)
             
@@ -98,3 +100,5 @@ class HelpChannelListeners(discord.Cog):
 
         # reply with the notice
         await msg.reply(view=PostedZipView())
+
+        Log.info(f"sent the datapack zip notice in thread '{msg.channel.name}'")

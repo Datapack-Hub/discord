@@ -21,4 +21,4 @@ class RedirectCommand(discord.Cog):
         
         await inter.response.send_message("Done!", ephemeral=True)
         
-        Log.info(f"{inter.author.name} redirected the user {message.author.name} to help channels in #{inter.channel.name}")
+        Log.info(f"redirected the user {message.author.name} to help channels in #{inter.channel.name}", inter.author.name)

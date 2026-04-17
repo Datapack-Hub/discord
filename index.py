@@ -121,14 +121,14 @@ async def on_error(event_method: str):
     trace = traceback.format_exc()
     log_channel = bot.get_channel(variables.botlogs)
     await log_channel.send(view=ErrorHandleView(event_method, trace))
-    Log.error(f"error in `{event_method}`. more details have been sent to the logs channel.")
+    Log.fatal(f"error in `{event_method}`. more details have been sent to the logs channel.")
 
 @bot.event
 async def on_modal_error(err: Exception, interaction: discord.Interaction):
     trace = traceback.format_exc()
     log_channel = bot.get_channel(variables.botlogs)
     await log_channel.send(view=ErrorHandleView(str(interaction.view), trace))
-    Log.error(f"error in modal `{interaction.view}`. more details have been sent to the logs channel.")
+    Log.fatal(f"error in modal `{interaction.view}`. more details have been sent to the logs channel.")
 
 # Run bot
 bot.run(TOKEN)

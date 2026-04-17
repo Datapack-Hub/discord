@@ -12,21 +12,19 @@ slash_commands = """
 - `/help`: Shows you this message.
 - `/resolve`\*: Resolves the help channel.
 - `/top`: Jumps to the top of any channel.
+- `/stats`: View basic stats about the help channels
 """
 
 slash_commands_staff = """
-- `/mod warn <user> <message>` - Formally warns a user
-- `/mod mute <user> <length> <reason>` - Times out a user and sends the reason
-- `/mod ban <user> <reason>` - Bans a user and sends the reason
+- `/mod user <user>` - Opens the moderation panel for a user
 - `/mod purge <limit> [user]` - Mass deletes messages, optionally filtering by user
 - `/mod lockdown` and `/mod unlockdown` - Un/locks all server channels
 
-- `/stats average <stat> [timeframe]` - Views the average of a particular statistic over a timeframe
-- `/stats graph [timeframe]` - Shows a graph of stats over a timeframe
-- `/stats leaderboard [leaderboard] [timeframe]` - Shows the top 20 leaderboard positions for a particular stat over a timeframe
-- `/stats user breakdown <user> [timeframe]` - View basic per-user stats over a timeframe
-- `/stats-admin regen` - Regenerate all stats data (can take up to 15m)
-- `/stats-admin remove-duplicates` - Remove any duplicate help channels in the stats (debug)
+- `/question reset` - Reset the original "header" message in the thread
+- `/question setup` - Re-send the original "header" message, if it didn't send originally.
+` `/question summon-helpers` - Manually summon the helpers to the channel.
+
+- `/stats-admin stats` - Regenerate all stats data (can take up to 15m)
 - `/stats-admin update` - Add any missed questions to the stats cache (debug)
 
 - `/uwu user <user>` and `/uwu channel` - Turns on the uwufier for a specific user or channel
@@ -36,7 +34,6 @@ slash_commands_staff = """
 - `/susprail image` - Random suspension railway image
 - `/susprail info`- Information about suspension railways
 
-- `/plzsomebodyhelpthisguy` - Manually summon helpers
 """
 
 features = """
@@ -45,6 +42,7 @@ features = """
 - **Moderation**: Behind the scenes, the bot has loads of moderation features to help our staff team out.
 - **Welcome System**: When a new member joins, the bot will give them the necessary roles, and send a welcome message.
 - **Logging**: We have a custom-built logs system which this bot logs deleted/edited messages, members joining, and more.
+- **Scam detection**: The **scamn't** bot is built into this discord bot, so most scam messages will be caught pretty quickly.
 - **Fun**: There's loads of hidden easter eggs in the bot and secret staff-only fun commands!
 """
 

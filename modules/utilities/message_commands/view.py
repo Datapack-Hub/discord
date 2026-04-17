@@ -1,6 +1,7 @@
 import discord
 from io import BytesIO
 import zipfile
+import utils.log as Log
 
 
 class ViewFileCommand(discord.Cog):
@@ -56,6 +57,7 @@ class ViewFileCommand(discord.Cog):
                 await inter.response.send_message(
                     embed=emb, view=DropdownView(files_out), ephemeral=True
                 )
+            Log.info("quicklooked at a file", inter.author.name)
         elif (
             file.content_type is None or 
             "text/plain" in file.content_type or
@@ -74,6 +76,7 @@ class ViewFileCommand(discord.Cog):
                 colour=discord.Colour.orange(),
             )
             await inter.response.send_message(embed=emb, ephemeral=True)
+            Log.info("quicklooked at a file", inter.auth)
         else:
             await inter.response.send_message(
                 f"Mimetype {file.content_type} is not supported!"

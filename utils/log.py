@@ -1,5 +1,4 @@
-import discord
-import variables
+import datetime
 
 class Colour:
     class text:
@@ -43,17 +42,22 @@ class Colour:
     # Reset code
     RESET = '\033[0m'
 
-def info(message: str):
-    print(f"{Colour.text.BLUE}INFO{Colour.RESET}  | " + str(message))
+def info(message: str, author: str | None):
+    now = datetime.datetime.now()
+    print(f"{Colour.text.BLUE}INFO{Colour.RESET}  | {now.strftime('%d/%m %H:%M:%S')} {author if author else 'bot'} | " + str(message))
     
-def debug(message: str):
-    print(f"{Colour.text.bright.BLACK}DEBUG{Colour.RESET} | " + str(message))
+def debug(message: str, author: str | None):
+    now = datetime.datetime.now()
+    print(f"{Colour.text.bright.BLACK}DEBUG{Colour.RESET} | {now.strftime('%d/%m %H:%M:%S')} {author if author else 'bot'} | " + str(message))
     
-def warn(message: str):
-    print(f"{Colour.text.YELLOW}WARN{Colour.RESET}  | " + str(message))
+def warn(message: str, author: str | None):
+    now = datetime.datetime.now()
+    print(f"{Colour.text.YELLOW}WARN{Colour.RESET}  | {now.strftime('%d/%m %H:%M:%S')} {author if author else 'bot'} | " + str(message))
 
-def error(message: str):
-    print(f"{Colour.text.RED}ERROR{Colour.RESET} | " + str(message))
+def error(message: str, author: str | None):
+    now = datetime.datetime.now()
+    print(f"{Colour.text.RED}ERROR{Colour.RESET} | {now.strftime('%d/%m %H:%M:%S')} {author if author else 'bot'} | " + str(message))
     
-def fatal(message: str):
-    print(f"{Colour.bg.RED}FATAL{Colour.RESET} | " + str(message))
+def fatal(message: str, author: str | None):
+    now = datetime.datetime.now()
+    print(f"{Colour.bg.RED}ERROR{Colour.RESET} | {now.strftime('%d/%m %H:%M:%S')} {author if author else 'bot'} | " + str(message))

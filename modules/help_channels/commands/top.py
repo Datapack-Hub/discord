@@ -16,4 +16,4 @@ class TopCommand(discord.Cog, name="top"):
             ephemeral=True
         )
 
-        Log.info(f"{inter.author.name} jumped to the top of channel #{inter.channel.name}")
+        Log.info(f"jumped to top of channel #{inter.channel.name}", inter.author.name)
