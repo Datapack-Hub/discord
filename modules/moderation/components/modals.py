@@ -28,7 +28,7 @@ class BanUserModPanelModal(discord.ui.Modal):
         ))
         
         self.add_item(discord.ui.InputText(
-            label="Delete Messages?",
+            label="Delete their last 7d of messages?",
             placeholder="enter 'y' for yes",
             custom_id="delete",
             style=discord.InputTextStyle.short,
@@ -43,7 +43,9 @@ class BanUserModPanelModal(discord.ui.Modal):
             try:
                 await self.user.send(view=PunishmentMessageView("ban",reason, cause=self.cause_message))
             except:
-                pass
+                sent_dm = False
+            else:
+                sent_dm = True
             
             if delete:
                 await self.user.ban(delete_message_seconds=604800)
@@ -55,21 +57,30 @@ class BanUserModPanelModal(discord.ui.Modal):
             await inter.response.send_message(f"Failed to ban user {self.user.mention}: `{e}`",ephemeral=True)
             raise e
         else:
+            if self.cause_message:
+                await self.cause_message.delete()
+
+            # Immediate bot feedback
             conf = discord.Embed(
                 title="User Banned",
-                description=f"Successfully deleted the message from and banned user {self.user.mention} for reason:```\n{reason}```",
+                description=f"Successfully banned user {self.user.mention} for reason:```\n{reason}```{'\nNote that this user had DMs disabled, and so did not receive the reason' if not sent_dm else ''}",
                 colour= discord.Colour.red()
             )
             await inter.response.send_message(embed=conf,ephemeral=True)
             
-            await inter.client.get_channel(variables.modlogs).send(embed=discord.Embed(
+            # Log
+            log_embed = discord.Embed(
                 title="User Banned",
                 description=f"{self.user.name} (UID {self.user.id}) was banned.",
                 colour=discord.Colour.red(),
             )
-            .set_author(name=inter.user.global_name, icon_url=inter.user.avatar.url)
-            .add_field(name="Reason",value=f"```\n{reason}```",inline=False)
-            )
+            log_embed.set_author(name=inter.user.global_name, icon_url=inter.user.avatar.url)
+            log_embed.add_field(name=f"Reason ({'not' if not sent_dm else ''} sent to member)",value=f"```\n{reason}```",inline=False)
+
+            if self.cause_message:
+                log_embed.add_field(name="Reference",value=f"{self.cause_message.author.name}**: <t:{int(self.cause_message.created_at.timestamp())!s}:R>: ```\n{discord.utils.remove_markdown(self.cause_message.clean_content)[:300]}```",inline=False)
+
+            await inter.client.get_channel(variables.modlogs).send(embed=log_embed)
 
     async def on_error(self, error, interaction: discord.Interaction) -> None:
         Log.error(traceback.format_exc())
@@ -98,7 +109,9 @@ class KickUserModPanelModal(discord.ui.Modal):
             try:
                 await self.user.send(view=PunishmentMessageView("kick",reason, cause=self.cause_message))
             except:
-                pass
+                sent_dm = False
+            else:
+                sent_dm = True
             
             await self.user.kick(reason=reason)
         except discord.errors.Forbidden:
@@ -106,21 +119,30 @@ class KickUserModPanelModal(discord.ui.Modal):
         except Exception as e:
             await inter.response.send_message(f"Failed to kick user {self.user.mention}: `{e}`",ephemeral=True)
         else:
+            if self.cause_message:
+                await self.cause_message.delete()
+
+            # Immediate bot feedback
             conf = discord.Embed(
                 title="User Kicked",
-                description=f"Successfully deleted the message from and kicked user {self.user.mention} for reason:```\n{reason}```",
+                description=f"Successfully kicked user {self.user.mention} for reason:```\n{reason}```{'\nNote that this user had DMs disabled, and so did not receive the reason' if not sent_dm else ''}",
                 colour= discord.Colour.red()
             )
             await inter.response.send_message(embed=conf,ephemeral=True)
             
-            await inter.client.get_channel(variables.modlogs).send(embed=discord.Embed(
+            # Log
+            log_embed = discord.Embed(
                 title="User Kicked",
                 description=f"{self.user.name} (UID {self.user.id}) was kicked.",
                 colour=discord.Colour.red(),
             )
-            .set_author(name=inter.user.global_name, icon_url=inter.user.avatar.url)
-            .add_field(name="Reason",value=f"```\n{reason}```",inline=False)
-            )
+            log_embed.set_author(name=inter.user.global_name, icon_url=inter.user.avatar.url)
+            log_embed.add_field(name=f"Reason ({'not' if not sent_dm else ''} sent to member)",value=f"```\n{reason}```",inline=False)
+
+            if self.cause_message:
+                log_embed.add_field(name="Reference",value=f"{self.cause_message.author.name}**: <t:{int(self.cause_message.created_at.timestamp())!s}:R>: ```\n{discord.utils.remove_markdown(self.cause_message.clean_content)[:300]}```",inline=False)
+
+            await inter.client.get_channel(variables.modlogs).send(embed=log_embed)
 
     async def on_error(self, error, interaction: discord.Interaction) -> None:
         Log.error(traceback.format_exc())
@@ -157,7 +179,9 @@ class MuteUserModPanelModal(discord.ui.Modal):
             try:
                 await self.user.send(view=PunishmentMessageView("mute",reason, cause=self.cause_message, expires=seconds))
             except:
-                pass
+                sent_dm = False
+            else:
+                sent_dm = True
             
             await self.user.timeout_for(timedelta(seconds=seconds), reason=reason)
         except discord.errors.Forbidden:
@@ -165,22 +189,33 @@ class MuteUserModPanelModal(discord.ui.Modal):
         except Exception as e:
             await inter.response.send_message(f"Failed to mute user {self.user.mention}: `{e}`",ephemeral=True)
         else:
+            if self.cause_message:
+                await self.cause_message.delete()
+
+            # Immediate bot feedback
             conf = discord.Embed(
                 title="User Muted",
-                description=f"Successfully deleted the message from and muted user {self.user.mention} for reason:```\n{reason}```",
+                description=f"Successfully muted user {self.user.mention} for reason:```\n{reason}```{'\nNote that this user had DMs disabled, and so did not receive the reason' if not sent_dm else ''}",
                 colour= discord.Colour.red()
             )
+
             await inter.response.send_message(embed=conf,ephemeral=True)
             
-            await inter.client.get_channel(variables.modlogs).send(embed=discord.Embed(
+            # Log
+            log_embed = discord.Embed(
                 title="User Muted",
                 description=f"{self.user.name} (UID {self.user.id}) was muted.",
                 colour=discord.Colour.red(),
             )
-            .set_author(name=inter.user.global_name, icon_url=inter.user.avatar.url)
-            .add_field(name="Reason",value=f"```\n{reason}```",inline=False)
-            .add_field(name="Expires",value=f"{generate_discord_relative_timestamp(seconds)} ({self.children[1].value})",inline=False)
-            )
+            log_embed.set_author(name=inter.user.global_name, icon_url=inter.user.avatar.url)
+            log_embed.add_field(name=f"Reason ({'not' if not sent_dm else ''} sent to member)",value=f"```\n{reason}```",inline=False)
+
+            if self.cause_message:
+                log_embed.add_field(name="Reference",value=f"{self.cause_message.author.name}**: <t:{int(self.cause_message.created_at.timestamp())!s}:R>: ```\n{discord.utils.remove_markdown(self.cause_message.clean_content)[:300]}```",inline=False)
+
+            log_embed.add_field(name="Expires",value=f"{generate_discord_relative_timestamp(seconds)} ({self.children[1].value})",inline=False)
+
+            await inter.client.get_channel(variables.modlogs).send(embed=log_embed)
 
     async def on_error(self, error, interaction: discord.Interaction) -> None:
         Log.error(traceback.format_exc())
@@ -213,21 +248,30 @@ class WarnUserModPanelModal(discord.ui.Modal):
             await inter.response.send_message(f"Failed to warn user {self.user.mention}: `{e}`",ephemeral=True)
             raise e
         else:
+            if self.cause_message:
+                await self.cause_message.delete()
+
+            # Immediate bot feedback
             conf = discord.Embed(
                 title="User Warned",
-                description=f"Successfully deleted the message from and warned user {self.user.mention} with message:```\n{reason}```",
+                description=f"Successfully warned user {self.user.mention} with message:```\n{reason}```",
                 colour= discord.Colour.red()
             )
             await inter.response.send_message(embed=conf,ephemeral=True)
             
-            await inter.client.get_channel(variables.modlogs).send(embed=discord.Embed(
+            # Log
+            log_embed = discord.Embed(
                 title="User Warned",
                 description=f"{self.user.name} (UID {self.user.id}) was warned.",
                 colour=discord.Colour.red(),
             )
-            .set_author(name=inter.user.global_name, icon_url=inter.user.avatar.url)
-            .add_field(name="Warn message",value=f"```\n{reason}```",inline=False)
-            )
+            log_embed.set_author(name=inter.user.global_name, icon_url=inter.user.avatar.url)
+            log_embed.add_field(name="Warn message",value=f"```\n{reason}```",inline=False)
+
+            if self.cause_message:
+                log_embed.add_field(name="Reference",value=f"{self.cause_message.author.name}**: <t:{int(self.cause_message.created_at.timestamp())!s}:R>: ```\n{discord.utils.remove_markdown(self.cause_message.clean_content)[:300]}```",inline=False)
+
+            await inter.client.get_channel(variables.modlogs).send(embed=log_embed)
 
     async def on_error(self, error, interaction: discord.Interaction) -> None:
         Log.error(traceback.format_exc())

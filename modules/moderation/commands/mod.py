@@ -5,7 +5,7 @@ import variables
 import io
 from utils.uwufier import Uwuifier
 import utils.modlogs as modlogs
-from modules.moderation.components.views import UserModPanelView
+from modules.moderation.components.views import UserModPanelView, UnableToModerateView
 
 REASONS = [
     {
@@ -48,6 +48,9 @@ class ModCommand(discord.Cog):
     
     @mod.command(description="Opens the moderation menu for a user")
     async def user(self, inter: discord.ApplicationContext, user: discord.Member):
+        if user.bot:
+            await inter.respond(view=UnableToModerateView())
+        
         await inter.respond(view=UserModPanelView(user=user), ephemeral=True)
     
     @mod.command(description="Locks all server channels",)

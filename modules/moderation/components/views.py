@@ -53,20 +53,20 @@ class MessageModPanelView(discord.ui.DesignerView):
 
         container.add_separator()
 
-        container.add_text(f"-# You are moderating `{user.name}` with reference to the selected message. **The user will see a copy of their message along with the reason you provide.** 5heir message will be deleted when an action is taken.")
+        container.add_text(f"-# You are moderating `{user.name}` with reference to the selected message. **The user will see a copy of their message along with the reason you provide.** Their message will be deleted when an action is taken.")
         
         self.add_item(container)
 
 MESSAGES = [
     {
         "type":"warn",
-        "heading": "You were warned in Datapack Hub",
+        "heading": "Moderation message",
         "long":"A moderator has warned you in Datapack Hub. Please take a moment to read the reason attached, and figure out how you can be a better part of the community. This warning doesn't impact your ability to interact with the server.",
         "long_no_reason":"A moderator has warned you in Datapack Hub. This warning doesn't impact your ability to interact with the server."
     },
     {
         "type":"mute",
-        "heading": "You were muted in Datapack Hub",
+        "heading": "Moderation notice",
         "long":"A moderator has temporarily muted you in Datapack Hub. Please take a moment to read the reason attached, and figure out how you can be a better part of the community. You won't be able to interact with the community until the time has elapsed.",
         "long_no_reason":"A moderator has temporarily muted you in Datapack Hub. You won't be able to interact with the community until the time has elapsed."
     },
@@ -112,4 +112,13 @@ class PunishmentMessageView(discord.ui.DesignerView):
 
         container.add_text("-# This action was taken by a moderator or admin. If you think this was a mistake, please contact a staff member.")
 
+        self.add_item(container)
+
+class UnableToModerateView(discord.ui.DesignerView):
+    def __init__(self):
+        super().__init__(timeout=None)
+
+        container = discord.ui.Container(color=discord.Color.red())
+        container.add_text(f"You can't do this.")
+        
         self.add_item(container)
