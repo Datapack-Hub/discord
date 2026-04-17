@@ -120,10 +120,6 @@ class SelectModal(discord.ui.Modal):
                 )
                 await inter.respond(embed=emb,ephemeral=True)
 
-    async def on_error(self, error, interaction: discord.Interaction) -> None:
-        await interaction.response.send_message("Oops, something went wrong.", ephemeral=True)
-        print(error)
-
 class Dropdown(discord.ui.Select):
     def __init__(self, files):
         self.files = files

@@ -4,6 +4,7 @@ from discord.ext import tasks
 from bottoken import TOKEN
 import variables
 import time
+import traceback
 
 
 
@@ -102,6 +103,32 @@ async def on_ready():
     Log.info("Bot has started!")
     
     await loops.autoclose_loop.start(bot=bot)
+
+# ERROR HANDLING
+class ErrorHandleView(discord.ui.DesignerView):
+    def __init__(self, location: str, tb: str):
+        super().__init__(timeout=None)
+        
+        container = discord.ui.Container(color=discord.Color.red())
+        
+        container.add_text(f"Error on `{location}`:")
+        container.add_text(f"```\n{tb}```")
+        
+        self.add_item(container)
+
+@bot.event
+async def on_error(event_method: str):
+    trace = traceback.format_exc()
+    log_channel = bot.get_channel(variables.botlogs)
+    await log_channel.send(view=ErrorHandleView(event_method, trace))
+    Log.error(f"error in `{event_method}`. more details have been sent to the logs channel.")
+
+@bot.event
+async def on_modal_error(err: Exception, interaction: discord.Interaction):
+    trace = traceback.format_exc()
+    log_channel = bot.get_channel(variables.botlogs)
+    await log_channel.send(view=ErrorHandleView(str(interaction.view), trace))
+    Log.error(f"error in modal `{interaction.view}`. more details have been sent to the logs channel.")
 
 # Run bot
 bot.run(TOKEN)

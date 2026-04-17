@@ -81,10 +81,6 @@ class BanUserModPanelModal(discord.ui.Modal):
                 log_embed.add_field(name="Reference",value=f"{self.cause_message.author.name}**: <t:{int(self.cause_message.created_at.timestamp())!s}:R>: ```\n{discord.utils.remove_markdown(self.cause_message.clean_content)[:300]}```",inline=False)
 
             await inter.client.get_channel(variables.modlogs).send(embed=log_embed)
-
-    async def on_error(self, error, interaction: discord.Interaction) -> None:
-        Log.error(traceback.format_exc())
-        await interaction.response.send_message("Oops, something went wrong.", ephemeral=True)
         
 class KickUserModPanelModal(discord.ui.Modal):
     def __init__(self, user: discord.Member, cause_message: discord.Message | None = None, *args, **kwargs) -> None:
@@ -143,10 +139,6 @@ class KickUserModPanelModal(discord.ui.Modal):
                 log_embed.add_field(name="Reference",value=f"{self.cause_message.author.name}**: <t:{int(self.cause_message.created_at.timestamp())!s}:R>: ```\n{discord.utils.remove_markdown(self.cause_message.clean_content)[:300]}```",inline=False)
 
             await inter.client.get_channel(variables.modlogs).send(embed=log_embed)
-
-    async def on_error(self, error, interaction: discord.Interaction) -> None:
-        Log.error(traceback.format_exc())
-        await interaction.response.send_message("Oops, something went wrong.", ephemeral=True)
         
 class MuteUserModPanelModal(discord.ui.Modal):
     def __init__(self, user: discord.Member, cause_message: discord.Message | None = None, *args, **kwargs) -> None:
@@ -216,10 +208,6 @@ class MuteUserModPanelModal(discord.ui.Modal):
             log_embed.add_field(name="Expires",value=f"{generate_discord_relative_timestamp(seconds)} ({self.children[1].value})",inline=False)
 
             await inter.client.get_channel(variables.modlogs).send(embed=log_embed)
-
-    async def on_error(self, error, interaction: discord.Interaction) -> None:
-        Log.error(traceback.format_exc())
-        await interaction.response.send_message("Oops, something went wrong.", ephemeral=True)
         
 class WarnUserModPanelModal(discord.ui.Modal):
     def __init__(self, user: discord.Member, cause_message: discord.Message | None = None, *args, **kwargs) -> None:
@@ -272,7 +260,3 @@ class WarnUserModPanelModal(discord.ui.Modal):
                 log_embed.add_field(name="Reference",value=f"{self.cause_message.author.name}**: <t:{int(self.cause_message.created_at.timestamp())!s}:R>: ```\n{discord.utils.remove_markdown(self.cause_message.clean_content)[:300]}```",inline=False)
 
             await inter.client.get_channel(variables.modlogs).send(embed=log_embed)
-
-    async def on_error(self, error, interaction: discord.Interaction) -> None:
-        Log.error(traceback.format_exc())
-        await interaction.response.send_message("Oops, something went wrong.", ephemeral=True)
