@@ -29,7 +29,7 @@ class HelpChannelMessageView(discord.ui.DesignerView):
         container = discord.ui.Container()
         
         container.add_text("## Someone will come and help soon!")
-        container.add_text("You'll get help faster if you take this time to **answer the following questions**: \n- what's your __minecraft version__?\n- what's your end goal, or what are you __trying to acheive__?")
+        container.add_text("You'll get help faster if you take this time to **answer the following questions**: \n- What's your __Minecraft version__?\n- What's your end goal, or what are you __trying to achieve__?")
         
         container.add_separator(spacing=discord.SeparatorSpacingSize.small)
         
