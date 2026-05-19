@@ -47,7 +47,7 @@ class SummonHelpersButton(discord.ui.Button):
         # Edit the thing out
         await inter.message.edit(view=HelpChannelMessageView(created_at=inter.message.created_at, summoned=True))
 
-        Log.info(f"used the summon helpers button in '{inter.channel.name}'", inter.author.name)
+        Log.info(f"used the summon helpers button in '{inter.channel.name}'", inter.user.name)
         
 class ResolveQuestionButton(discord.ui.Button):
     def __init__(self):
@@ -62,7 +62,7 @@ class ResolveQuestionButton(discord.ui.Button):
         role = inter.guild.get_role(variables.helper)
         if (inter.channel.owner_id == inter.user.id) or (role in inter.user.roles):
             await resolve_thread(inter.channel, inter.response)
-            Log.info(f"resolved the thread '{inter.channel.name}'", inter.author.name)
+            Log.info(f"resolved the thread '{inter.channel.name}'", inter.user.name)
         else:
             await inter.respond("Only the original poster and staff members do this!",ephemeral=True)
 

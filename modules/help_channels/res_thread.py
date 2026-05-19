@@ -91,7 +91,7 @@ async def register(thread: discord.Thread):
 
 async def resolve_thread(thread: discord.Thread, response: discord.InteractionResponse):
     if len(thread.applied_tags) == 5:
-        return await response.send_message("This post has 5 tags, which is the maximum. **Please remove one tag** and then try again.")
+        return await response.send_message("This post has 5 tags, which is the maximum. **Please remove one tag** (right click thread name -> edit tags) and then try again.")
 
     if thread.archived: await thread.edit(archived=False)
     
@@ -115,7 +115,7 @@ async def resolve_thread(thread: discord.Thread, response: discord.InteractionRe
     
 async def resolve_thread_without_interaction(thread: discord.Thread):
     if len(thread.applied_tags) == 5:
-        return await thread.send_message("This post has 5 tags, which is the maximum. **Please remove one tag** and then try again.")
+        return await thread.send_message("This post has 5 tags, which is the maximum. **Please remove one tag** (right click thread name -> edit tags) and then try again.")
 
     # if thread.archived: await thread.edit(archived=False)
     
