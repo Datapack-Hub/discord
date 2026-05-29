@@ -62,7 +62,7 @@ class BanUserModPanelModal(discord.ui.Modal):
             await inter.respond(view=FeedbackView([
                 "## User banned",
                 f"Successfully banned user {self.user.mention} for reason:```\n{reason}```{'\nNote that this user had DMs disabled, and so did not receive the reason' if not sent_dm else ''}"
-            ]),ephmeral=True)
+            ]),ephemeral=True)
             
             # Log
             log_embed = discord.Embed(
@@ -118,7 +118,7 @@ class KickUserModPanelModal(discord.ui.Modal):
             await inter.respond(view=FeedbackView([
                 "## User kicked",
                 f"Successfully kicked user {self.user.mention} for reason:```\n{reason}```{'\nNote that this user had DMs disabled, and so did not receive the reason' if not sent_dm else ''}"
-            ]),ephmeral=True)
+            ]),ephemeral=True)
             
             # Log
             log_embed = discord.Embed(
@@ -182,7 +182,7 @@ class MuteUserModPanelModal(discord.ui.Modal):
             await inter.respond(view=FeedbackView([
                 "## User muted",
                 f"Successfully muted user {self.user.mention} for reason:```\n{reason}```{'\nNote that this user had DMs disabled, and so did not receive the reason' if not sent_dm else ''}"
-            ]),ephmeral=True)
+            ]),ephemeral=True)
             
             # Log
             log_embed = discord.Embed(
@@ -234,7 +234,7 @@ class WarnUserModPanelModal(discord.ui.Modal):
             await inter.respond(view=FeedbackView([
                 "## User warned",
                 f"Successfully warned user {self.user.mention} with message:```\n{reason}```"
-            ]),ephmeral=True)
+            ]),ephemeral=True)
             
             # Log
             log_embed = discord.Embed(

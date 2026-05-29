@@ -40,7 +40,7 @@ class QuickBanUserModPanelButton(discord.ui.Button):
             await inter.respond(view=FeedbackView([
                 "## User softbanned",
                 f"Successfully softbanned user {self.user.mention} ({self.user.id!s})."
-            ]),ephmeral=True)
+            ]),ephemeral=True)
             
             log_embed = discord.Embed(
                 title="User Softbanned",

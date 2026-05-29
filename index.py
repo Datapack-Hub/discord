@@ -126,7 +126,7 @@ async def on_modal_error(err: Exception, interaction: discord.Interaction):
     trace = "".join(traceback.format_exception(err.__class__, err, err.__traceback__))
 
     log_channel = bot.get_channel(variables.botlogs)
-    await log_channel.send(view=ErrorHandleView(str(interaction.view), trace))
+    await log_channel.send(view=ErrorHandleView(str(interaction.modal), trace))
     Log.fatal(f"error in modal `{interaction.view}`. more details have been sent to the logs channel.")
 
 @bot.event
