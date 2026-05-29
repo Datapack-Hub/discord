@@ -2,9 +2,7 @@ import discord
 import variables
 from pytimeparse import timeparse
 from datetime import datetime, timedelta
-import utils.log as Log
-import traceback
-from modules.moderation.components.views import PunishmentMessageView
+from modules.moderation.components.views import PunishmentMessageView, FeedbackView
 
 def generate_discord_relative_timestamp(seconds):
     future_timestamp = int((datetime.now() + timedelta(seconds=seconds)).timestamp())
@@ -61,12 +59,10 @@ class BanUserModPanelModal(discord.ui.Modal):
                 await self.cause_message.delete()
 
             # Immediate bot feedback
-            conf = discord.Embed(
-                title="User Banned",
-                description=f"Successfully banned user {self.user.mention} for reason:```\n{reason}```{'\nNote that this user had DMs disabled, and so did not receive the reason' if not sent_dm else ''}",
-                colour= discord.Colour.red()
-            )
-            await inter.response.send_message(embed=conf,ephemeral=True)
+            await inter.respond(view=FeedbackView([
+                "## User banned",
+                f"Successfully banned user {self.user.mention} for reason:```\n{reason}```{'\nNote that this user had DMs disabled, and so did not receive the reason' if not sent_dm else ''}"
+            ]),ephmeral=True)
             
             # Log
             log_embed = discord.Embed(
@@ -119,12 +115,10 @@ class KickUserModPanelModal(discord.ui.Modal):
                 await self.cause_message.delete()
 
             # Immediate bot feedback
-            conf = discord.Embed(
-                title="User Kicked",
-                description=f"Successfully kicked user {self.user.mention} for reason:```\n{reason}```{'\nNote that this user had DMs disabled, and so did not receive the reason' if not sent_dm else ''}",
-                colour= discord.Colour.red()
-            )
-            await inter.response.send_message(embed=conf,ephemeral=True)
+            await inter.respond(view=FeedbackView([
+                "## User kicked",
+                f"Successfully kicked user {self.user.mention} for reason:```\n{reason}```{'\nNote that this user had DMs disabled, and so did not receive the reason' if not sent_dm else ''}"
+            ]),ephmeral=True)
             
             # Log
             log_embed = discord.Embed(
@@ -185,13 +179,10 @@ class MuteUserModPanelModal(discord.ui.Modal):
                 await self.cause_message.delete()
 
             # Immediate bot feedback
-            conf = discord.Embed(
-                title="User Muted",
-                description=f"Successfully muted user {self.user.mention} for reason:```\n{reason}```{'\nNote that this user had DMs disabled, and so did not receive the reason' if not sent_dm else ''}",
-                colour= discord.Colour.red()
-            )
-
-            await inter.response.send_message(embed=conf,ephemeral=True)
+            await inter.respond(view=FeedbackView([
+                "## User muted",
+                f"Successfully muted user {self.user.mention} for reason:```\n{reason}```{'\nNote that this user had DMs disabled, and so did not receive the reason' if not sent_dm else ''}"
+            ]),ephmeral=True)
             
             # Log
             log_embed = discord.Embed(
@@ -240,12 +231,10 @@ class WarnUserModPanelModal(discord.ui.Modal):
                 await self.cause_message.delete()
 
             # Immediate bot feedback
-            conf = discord.Embed(
-                title="User Warned",
-                description=f"Successfully warned user {self.user.mention} with message:```\n{reason}```",
-                colour= discord.Colour.red()
-            )
-            await inter.response.send_message(embed=conf,ephemeral=True)
+            await inter.respond(view=FeedbackView([
+                "## User warned",
+                f"Successfully warned user {self.user.mention} with message:```\n{reason}```"
+            ]),ephmeral=True)
             
             # Log
             log_embed = discord.Embed(

@@ -122,3 +122,16 @@ class UnableToModerateView(discord.ui.DesignerView):
         container.add_text(f"You can't do this.")
         
         self.add_item(container)
+
+class FeedbackView(discord.ui.DesignerView):
+    def __init__(self, msg: str | list[str]):
+        super().__init__(timeout=None)
+
+        container = discord.ui.Container()
+        if isinstance(msg, str):
+            container.add_text(msg)
+        elif isinstance(msg, list):
+            for m in msg:
+                container.add_text(m)
+        
+        self.add_item(container)

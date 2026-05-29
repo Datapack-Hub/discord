@@ -1,5 +1,7 @@
 import discord
+import variables
 from modules.moderation.components.modals import BanUserModPanelModal, KickUserModPanelModal, MuteUserModPanelModal, WarnUserModPanelModal
+from modules.moderation.components.views import FeedbackView
 
 class BanUserModPanelButton(discord.ui.Button):
     def __init__(self, user: discord.Member, cause_message: discord.Message | None = None):
@@ -21,14 +23,34 @@ class QuickBanUserModPanelButton(discord.ui.Button):
         self.cause_message = cause_message
         
         super().__init__(
-            label="Quick Ban",
-            custom_id="quick_ban_user_button",
+            label="Softban",
+            custom_id="soft_ban_user_button",
             style=discord.ButtonStyle.red
         )
         
     async def callback(self, inter: discord.Interaction):
-        await self.user.ban(reason="Quick ban")
-        await inter.respond("Banned user " + self.user.name,ephemeral=True)
+        try:
+            await self.user.ban(delete_message_seconds=86400,reason="Softban")
+            await self.user.unban(reason="Softban")
+        except Exception as err:
+            await inter.respond("I couldn't fully softban this user. This error has been recorded.", allowed_mentions=discord.AllowedMentions(replied_user=False, roles=True), ephemeral=True)
+            
+            raise err
+        else:
+            await inter.respond(view=FeedbackView([
+                "## User softbanned",
+                f"Successfully softbanned user {self.user.mention} ({self.user.id!s})."
+            ]),ephmeral=True)
+            
+            log_embed = discord.Embed(
+                title="User Softbanned",
+                description=f"{self.user.name} (UID {self.user.id}) was softbanned.",
+                colour=discord.Colour.red(),
+            )
+            log_embed.set_author(name=inter.user.global_name, icon_url=inter.user.avatar.url)
+
+            await inter.client.get_channel(variables.modlogs).send(embed=log_embed)
+
 
 class KickUserModPanelButton(discord.ui.Button):
     def __init__(self, user: discord.Member, cause_message: discord.Message | None = None):
