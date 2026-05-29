@@ -117,7 +117,7 @@ class ErrorHandleView(discord.ui.DesignerView):
         self.add_item(container)
 
 @bot.event
-async def on_error(event_method: str):
+async def on_error(event_method: str, *args, **kwargs):
     trace = traceback.format_exc()
     log_channel = bot.get_channel(variables.botlogs)
     await log_channel.send(view=ErrorHandleView(event_method, trace))
@@ -129,6 +129,13 @@ async def on_modal_error(err: Exception, interaction: discord.Interaction):
     log_channel = bot.get_channel(variables.botlogs)
     await log_channel.send(view=ErrorHandleView(str(interaction.view), trace))
     Log.fatal(f"error in modal `{interaction.view}`. more details have been sent to the logs channel.")
+
+@bot.event
+async def on_view_error(err: Exception, item: discord.ui.ViewItem, interaction: discord.Interaction):
+    trace = traceback.format_exc()
+    log_channel = bot.get_channel(variables.botlogs)
+    await log_channel.send(view=ErrorHandleView(str(interaction.view), trace))
+    Log.fatal(f"error in view `{interaction.view}`. more details have been sent to the logs channel.")
 
 # Run bot
 bot.run(TOKEN)

@@ -72,8 +72,8 @@ class LogsListeners(discord.Cog):
                 title="Message Deleted",
                 colour=discord.Colour.from_rgb(230, 50, 50)
             )
-            .add_field(name="Content",value=message.content,inline=False)
+            .add_field(name="Content",value=message.content[:500],inline=False)
             .add_field(name="Channel",value=message.channel.jump_url,inline=False)
             .add_field(name="Attachments",value=f"{message.attachments.__len__()!s} attachments",inline=False)
-            .set_author(name=message.author.global_name,icon_url=message.author.avatar.url)
+            .set_author(name=message.author.global_name + f" [{message.author.id!s}]")
         )
