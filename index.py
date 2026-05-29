@@ -100,8 +100,6 @@ from modules.help_channels import loops
 
 @bot.event
 async def on_ready():
-    Log.info("Bot has started!")
-    
     await loops.autoclose_loop.start(bot=bot)
 
 # ERROR HANDLING
