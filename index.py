@@ -123,17 +123,18 @@ async def on_error(event_method: str, *args, **kwargs):
 
 @bot.event
 async def on_modal_error(err: Exception, interaction: discord.Interaction):
-    trace = traceback.format_exc()
+    trace = traceback.format_exception(err.__class__, err, err.__traceback__)
+
     log_channel = bot.get_channel(variables.botlogs)
     await log_channel.send(view=ErrorHandleView(str(interaction.view), trace))
     Log.fatal(f"error in modal `{interaction.view}`. more details have been sent to the logs channel.")
 
 @bot.event
 async def on_view_error(err: Exception, item: discord.ui.ViewItem, interaction: discord.Interaction):
-    trace = traceback.format_exc()
+    trace = traceback.format_exception(err.__class__, err, err.__traceback__)
     log_channel = bot.get_channel(variables.botlogs)
     await log_channel.send(view=ErrorHandleView(str(interaction.view), trace))
-    Log.fatal(f"error in view `{interaction.view}`. more details have been sent to the logs channel.")
+    Log.fatal(f"error in view `{interaction.view}` item `{item}`. more details have been sent to the logs channel.")
 
 # Run bot
 bot.run(TOKEN)
