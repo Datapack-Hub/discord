@@ -2,8 +2,9 @@ import discord
 from datetime import datetime, timedelta
 import variables
 import io
+import utils
 import utils.log as Log
-from modules.moderation.components.views import UserModPanelView, UnableToModerateView
+from modules.moderation.components.views import UserModPanelView, UnableToModerateView, FeedbackView
 
 REASONS = [
     {
@@ -27,16 +28,6 @@ REASONS = [
         "description": "Homophobia is strictly not tolerated in Datapack Hub.",
     },
 ]
-
-def generate_discord_relative_timestamp(seconds):
-    # Calculate the future Unix timestamp
-    future_timestamp = int((datetime.now() + timedelta(seconds=seconds)).timestamp())
-
-    # Format the relative timestamp in the Discord style
-    formatted_timestamp = f"<t:{future_timestamp}:R>"
-
-    return formatted_timestamp
-
 
 class ModCommand(discord.Cog):
     def __init__(self, bot):
@@ -93,13 +84,12 @@ class ModCommand(discord.Cog):
         limit: int = discord.Option(description="How many messages to remove. (not how many messages to search)"), 
         user: discord.User = discord.Option(description="If specified, only deletes messages from this user", required=False)
     ):
+        await inter.response.defer(ephemeral=True)
         limit = int(limit)
         
         # Stops the purge if the purge amount is over the API's limit
         if limit > 100:
-            await inter.response.send_message(
-                "You cannot delete more than 100 messages at once", ephemeral=True
-            )
+            await inter.send_followup("You cannot delete more than 100 messages at once")
             return
 
         def is_user(m: discord.Message):
@@ -109,21 +99,29 @@ class ModCommand(discord.Cog):
 
         # Deletes the messages
         if user:
-            deleted_messages = await inter.channel.purge(limit=limit, check=is_user)
+            deleted_messages = await inter.channel.purge(limit=limit, check=is_user, before=inter.interaction.created_at)
         else:
-            deleted_messages = await inter.channel.purge(limit=limit)
+            deleted_messages = await inter.channel.purge(limit=limit, before=inter.interaction.created_at)
 
         # Logs the purge action
+        deleted_messages.reverse()
+        first_message = deleted_messages[0]
+        last_message = deleted_messages[-1]
+
         log_embed = discord.Embed(
-            colour=discord.Colour.orange(),
-            title="`/purge` Command",
-            description=f"{inter.user.name} purged {len(deleted_messages)} messages in {inter.channel.mention}.",
+            title="Messages purged",
+            description=f"{len(deleted_messages)!s} were deleted in {inter.channel.mention}.",
+            colour=discord.Colour.red(),
         )
+        log_embed.set_author(name=inter.user.global_name, icon_url=inter.user.avatar.url)
+
+        log_embed.add_field(name="First message",value=utils.reference_message(first_message),inline=False)
+        log_embed.add_field(name="Last message",value=utils.reference_message(last_message),inline=False)
 
         # Add the author and contents of the deleted messages to the log
         file_content = io.StringIO()
         file_content.write(f"The following {len(deleted_messages)!s} messages were purged at [{datetime.now().strftime('%d/%m/%y %H:%M:%S')}]:\n")
-        for message in reversed(deleted_messages):
+        for message in deleted_messages:
             file_content.write(
                 f"[{message.created_at.strftime('%d/%m/%y %H:%M:%S')}] @{message.author.name}: {message.content}\n"
             )
@@ -136,11 +134,10 @@ class ModCommand(discord.Cog):
         await log_channel.send(embed=log_embed, file=file)
 
         # Confirm the purge
-        await inter.response.send_message(
-            f"{len(deleted_messages)} messages have been deleted", ephemeral=True
-        )
+        await inter.send_followup(view=FeedbackView(f"Bulk deleted {len(deleted_messages)} messages."))
 
         Log.info(f"removed ~{limit} messages in channel #{inter.channel.name}", inter.author.name)
+
         
     @mod.command(description="Ban literally everyone",)
     async def banall(self, inter: discord.ApplicationContext):

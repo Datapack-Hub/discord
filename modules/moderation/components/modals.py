@@ -2,12 +2,8 @@ import discord
 import variables
 from pytimeparse import timeparse
 from datetime import datetime, timedelta
-from modules.moderation.components.views import PunishmentMessageView, FeedbackView
-
-def generate_discord_relative_timestamp(seconds):
-    future_timestamp = int((datetime.now() + timedelta(seconds=seconds)).timestamp())
-    formatted_timestamp = f"<t:{future_timestamp}:R>"
-    return formatted_timestamp
+from modules.moderation.components.views import PunishmentMessageView, FeedbackView#
+import utils
 
 class BanUserModPanelModal(discord.ui.Modal):
     def __init__(self, user: discord.Member, cause_message: discord.Message | None = None, *args, **kwargs) -> None:
@@ -74,7 +70,7 @@ class BanUserModPanelModal(discord.ui.Modal):
             log_embed.add_field(name=f"Reason ({'not' if not sent_dm else ''} sent to member)",value=f"```\n{reason}```",inline=False)
 
             if self.cause_message:
-                log_embed.add_field(name="Reference",value=f"{self.cause_message.author.name}**: <t:{int(self.cause_message.created_at.timestamp())!s}:R>: ```\n{discord.utils.remove_markdown(self.cause_message.clean_content)[:300]}```",inline=False)
+                log_embed.add_field(name="Reference",value=utils.reference_message(self.cause_message),inline=False)
 
             await inter.client.get_channel(variables.modlogs).send(embed=log_embed)
         
@@ -130,7 +126,7 @@ class KickUserModPanelModal(discord.ui.Modal):
             log_embed.add_field(name=f"Reason ({'not' if not sent_dm else ''} sent to member)",value=f"```\n{reason}```",inline=False)
 
             if self.cause_message:
-                log_embed.add_field(name="Reference",value=f"{self.cause_message.author.name}**: <t:{int(self.cause_message.created_at.timestamp())!s}:R>: ```\n{discord.utils.remove_markdown(self.cause_message.clean_content)[:300]}```",inline=False)
+                log_embed.add_field(name="Reference",value=utils.reference_message(self.cause_message),inline=False)
 
             await inter.client.get_channel(variables.modlogs).send(embed=log_embed)
         
@@ -194,9 +190,9 @@ class MuteUserModPanelModal(discord.ui.Modal):
             log_embed.add_field(name=f"Reason ({'not' if not sent_dm else ''} sent to member)",value=f"```\n{reason}```",inline=False)
 
             if self.cause_message:
-                log_embed.add_field(name="Reference",value=f"{self.cause_message.author.name}**: <t:{int(self.cause_message.created_at.timestamp())!s}:R>: ```\n{discord.utils.remove_markdown(self.cause_message.clean_content)[:300]}```",inline=False)
+                log_embed.add_field(name="Reference",value=utils.reference_message(self.cause_message),inline=False)
 
-            log_embed.add_field(name="Expires",value=f"{generate_discord_relative_timestamp(seconds)} ({self.children[1].value})",inline=False)
+            log_embed.add_field(name="Expires",value=f"{utils.generate_future_timestamp(seconds)} ({self.children[1].value})",inline=False)
 
             await inter.client.get_channel(variables.modlogs).send(embed=log_embed)
         
@@ -246,6 +242,6 @@ class WarnUserModPanelModal(discord.ui.Modal):
             log_embed.add_field(name="Warn message",value=f"```\n{reason}```",inline=False)
 
             if self.cause_message:
-                log_embed.add_field(name="Reference",value=f"{self.cause_message.author.name}**: <t:{int(self.cause_message.created_at.timestamp())!s}:R>: ```\n{discord.utils.remove_markdown(self.cause_message.clean_content)[:300]}```",inline=False)
+                log_embed.add_field(name="Reference",value=utils.reference_message(self.cause_message),inline=False)
 
             await inter.client.get_channel(variables.modlogs).send(embed=log_embed)
