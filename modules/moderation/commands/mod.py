@@ -118,7 +118,11 @@ class ModCommand(discord.Cog):
         log_embed.add_field(name="First message",value=utils.reference_message(first_message),inline=False)
         log_embed.add_field(name="Last message",value=utils.reference_message(last_message),inline=False)
 
-        # Add the author and contents of the deleted messages to the log
+        modlog_channel = inter.guild.get_channel(variables.modlogs)
+        await modlog_channel.send(embed=log_embed)
+
+
+        # Send deletion log to message log
         file_content = io.StringIO()
         file_content.write(f"The following {len(deleted_messages)!s} messages were purged at [{datetime.now().strftime('%d/%m/%y %H:%M:%S')}]:\n")
         for message in deleted_messages:
@@ -130,8 +134,7 @@ class ModCommand(discord.Cog):
         file = discord.File(fp=file_content, filename="purged messages.txt")
 
         log_channel = inter.guild.get_channel(variables.logs)
-
-        await log_channel.send(embed=log_embed, file=file)
+        await log_channel.send(file=file)
 
         # Confirm the purge
         await inter.send_followup(view=FeedbackView(f"Bulk deleted {len(deleted_messages)} messages."))
