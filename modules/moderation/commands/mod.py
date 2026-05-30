@@ -1,10 +1,7 @@
 import discord
-from pytimeparse.timeparse import timeparse
 from datetime import datetime, timedelta
 import variables
 import io
-from utils.uwufier import Uwuifier
-import utils.modlogs as modlogs
 import utils.log as Log
 from modules.moderation.components.views import UserModPanelView, UnableToModerateView
 
@@ -49,8 +46,8 @@ class ModCommand(discord.Cog):
     
     @mod.command(description="Opens the moderation menu for a user")
     async def user(self, inter: discord.ApplicationContext, user: discord.Member):
-        if user.bot or user.guild_permissions.administrator:
-            await inter.respond(view=UnableToModerateView())
+        if user.bot or (inter.guild.get_role(variables.staff) in user.roles):
+            await inter.respond(view=UnableToModerateView(), ephemeral=True)
         
         await inter.respond(view=UserModPanelView(user=user), ephemeral=True)
     

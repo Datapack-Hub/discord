@@ -119,7 +119,7 @@ class UnableToModerateView(discord.ui.DesignerView):
         super().__init__(timeout=None)
 
         container = discord.ui.Container(color=discord.Color.red())
-        container.add_text(f"You can't do this.")
+        container.add_text(f"You cannot moderate this member.")
         
         self.add_item(container)
 
