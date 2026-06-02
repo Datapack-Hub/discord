@@ -47,6 +47,9 @@ class ModCommand(discord.Cog):
     
     @mod.command(description="Locks all server channels",)
     async def lockdown(self, inter: discord.ApplicationContext):
+        if not inter.guild.get_role(variables.moderator) in inter.author.roles:
+            return await inter.respond(view=UnableToModerateView(), ephemeral=True)
+        
         await inter.defer()
         
         current_perms = inter.guild.default_role.permissions
@@ -64,6 +67,9 @@ class ModCommand(discord.Cog):
         
     @mod.command(description="Unlocks all server channels",)
     async def unlockdown(self, inter: discord.ApplicationContext):
+        if not inter.guild.get_role(variables.moderator) in inter.author.roles:
+            return await inter.respond(view=UnableToModerateView(), ephemeral=True)
+        
         await inter.defer()
         
         current_perms = inter.guild.default_role.permissions
@@ -87,6 +93,9 @@ class ModCommand(discord.Cog):
         limit: int = discord.Option(description="How many messages to remove. (not how many messages to search)"), 
         user: discord.User = discord.Option(description="If specified, only deletes messages from this user", required=False)
     ):
+        if not inter.guild.get_role(variables.moderator) in inter.author.roles:
+            return await inter.respond(view=UnableToModerateView(), ephemeral=True)
+        
         await inter.response.defer(ephemeral=True)
         limit = int(limit)
         
@@ -147,7 +156,9 @@ class ModCommand(discord.Cog):
         
     @mod.command(description="Ban literally everyone",)
     async def banall(self, inter: discord.ApplicationContext):
-        #legi go away
+        if not inter.guild.get_role(variables.moderator) in inter.author.roles:
+            return await inter.respond(view=UnableToModerateView(), ephemeral=True)
+        
         emb = discord.Embed(
             title="⚠️ BAN ALL MEMBERS",
             description="Are you sure? This action is IRREVERSIBLE. Flyne is going to be very angry if you run this command. ONLY USE THIS IN EMERGENCIES. You have been warned.",
@@ -169,6 +180,9 @@ class ModCommand(discord.Cog):
             choices = ["add", "remove"]
         )
     ):
+        if not inter.guild.get_role(variables.moderator) in inter.author.roles:
+            return await inter.respond(view=UnableToModerateView(), ephemeral=True)
+        
         if not role.id in variables.mod_edit_roles:
             await inter.response.send_message(f"Role `{role.name}` is not allowed in this command", ephemeral=True)
             return
