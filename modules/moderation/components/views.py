@@ -1,5 +1,6 @@
 import discord
 from datetime import datetime, timedelta
+import utils
 
 def generate_discord_relative_timestamp(seconds):
     future_timestamp = int((datetime.now() + timedelta(seconds=seconds)).timestamp())
@@ -104,7 +105,7 @@ class PunishmentMessageView(discord.ui.DesignerView):
         
         if cause:
             container.add_separator(divider=False)
-            container.add_text(f"### Your message (shown below) was the cause of this action:\n**{cause.author.name}**: <t:{int(cause.created_at.timestamp())!s}:R>: ```\n{discord.utils.remove_markdown(cause.clean_content)[:300]}```")
+            container.add_text(f"### Your message (shown below) was the cause of this action:**\n" + utils.reference_message(cause))
 
         if expires:
             container.add_separator(divider=False)
