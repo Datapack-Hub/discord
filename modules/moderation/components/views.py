@@ -13,8 +13,8 @@ def generate_discord_full_timestamp(seconds):
     return formatted_timestamp
 
 class UserModPanelView(discord.ui.DesignerView):
-    def __init__(self, user: discord.Member):
-        from modules.moderation.components.buttons import BanUserModPanelButton, QuickBanUserModPanelButton, KickUserModPanelButton, MuteUserModPanelButton, WarnUserModPanelButton
+    def __init__(self, user: discord.Member, helper_only: bool = False):
+        from modules.moderation.components.buttons import BanUserModPanelButton, SoftBanUserModPanelButton, KickUserModPanelButton, MuteUserModPanelButton, WarnUserModPanelButton
         
         super().__init__(timeout=None)
         
@@ -24,9 +24,9 @@ class UserModPanelView(discord.ui.DesignerView):
         container.add_text(f"{user.name} joined this server {discord.utils.format_dt(user.joined_at, style='R')} and joined discord {discord.utils.format_dt(user.created_at, style='R')}. Take action on them below:")
         
         container.add_row(
-            BanUserModPanelButton(user), 
-            QuickBanUserModPanelButton(user),
-            KickUserModPanelButton(user),
+            BanUserModPanelButton(user, disabled=helper_only), 
+            SoftBanUserModPanelButton(user, disabled=helper_only),
+            KickUserModPanelButton(user, disabled=helper_only),
             MuteUserModPanelButton(user),
             WarnUserModPanelButton(user)
         )
@@ -34,8 +34,8 @@ class UserModPanelView(discord.ui.DesignerView):
         self.add_item(container)
 
 class MessageModPanelView(discord.ui.DesignerView):
-    def __init__(self, user: discord.Member, message: discord.Message):
-        from modules.moderation.components.buttons import BanUserModPanelButton, QuickBanUserModPanelButton, KickUserModPanelButton, MuteUserModPanelButton, WarnUserModPanelButton
+    def __init__(self, user: discord.Member, message: discord.Message, helper_only: bool = False):
+        from modules.moderation.components.buttons import BanUserModPanelButton, SoftBanUserModPanelButton, KickUserModPanelButton, MuteUserModPanelButton, WarnUserModPanelButton
         
         super().__init__(timeout=None)
         
@@ -45,9 +45,9 @@ class MessageModPanelView(discord.ui.DesignerView):
         container.add_text(f"{user.name} joined this server {discord.utils.format_dt(user.joined_at, style='R')} and joined discord {discord.utils.format_dt(user.created_at, style='R')}. Take action on them below:")
         
         container.add_row(
-            BanUserModPanelButton(user, cause_message=message), 
-            QuickBanUserModPanelButton(user, cause_message=message),
-            KickUserModPanelButton(user, cause_message=message),
+            BanUserModPanelButton(user, cause_message=message, disabled=helper_only), 
+            SoftBanUserModPanelButton(user, cause_message=message, disabled=helper_only),
+            KickUserModPanelButton(user, cause_message=message, disabled=helper_only),
             MuteUserModPanelButton(user, cause_message=message),
             WarnUserModPanelButton(user, cause_message=message)
         )

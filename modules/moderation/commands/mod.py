@@ -40,7 +40,10 @@ class ModCommand(discord.Cog):
         if user.bot or (inter.guild.get_role(variables.staff) in user.roles):
             await inter.respond(view=UnableToModerateView(), ephemeral=True)
         
-        await inter.respond(view=UserModPanelView(user=user), ephemeral=True)
+        if not inter.guild.get_role(variables.moderator) in user.roles:
+            return await inter.respond(view=UserModPanelView(user=user, helper_only=True), ephemeral=True)
+
+        return await inter.respond(view=UserModPanelView(user=user), ephemeral=True)
     
     @mod.command(description="Locks all server channels",)
     async def lockdown(self, inter: discord.ApplicationContext):
