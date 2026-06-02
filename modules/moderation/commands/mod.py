@@ -38,7 +38,7 @@ class ModCommand(discord.Cog):
     @mod.command(description="Opens the moderation menu for a user")
     async def user(self, inter: discord.ApplicationContext, user: discord.Member):
         if user.bot or (inter.guild.get_role(variables.staff) in user.roles):
-            await inter.respond(view=UnableToModerateView(), ephemeral=True)
+            return await inter.respond(view=UnableToModerateView(), ephemeral=True)
         
         if not inter.guild.get_role(variables.moderator) in user.roles:
             return await inter.respond(view=UserModPanelView(user=user, helper_only=True), ephemeral=True)
