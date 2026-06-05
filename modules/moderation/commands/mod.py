@@ -40,7 +40,7 @@ class ModCommand(discord.Cog):
         if user.bot or (inter.guild.get_role(variables.staff) in user.roles):
             return await inter.respond(view=UnableToModerateView(), ephemeral=True)
         
-        if not (inter.guild.get_role(variables.moderator) in user.roles):
+        if not (inter.guild.get_role(variables.moderator) in inter.author.roles):
             return await inter.respond(view=UserModPanelView(user=user, helper_only=True), ephemeral=True)
 
         return await inter.respond(view=UserModPanelView(user=user), ephemeral=True)
