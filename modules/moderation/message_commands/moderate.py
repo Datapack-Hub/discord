@@ -16,7 +16,7 @@ class ModerateCommand(discord.Cog):
         if message.author.bot or (inter.guild.get_role(variables.staff) in message.author.roles):
             return await inter.respond(view=UnableToModerateView(), ephemeral=True)
         
-        if not inter.guild.get_role(variables.moderator) in message.author.roles:
+        if (not inter.guild.get_role(variables.moderator) in inter.author.roles):
             return await inter.respond(view=MessageModPanelView(message.author, message, helper_only=True), ephemeral=True)
 
         return await inter.respond(view=MessageModPanelView(message.author, message), ephemeral=True)
