@@ -69,7 +69,12 @@ class HelpChannelListeners(discord.Cog):
         ):
             tags = [tag for tag in thread.applied_tags if not (tag.name.lower() == "resolved")]
             await thread.edit(applied_tags=tags)
-            await thread.last_message.reply(view=ReopenedThreadView(), allowed_mentions=discord.AllowedMentions.none())
+
+            try:
+                await thread.last_message.reply(view=ReopenedThreadView(), allowed_mentions=discord.AllowedMentions.none())
+            except:
+                await thread.send(view=ReopenedThreadView(), allowed_mentions=discord.AllowedMentions.none())
+
             Log.info(f"reopened the thread {thread.name}")
             
             # remove from stats

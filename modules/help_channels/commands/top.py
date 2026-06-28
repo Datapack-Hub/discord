@@ -12,7 +12,7 @@ class TopCommand(discord.Cog, name="top"):
         message = await inter.channel.history(limit=1, oldest_first=True).flatten()
 
         await inter.response.send_message(
-            components=[discord.ui.Button(label="Jump to top", url=message[0].jump_url)],
+            view=discord.ui.View(discord.ui.Button(label="Jump to top", url=message[0].jump_url)),
             ephemeral=True
         )
 
