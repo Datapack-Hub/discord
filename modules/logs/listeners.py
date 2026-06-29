@@ -56,9 +56,9 @@ class LogsListeners(discord.Cog):
                     description=f"**[Jump to the message]({after.jump_url})**",
                     colour=discord.Colour.from_rgb(209, 192, 59)
                 )
-                .add_field(name="Before",value=before.content,inline=False)
-                .add_field(name="After",value=after.content,inline=False)
-                .set_author(name=after.author.global_name,icon_url=after.author.avatar.url)
+                .add_field(name="Before",value=before.content[:500],inline=False)
+                .add_field(name="After",value=after.content[:500],inline=False)
+                .set_author(name=after.author.global_name + f" [{after.author.id!s}]")
             )
     
     # Message Delete
@@ -74,6 +74,7 @@ class LogsListeners(discord.Cog):
             )
             .add_field(name="Content",value=message.content[:500],inline=False)
             .add_field(name="Channel",value=message.channel.jump_url,inline=False)
+            .add_field(name="Sent at",value=f"<t:{int(message.created_at.timestamp)!s}:f> ({message.created_at.timestamp!s})",inline=False)
             .add_field(name="Attachments",value=f"{message.attachments.__len__()!s} attachments",inline=False)
             .set_author(name=message.author.global_name + f" [{message.author.id!s}]")
         )
