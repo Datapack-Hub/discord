@@ -3,10 +3,10 @@ import json
 import variables
 import asyncio
 import utils.log as Log
-from modules.help_channels.res_thread import resolve_thread_without_interaction
-from modules.help_channels.components.views import HelpChannelMessageView, ReopenedThreadView, PostedZipView
+from modules.help_channels.res_thread import resolve_thread_without_interaction, register
+from modules.help_channels.components.views import HelpChannelMessageView, ReopenedThreadView, PostedZipView, OPLeftServerView
 
-def get_opened_threads(thread: discord.Thread) -> list[discord.Thread]:
+def get_other_opened_threads(thread: discord.Thread) -> list[discord.Thread]:
     parent = thread.parent
     if parent is None: return []
 
@@ -46,7 +46,7 @@ class HelpChannelListeners(discord.Cog):
                 allowed_mentions=discord.AllowedMentions(roles=True)
             )
             await msg.delete()
-            await thread.send(view=HelpChannelMessageView(created_at=discord.utils.utcnow(), threads=get_opened_threads(thread)))
+            await thread.send(view=HelpChannelMessageView(created_at=discord.utils.utcnow(), threads=get_other_opened_threads(thread)))
 
             Log.info(f"setup thread '{thread.name}'")
     
@@ -107,3 +107,34 @@ class HelpChannelListeners(discord.Cog):
         await msg.reply(view=PostedZipView())
 
         Log.info(f"sent the datapack zip notice in thread '{msg.channel.name}'")
+
+    @discord.Cog.listener()
+    async def on_member_remove(self, member: discord.Member):
+        for channel_id in variables.help_channels:
+            channel = member.guild.get_channel(channel_id)
+            if not isinstance(channel, discord.ForumChannel): continue
+            
+            opened_threads = [
+                t for t in channel.threads if (
+                    t.owner_id == member.id
+                    and not t.archived
+                    and not any(tag.name.lower() == "resolved" for tag in t.applied_tags)
+                )
+            ]
+
+            for thread in opened_threads:
+                try:
+                    resolved_tag = next(t for t in thread.parent.available_tags if t.name.lower() == "resolved")
+                    tags = thread.applied_tags
+                    tags.append(resolved_tag)
+                    
+                    if len(tags) < 6:
+                        if thread.parent.id == variables.help_channels[0]:
+                            await register(thread)
+                            
+                        await thread.send(view=OPLeftServerView(thread))
+                        await thread.edit(archived=True, applied_tags=tags, locked=True)
+                        
+                        Log.info(f"automatically locked thread '{thread.name}' due to OP leaving the server")
+                except Exception as e:
+                    Log.error("failed to autoclose thread: " + " ".join(e.args))

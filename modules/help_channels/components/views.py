@@ -100,6 +100,26 @@ class AutoclosedThreadView(discord.ui.DesignerView):
         
         self.add_item(container)
             
+class OPLeftServerView(discord.ui.DesignerView):
+    def __init__(self, thread: discord.Thread):
+        super().__init__(timeout=None)
+        
+        container = discord.ui.Container()
+        
+        container.add_text("## Question closed due to OP leaving the server")
+        container.add_text(f"The original question asker has left the server, so this question has been automatically locked.")
+        
+        if thread.starting_message:
+            sect1 = discord.ui.Section(accessory=discord.ui.Button(label="Jump to top", url=thread.starting_message.jump_url))
+            sect1.add_text(f"This thread was open for {format_duration_between(thread.created_at,discord.utils.utcnow())}")
+            container.add_item(sect1)
+        else:
+            container.add_text(f"This thread was open for {format_duration_between(thread.created_at,discord.utils.utcnow())}")
+        
+        container.add_text(f"-# This thread was closed {discord.utils.format_dt(discord.utils.utcnow(), style='R')}")
+        
+        self.add_item(container)
+            
 class ReopenedThreadView(discord.ui.DesignerView):
     def __init__(self):
         super().__init__(timeout=None)
