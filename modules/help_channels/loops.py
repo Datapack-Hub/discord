@@ -28,7 +28,7 @@ async def autoclose_loop(bot: discord.Bot):
                             if thread.parent.id == variables.help_channels[0]:
                                 await register(thread)
                                 
-                            await thread.send(view=AutoclosedThreadView(thread))
+                            await thread.send(view=AutoclosedThreadView(thread),allowed_mentions=discord.AllowedMentions.none())
                             await thread.edit(archived=True, applied_tags=tags)
                             
                             Log.info(f"automatically closed thread '{thread.name}' due to inactivity")

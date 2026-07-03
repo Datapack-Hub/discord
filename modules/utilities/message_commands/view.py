@@ -79,7 +79,8 @@ class ViewFileCommand(discord.Cog):
             Log.info("quicklooked at a file", inter.auth)
         else:
             await inter.response.send_message(
-                f"Mimetype {file.content_type} is not supported!"
+                f"Mimetype {file.content_type} is not supported!",
+                allowed_mentions=discord.AllowedMentions.none()
             )
 
 

@@ -46,7 +46,7 @@ class HelpChannelListeners(discord.Cog):
                 allowed_mentions=discord.AllowedMentions(roles=True)
             )
             await msg.delete()
-            await thread.send(view=HelpChannelMessageView(created_at=discord.utils.utcnow(), threads=get_other_opened_threads(thread)))
+            await thread.send(view=HelpChannelMessageView(created_at=discord.utils.utcnow(), threads=get_other_opened_threads(thread)),allowed_mentions=discord.AllowedMentions.none())
 
             Log.info(f"setup thread '{thread.name}'")
     

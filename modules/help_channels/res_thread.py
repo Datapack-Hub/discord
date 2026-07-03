@@ -103,7 +103,8 @@ async def resolve_thread(thread: discord.Thread, response: discord.InteractionRe
     from modules.help_channels.components.views import ResolvedThreadView
     
     msg = await thread.send(
-        view=ResolvedThreadView(thread=thread)
+        view=ResolvedThreadView(thread=thread),
+        allowed_mentions=discord.AllowedMentions.none()
     )
     
     # Register to stats
@@ -126,7 +127,8 @@ async def resolve_thread_without_interaction(thread: discord.Thread):
     from modules.help_channels.components.views import ResolvedThreadView
     
     msg = await thread.send(
-        view=ResolvedThreadView(thread=thread)
+        view=ResolvedThreadView(thread=thread),
+        allowed_mentions=discord.AllowedMentions.none()
     )
     
     # Register to stats
