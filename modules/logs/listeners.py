@@ -74,7 +74,7 @@ class LogsListeners(discord.Cog):
             )
             .add_field(name="Content",value=message.content[:500],inline=False)
             .add_field(name="Channel",value=message.channel.jump_url,inline=False)
-            .add_field(name="Sent at",value=f"<t:{int(message.created_at.timestamp())!s}:f> ({message.created_at.timestamp!s})",inline=False)
+            .add_field(name="Sent at",value=f"<t:{int(message.created_at.timestamp())!s}:f> ({message.created_at.timestamp()!s})",inline=False)
             .add_field(name="Attachments",value=f"{message.attachments.__len__()!s} attachments",inline=False)
             .set_author(name=message.author.global_name + f" [{message.author.id!s}]")
         )
