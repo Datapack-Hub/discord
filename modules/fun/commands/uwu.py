@@ -4,7 +4,7 @@ import utils.log as Log
 import discord
 
 
-uwu_data = {"users": [], "channels": [], "banned": [], "enabled": True}
+uwu_data = {"users": [], "channels": [], "banned": [], "nexts": [], "enabled": True}
 
 class UwuCommand(discord.Cog, name="uwu"):
     def __init__(self, bot):
@@ -32,11 +32,11 @@ class UwuCommand(discord.Cog, name="uwu"):
             users = uwu_data["users"]
             if inter.author.id in users:
                 users.remove(inter.author.id)
-                await inter.response.send_message("**Disabled** auto uwufier for user " + inter.author.mention, allowed_mentions=discord.AllowedMentions.none())
+                await inter.response.send_message("**Disabled** auto uwufier for user " + inter.author.mention, allowed_mentions=discord.AllowedMentions.none(), ephemeral=True)
                 Log.info(f"disabled self-uwufier", inter.author.name)
             else:
                 users.append(inter.author.id)
-                await inter.response.send_message("**Enabled** auto uwufier for user " + inter.author.mention, allowed_mentions=discord.AllowedMentions.none())
+                await inter.response.send_message("**Enabled** auto uwufier for user " + inter.author.mention, allowed_mentions=discord.AllowedMentions.none(), ephemeral=True)
                 Log.info(f"enabled self-uwufier", inter.author.name)
             uwu_data["users"] = users
         except Exception as e:
@@ -47,11 +47,11 @@ class UwuCommand(discord.Cog, name="uwu"):
         try:
             if inter.channel.id in uwu_data["channels"]:
                 uwu_data["channels"].remove(inter.channel.id)
-                await inter.response.send_message("**Disabled** auto uwufier for channel " + inter.channel.mention)
+                await inter.response.send_message("**Disabled** auto uwufier for channel " + inter.channel.mention, ephemeral=True)
                 Log.info(f"disabled the uwufier for #{inter.channel.name}", inter.author.name)
             else:
                 uwu_data["channels"].append(inter.channel.id)
-                await inter.response.send_message("**Enabled** auto uwufier for channel " + inter.channel.mention)
+                await inter.response.send_message("**Enabled** auto uwufier for channel " + inter.channel.mention, ephemeral=True)
                 Log.info(f"enabled the uwufier for #{inter.channel.name}", inter.author.name)
         except Exception as e:
             Log.error(f"could not toggle uwufier for channel #{inter.channel.name}: {e}", inter.author.name)
@@ -61,11 +61,11 @@ class UwuCommand(discord.Cog, name="uwu"):
         try:
             if user.id in uwu_data["banned"]:
                 uwu_data["banned"].remove(user.id)
-                await inter.response.send_message(f"**Unbanned** user {user.mention} from the uwufier.", allowed_mentions=discord.AllowedMentions.none())
+                await inter.response.send_message(f"**Unbanned** user {user.mention} from the uwufier.", allowed_mentions=discord.AllowedMentions.none(), ephemeral=True)
                 Log.info(f"unbanned {user.name} from the uwufier", inter.author.name)
             else:
                 uwu_data["banned"].append(user.id)
-                await inter.response.send_message(f"**Banned** user {user.mention} from the uwufier.", allowed_mentions=discord.AllowedMentions.none())
+                await inter.response.send_message(f"**Banned** user {user.mention} from the uwufier.", allowed_mentions=discord.AllowedMentions.none(), ephemeral=True)
                 Log.info(f"banned {user.name} from the uwufier", inter.author.name)
         except Exception as e:
             Log.error(f"could not ban user {user.name} from the uwufier: {e}", inter.author.name)
@@ -76,26 +76,42 @@ class UwuCommand(discord.Cog, name="uwu"):
             users = uwu_data["users"]
             if user.id in users:
                 users.remove(user.id)
-                await inter.response.send_message("**Disabled** auto uwufier for user " + user.mention)
+                await inter.response.send_message("**Disabled** auto uwufier for user " + user.mention, ephemeral=True)
                 Log.info(f"disabled the user uwufier for {user.name}", inter.author.name)
             else:
                 users.append(user.id)
-                await inter.response.send_message("**Enabled** auto uwufier for user " + user.mention)
+                await inter.response.send_message("**Enabled** auto uwufier for user " + user.mention, ephemeral=True)
                 Log.info(f"enabled the user uwufier for {user.name}", inter.author.name)
             uwu_data["users"] = users
         except Exception as e:
             Log.error(f"could not toggle uwufier for user {user.name}: {e}", inter.author.name)
+    
+    @uwu.command(description="Uwufies only the next message a user sends")
+    async def next(self, inter: discord.ApplicationContext, user: discord.Member):
+        try:
+            nexts = uwu_data["nexts"]
+            if user.id in nexts:
+                nexts.remove(user.id)
+                await inter.response.send_message("Will **no longer** uwufy the next message sent by user " + user.mention, ephemeral=True)
+                Log.info(f"turned off uwufier for next message for user {user.name}", inter.author.name)
+            else:
+                nexts.append(user.id)
+                await inter.response.send_message("Will uwufy the next message sent by user " + user.mention, ephemeral=True)
+                Log.info(f"turned on uwufier for next message for user {user.name}", inter.author.name)
+            uwu_data["nexts"] = nexts
+        except Exception as e:
+            Log.error(f"could not toggle next message uwufier for user {user.name}: {e}", inter.author.name)
             
     @uwu.command(description="Toggle all uwu features")
     async def override(self, inter: discord.ApplicationContext):
         try:
             if uwu_data["enabled"]:
                 uwu_data["enabled"] = False
-                await inter.response.send_message("**Disabled** all uwufier features")
+                await inter.response.send_message("**Disabled** all uwufier features", ephemeral=True)
                 Log.info(f"disabled all uwu features", inter.author.name)
             else:
                 uwu_data["enabled"] = True
-                await inter.response.send_message("**Enabled** all uwufier features")
+                await inter.response.send_message("**Enabled** all uwufier features", ephemeral=True)
                 Log.info(f"enabled all uwu features", inter.author.name)
         except Exception as e:
             Log.error(f"could not toggle uwu features: {e}", inter.author.name)
